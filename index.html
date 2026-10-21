@@ -12,14 +12,14 @@
     --bg:#F4F7FB; --surface:#FFFFFF; --side:#FFFFFF; --side-hover:#EEF4FB; --side-border:#E3E8EF;
     --txt:#231F20; --muted:#5F6B7A; --border:#DCE3EC; --logo-txt:#231F20;
     --bar:#FFFFFF; --bar-txt:#231F20; --btn-bg:#F4F7FB; --btn-border:#DCE3EC;
-    --shadow:rgba(11,78,131,.12); --frame-bg:#FFFFFF;
+    --shadow:rgba(16,40,70,.08); --frame-bg:#FFFFFF; --active-bg:#EAF3FC;
   }
   /* ===== Tema ESCURO ===== */
   [data-theme="dark"]{
     --bg:#15181D; --surface:#1E2228; --side:#1A1D22; --side-hover:#262B33; --side-border:#2C323B;
     --txt:#E9ECEF; --muted:#9AA4B2; --border:#2C323B; --logo-txt:#FFFFFF;
     --bar:#1E2228; --bar-txt:#E9ECEF; --btn-bg:#262B33; --btn-border:#353C46;
-    --shadow:rgba(0,0,0,.35); --frame-bg:#15181D;
+    --shadow:rgba(0,0,0,.35); --frame-bg:#15181D; --active-bg:rgba(18,125,203,.16);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;font-family:Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--txt)}
@@ -61,6 +61,7 @@
   /* Tela inicial */
   .home{position:absolute;inset:0;background:var(--bg);overflow:auto;display:none}
   .home.show{display:block}
+  .home:focus,.home:focus-visible{outline:none}
   .hero{background:var(--surface);border-bottom:1px solid var(--border);padding:32px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px}
   .hero-logo{width:100%;max-width:380px;height:auto;color:var(--logo-txt)}
   .hero p{color:var(--muted);font-size:14px}
@@ -86,6 +87,58 @@
     .hero{padding:24px 16px}
     .wrap{padding:20px 16px}
   }
+
+  /* ===== Acabamento profissional ===== */
+  body{font-family:"Inter","Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  aside{width:256px}
+  .brand{min-height:76px;padding:20px 22px;justify-content:flex-start}
+  .brand .full{max-width:170px}
+  aside.mini .brand{justify-content:center;padding:20px 10px}
+  nav{padding:14px 12px}
+  .sec{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.1px;color:var(--muted);opacity:.8;padding:16px 12px 8px}
+  .item{position:relative;gap:12px;padding:10px 12px;margin-bottom:2px;border-radius:7px;font-size:14px;font-weight:500;color:var(--muted)}
+  .item .ic{width:20px;height:20px;font-size:0;display:flex}
+  .item .ic svg{width:20px;height:20px}
+  .item:hover{background:var(--side-hover);color:var(--txt)}
+  .item.active{background:var(--active-bg);color:var(--eleve-azul);font-weight:600}
+  .item.active::before{content:"";position:absolute;left:-12px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--eleve-azul)}
+  .item .dot{width:6px;height:6px;background:#22c55e}
+  .item.active .dot{background:#22c55e}
+  aside.mini .item{justify-content:center}
+  aside.mini .sec{display:none}
+
+  .bar{height:60px;padding:0 20px;gap:10px;border-bottom:1px solid var(--side-border);box-shadow:0 1px 0 var(--side-border)}
+  .bar::after{content:none}
+  .ttl{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
+  .ttl small{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .ttl h1{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .btn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:7px;font-size:13px;font-weight:500;background:var(--surface)}
+  .btn svg{width:16px;height:16px}
+  .btn.ico{width:34px;padding:0;justify-content:center}
+  .btn:hover{border-color:var(--eleve-azul);color:var(--eleve-azul);background:var(--active-bg)}
+  .frames{border-top:3px solid var(--eleve-azul)}
+
+  .hero{padding:36px 32px 30px;gap:10px;border-bottom:1px solid var(--border)}
+  .hero-logo{max-width:320px}
+  .hero p{font-size:13px;text-transform:uppercase;letter-spacing:1.6px}
+  .wrap{padding:30px 32px;max-width:1280px;margin:0 auto}
+  .wrap h2{font-size:12px;font-weight:600;letter-spacing:1.3px;color:var(--muted);margin-bottom:16px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+  .card{display:flex;flex-direction:column;border:1px solid var(--border);border-top:1px solid var(--border);border-radius:12px;padding:22px;
+        box-shadow:0 1px 2px var(--shadow);transition:border-color .15s,box-shadow .15s,transform .15s}
+  .card:hover{border-color:var(--eleve-azul);border-top-color:var(--eleve-azul);box-shadow:0 10px 26px var(--shadow);transform:translateY(-2px)}
+  .cic{width:44px;height:44px;border-radius:10px;background:var(--active-bg);color:var(--eleve-azul);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .cic svg{width:22px;height:22px}
+  .card b{font-size:15px;font-weight:600;margin-bottom:5px}
+  .card small{font-size:13px;line-height:1.45;flex:1}
+  .go{margin-top:18px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--eleve-azul)}
+  .go svg{width:15px;height:15px;transition:transform .15s}
+  .card:hover .go svg{transform:translateX(3px)}
+  @media (max-width:760px){
+    .bar{padding:0 12px}
+    .btn .t{display:none}
+    .btn{width:34px;padding:0;justify-content:center}
+  }
 </style>
 </head>
 <body>
@@ -94,25 +147,25 @@
     <div class="brand"><svg class="full" xmlns="http://www.w3.org/2000/svg" viewBox="146.0 237.5 549.7 119.6"><path fill="currentColor" d="M 275.96 342.89 L 271.92 342.89 L 272.42 341.42 L 282.21 341.42 L 281.70 342.89 L 277.66 342.89 L 274.10 353.27 L 272.42 353.27 Z M 275.96 342.89 "/><path fill="currentColor" d="M 290.32 342.89 L 289.07 346.53 L 295.02 346.53 L 294.53 347.97 L 288.57 347.97 L 287.27 351.80 L 294.19 351.80 L 293.69 353.27 L 285.08 353.27 L 289.14 341.42 L 297.49 341.42 L 297 342.89 Z M 290.32 342.89 "/><path fill="currentColor" d="M 305.55 341.42 L 307.25 341.42 L 303.69 351.80 L 310.11 351.80 L 309.62 353.27 L 301.5 353.27 Z M 305.55 341.42 "/><path fill="currentColor" d="M 330.87 341.42 L 326.81 353.27 L 325.12 353.27 L 326.91 348.02 L 320.11 348.02 L 318.32 353.27 L 316.62 353.27 L 320.68 341.42 L 322.37 341.42 L 320.64 346.50 L 327.43 346.50 L 329.17 341.42 Z M 330.87 341.42 "/><path fill="currentColor" d="M 343.96 348.95 L 343.39 343.11 L 338.83 348.95 Z M 344.10 350.31 L 337.78 350.31 L 335.48 353.27 L 333.65 353.27 L 343.08 341.42 L 344.76 341.42 L 346.07 353.27 L 344.39 353.27 Z M 344.10 350.31 "/><path fill="currentColor" d="M 352.32 351.97 L 353.25 350.61 C 354.03 351.44 355.42 351.97 356.90 351.97 C 358.81 351.97 360.20 351.24 360.38 349.95 C 360.73 347.48 354.48 348.75 355.02 344.96 C 355.34 342.69 357.57 341.29 360.47 341.29 C 361.92 341.29 363.26 341.64 364.13 342.28 L 363.26 343.67 C 362.47 343.05 361.38 342.73 360.18 342.73 C 358.23 342.73 356.88 343.55 356.70 344.81 C 356.35 347.30 362.59 346.11 362.07 349.72 C 361.75 352.02 359.48 353.41 356.54 353.41 C 354.73 353.41 353.06 352.78 352.32 351.97 "/><path fill="currentColor" d="M 383.35 342.89 L 382.11 346.53 L 388.06 346.53 L 387.57 347.97 L 381.62 347.97 L 380.31 351.80 L 387.23 351.80 L 386.73 353.27 L 378.12 353.27 L 382.18 341.42 L 390.53 341.42 L 390.04 342.89 Z M 383.35 342.89 "/><path fill="currentColor" d="M 414.76 345.04 C 414.96 343.62 414.05 342.89 412.26 342.89 L 409.42 342.89 L 407.59 348.21 L 410.49 348.21 C 412.91 348.21 414.46 347.13 414.76 345.04 M 416.48 344.89 C 416.04 347.92 413.66 349.68 410.24 349.68 L 407.08 349.68 L 405.86 353.27 L 404.17 353.27 L 408.22 341.42 L 412.62 341.42 C 415.38 341.42 416.79 342.69 416.48 344.89 "/><path fill="currentColor" d="M 426.53 342.89 L 425.28 346.53 L 431.23 346.53 L 430.74 347.97 L 424.79 347.97 L 423.48 351.80 L 430.40 351.80 L 429.90 353.27 L 421.29 353.27 L 425.35 341.42 L 433.71 341.42 L 433.21 342.89 Z M 426.53 342.89 "/><path fill="currentColor" d="M 448.33 345.04 C 448.54 343.62 447.63 342.89 445.82 342.89 L 442.96 342.89 L 441.14 348.21 L 444.06 348.21 C 446.48 348.21 448.04 347.13 448.33 345.04 M 445.85 349.41 L 447.47 353.27 L 445.67 353.27 L 444.13 349.65 L 440.64 349.65 L 439.41 353.27 L 437.71 353.27 L 441.76 341.42 L 446.18 341.42 C 448.95 341.42 450.36 342.69 450.05 344.89 C 449.71 347.25 448.17 348.83 445.85 349.41 "/><path fill="currentColor" d="M 460.32 342.89 L 458.91 347.02 L 464.86 347.02 L 464.36 348.48 L 458.41 348.48 L 456.78 353.27 L 455.09 353.27 L 459.14 341.42 L 467.50 341.42 L 467.00 342.89 Z M 460.32 342.89 "/><path fill="currentColor" d="M 474.97 341.42 L 476.66 341.42 L 472.60 353.27 L 470.91 353.27 Z M 474.97 341.42 "/><path fill="currentColor" d="M 480.64 351.97 L 481.58 350.61 C 482.35 351.44 483.75 351.97 485.23 351.97 C 487.14 351.97 488.53 351.24 488.71 349.95 C 489.06 347.48 482.81 348.75 483.35 344.96 C 483.67 342.69 485.90 341.29 488.79 341.29 C 490.25 341.29 491.58 341.64 492.46 342.28 L 491.58 343.67 C 490.79 343.05 489.71 342.73 488.50 342.73 C 486.56 342.73 485.21 343.55 485.03 344.81 C 484.67 347.30 490.91 346.11 490.40 349.72 C 490.07 352.02 487.81 353.41 484.87 353.41 C 483.06 353.41 481.39 352.78 480.64 351.97 "/><path fill="currentColor" d="M 523.11 341.42 L 519.05 353.27 L 517.42 353.27 L 520.37 344.71 L 513.76 351.83 L 512.98 351.83 L 511.06 344.54 L 508.07 353.27 L 506.45 353.27 L 510.50 341.42 L 511.87 341.42 L 513.98 349.76 L 521.65 341.42 Z M 523.11 341.42 "/><path fill="currentColor" d="M 532.92 342.89 L 531.67 346.53 L 537.63 346.53 L 537.14 347.97 L 531.18 347.97 L 529.87 351.80 L 536.79 351.80 L 536.30 353.27 L 527.69 353.27 L 531.74 341.42 L 540.10 341.42 L 539.60 342.89 Z M 532.92 342.89 "/><path fill="currentColor" d="M 550 342.89 L 545.95 342.89 L 546.45 341.42 L 556.25 341.42 L 555.73 342.89 L 551.69 342.89 L 548.13 353.27 L 546.45 353.27 Z M 550 342.89 "/><path fill="currentColor" d="M 567.60 340.46 L 566.01 340.46 L 568.88 338.26 L 571 338.26 Z M 567.03 348.95 L 566.46 343.11 L 561.91 348.95 Z M 567.18 350.31 L 560.85 350.31 L 558.55 353.27 L 556.73 353.27 L 566.16 341.42 L 567.83 341.42 L 569.14 353.27 L 567.47 353.27 Z M 567.18 350.31 "/><path fill="currentColor" d="M 580.04 341.42 L 581.73 341.42 L 578.17 351.80 L 584.60 351.80 L 584.10 353.27 L 575.98 353.27 Z M 580.04 341.42 "/><path fill="currentColor" d="M 595.17 341.42 L 596.86 341.42 L 592.80 353.27 L 591.11 353.27 Z M 595.17 341.42 "/><path fill="currentColor" d="M 602.26 348.41 C 602.82 344.47 606.10 341.29 610.54 341.29 C 612.5 341.29 613.98 341.94 614.62 343.13 L 613.25 344.18 C 612.69 343.28 611.67 342.79 610.20 342.79 C 606.83 342.79 604.39 345.33 603.97 348.31 C 603.66 350.46 604.86 351.90 607.53 351.90 C 608.97 351.90 610.26 351.42 611.32 350.5 L 612.14 351.61 C 610.87 352.82 609.10 353.41 607.20 353.41 C 603.63 353.41 601.84 351.37 602.26 348.41 "/><path fill="currentColor" d="M 630.67 346.38 C 630.98 344.25 629.80 342.79 627.17 342.79 C 623.89 342.79 621.45 345.33 621.03 348.31 C 620.72 350.44 621.92 351.90 624.54 351.90 C 627.82 351.90 630.25 349.36 630.67 346.38 M 619.32 348.41 C 619.88 344.47 623.16 341.29 627.53 341.29 C 631.06 341.29 632.82 343.32 632.40 346.28 C 631.83 350.22 628.54 353.41 624.17 353.41 C 620.64 353.41 618.90 351.37 619.32 348.41 "/><path fill="currentColor" d="M 637.19 351.97 L 638.13 350.61 C 638.91 351.44 640.31 351.97 641.78 351.97 C 643.69 351.97 645.08 351.24 645.26 349.95 C 645.61 347.48 639.36 348.75 639.90 344.96 C 640.23 342.69 642.46 341.29 645.35 341.29 C 646.80 341.29 648.14 341.64 649.01 342.28 L 648.14 343.67 C 647.35 343.05 646.26 342.73 645.06 342.73 C 643.11 342.73 641.76 343.55 641.58 344.81 C 641.23 347.30 647.47 346.11 646.95 349.72 C 646.63 352.02 644.36 353.41 641.42 353.41 C 639.61 353.41 637.94 352.78 637.19 351.97 "/><path fill="#127DCB" d="M 184.14 275.14 L 184.14 253.28 L 148.01 265.07 L 148.01 286.92 Z M 184.14 275.14 "/><path fill="#127DCB" d="M 250.98 264.00 L 259.03 239.48 L 197.83 259.73 L 197.83 281.59 Z M 250.98 264.00 "/><path fill="#0B4E83" d="M 197.83 281.59 L 197.83 259.73 L 184.14 253.28 L 184.14 275.14 Z M 197.83 281.59 "/><path fill="#127DCB" d="M 184.14 287.35 L 148.01 299.14 L 148.01 321 L 184.14 309.21 Z M 184.14 287.35 "/><path fill="#127DCB" d="M 197.83 315.66 L 238.42 302.23 L 246.48 277.71 L 197.83 293.80 Z M 197.83 315.66 "/><path fill="#0B4E83" d="M 197.83 315.66 L 197.83 293.80 L 184.14 287.35 L 184.14 309.21 Z M 197.83 315.66 "/><path fill="#127DCB" d="M 148.01 333.21 L 148.01 355.07 L 184.14 343.28 L 184.14 321.42 Z M 148.01 333.21 "/><path fill="#127DCB" d="M 197.83 327.87 L 197.83 349.73 L 225.86 340.45 L 233.92 315.93 Z M 197.83 327.87 "/><path fill="#0B4E83" d="M 184.14 321.42 L 184.14 343.28 L 197.83 349.73 L 197.83 327.87 Z M 184.14 321.42 "/><path fill="currentColor" d="M 278.36 254.74 L 355.17 254.74 L 349.36 272.33 L 294.55 272.33 L 291.19 282.51 L 333.01 282.51 L 327.39 299.56 L 285.56 299.56 L 281.96 310.46 L 336.78 310.46 L 330.97 328.06 L 254.16 328.06 Z M 278.36 254.74 "/><path fill="currentColor" d="M 446.97 254.74 L 523.78 254.74 L 517.97 272.33 L 463.16 272.33 L 459.80 282.51 L 501.62 282.51 L 496 299.56 L 454.17 299.56 L 450.57 310.46 L 505.39 310.46 L 499.58 328.06 L 422.77 328.06 Z M 446.97 254.74 "/><path fill="currentColor" d="M 616.95 254.74 L 693.76 254.74 L 687.95 272.33 L 633.14 272.33 L 629.78 282.51 L 671.60 282.51 L 665.98 299.56 L 624.15 299.56 L 620.55 310.46 L 675.37 310.46 L 669.56 328.06 L 592.75 328.06 Z M 616.95 254.74 "/><path fill="currentColor" d="M 362.66 254.74 L 384.66 254.74 L 367 308.26 L 421.81 308.26 L 415.27 328.06 L 338.46 328.06 Z M 362.66 254.74 "/><path fill="currentColor" d="M 531.28 254.74 L 554.92 254.74 L 552.37 306.34 L 552.92 306.34 L 584.44 254.74 L 608.08 254.74 L 559.78 328.06 L 531.18 328.06 Z M 531.28 254.74 "/></svg><svg class="sym" xmlns="http://www.w3.org/2000/svg" viewBox="341.3 128.8 213.5 222.1"><path fill="#127DCB" d="M 411.44 198.08 L 411.44 156.84 L 343.26 179.09 L 343.26 220.33 Z M 411.44 198.08 "/><path fill="#127DCB" d="M 537.57 177.07 L 552.77 130.79 L 437.26 169.02 L 437.26 210.26 Z M 537.57 177.07 "/><path fill="#0B4E83" d="M 437.26 210.26 L 437.26 169.02 L 411.44 156.84 L 411.44 198.08 Z M 437.26 210.26 "/><path fill="#127DCB" d="M 411.44 221.14 L 343.26 243.39 L 343.26 284.63 L 411.44 262.38 Z M 411.44 221.14 "/><path fill="#127DCB" d="M 437.26 274.56 L 513.87 249.21 L 529.07 202.93 L 437.26 233.32 Z M 437.26 274.56 "/><path fill="#0B4E83" d="M 437.26 274.56 L 437.26 233.32 L 411.44 221.14 L 411.44 262.38 Z M 437.26 274.56 "/><path fill="#127DCB" d="M 343.26 307.68 L 343.26 348.92 L 411.44 326.67 L 411.44 285.43 Z M 343.26 307.68 "/><path fill="#127DCB" d="M 437.26 297.61 L 437.26 338.85 L 490.16 321.34 L 505.37 275.07 Z M 437.26 297.61 "/><path fill="#0B4E83" d="M 411.44 285.43 L 411.44 326.67 L 437.26 338.85 L 437.26 297.61 Z M 411.44 285.43 "/></svg></div>
     <nav id="nav"></nav>
     <div class="foot">
-      <button class="item" id="btnMini" title="Recolher menu"><span class="ic">⇔</span><span class="lbl">Recolher menu</span></button>
+      <button class="item" id="btnMini" title="Recolher menu"><span class="ic" id="icMini"></span><span class="lbl">Recolher menu</span></button>
     </div>
   </aside>
 
   <main>
     <div class="bar">
-      <button class="btn" id="btnMenu" style="display:none">☰</button>
-      <h1 id="titulo">Início</h1>
-      <button class="btn" id="btnReload" title="Recarregar sistema">⟳<span class="t"> Recarregar</span></button>
-      <button class="btn" id="btnNova" title="Abrir em nova aba">↗<span class="t"> Nova aba</span></button>
-      <button class="btn" id="btnTema" title="Alternar tema claro/escuro">🌙</button>
+      <button class="btn ico" id="btnMenu" style="display:none" title="Menu"></button>
+      <div class="ttl"><small>Portal Eleve</small><h1 id="titulo">Início</h1></div>
+      <button class="btn" id="btnReload" title="Recarregar sistema"></button>
+      <button class="btn" id="btnNova" title="Abrir em nova aba"></button>
+      <button class="btn ico" id="btnTema" title="Alternar tema claro/escuro">🌙</button>
     </div>
     <div class="frames" id="frames">
       <div class="home" id="home">
         <div class="hero"><svg class="hero-logo" xmlns="http://www.w3.org/2000/svg" viewBox="146.0 237.5 549.7 119.6"><path fill="currentColor" d="M 275.96 342.89 L 271.92 342.89 L 272.42 341.42 L 282.21 341.42 L 281.70 342.89 L 277.66 342.89 L 274.10 353.27 L 272.42 353.27 Z M 275.96 342.89 "/><path fill="currentColor" d="M 290.32 342.89 L 289.07 346.53 L 295.02 346.53 L 294.53 347.97 L 288.57 347.97 L 287.27 351.80 L 294.19 351.80 L 293.69 353.27 L 285.08 353.27 L 289.14 341.42 L 297.49 341.42 L 297 342.89 Z M 290.32 342.89 "/><path fill="currentColor" d="M 305.55 341.42 L 307.25 341.42 L 303.69 351.80 L 310.11 351.80 L 309.62 353.27 L 301.5 353.27 Z M 305.55 341.42 "/><path fill="currentColor" d="M 330.87 341.42 L 326.81 353.27 L 325.12 353.27 L 326.91 348.02 L 320.11 348.02 L 318.32 353.27 L 316.62 353.27 L 320.68 341.42 L 322.37 341.42 L 320.64 346.50 L 327.43 346.50 L 329.17 341.42 Z M 330.87 341.42 "/><path fill="currentColor" d="M 343.96 348.95 L 343.39 343.11 L 338.83 348.95 Z M 344.10 350.31 L 337.78 350.31 L 335.48 353.27 L 333.65 353.27 L 343.08 341.42 L 344.76 341.42 L 346.07 353.27 L 344.39 353.27 Z M 344.10 350.31 "/><path fill="currentColor" d="M 352.32 351.97 L 353.25 350.61 C 354.03 351.44 355.42 351.97 356.90 351.97 C 358.81 351.97 360.20 351.24 360.38 349.95 C 360.73 347.48 354.48 348.75 355.02 344.96 C 355.34 342.69 357.57 341.29 360.47 341.29 C 361.92 341.29 363.26 341.64 364.13 342.28 L 363.26 343.67 C 362.47 343.05 361.38 342.73 360.18 342.73 C 358.23 342.73 356.88 343.55 356.70 344.81 C 356.35 347.30 362.59 346.11 362.07 349.72 C 361.75 352.02 359.48 353.41 356.54 353.41 C 354.73 353.41 353.06 352.78 352.32 351.97 "/><path fill="currentColor" d="M 383.35 342.89 L 382.11 346.53 L 388.06 346.53 L 387.57 347.97 L 381.62 347.97 L 380.31 351.80 L 387.23 351.80 L 386.73 353.27 L 378.12 353.27 L 382.18 341.42 L 390.53 341.42 L 390.04 342.89 Z M 383.35 342.89 "/><path fill="currentColor" d="M 414.76 345.04 C 414.96 343.62 414.05 342.89 412.26 342.89 L 409.42 342.89 L 407.59 348.21 L 410.49 348.21 C 412.91 348.21 414.46 347.13 414.76 345.04 M 416.48 344.89 C 416.04 347.92 413.66 349.68 410.24 349.68 L 407.08 349.68 L 405.86 353.27 L 404.17 353.27 L 408.22 341.42 L 412.62 341.42 C 415.38 341.42 416.79 342.69 416.48 344.89 "/><path fill="currentColor" d="M 426.53 342.89 L 425.28 346.53 L 431.23 346.53 L 430.74 347.97 L 424.79 347.97 L 423.48 351.80 L 430.40 351.80 L 429.90 353.27 L 421.29 353.27 L 425.35 341.42 L 433.71 341.42 L 433.21 342.89 Z M 426.53 342.89 "/><path fill="currentColor" d="M 448.33 345.04 C 448.54 343.62 447.63 342.89 445.82 342.89 L 442.96 342.89 L 441.14 348.21 L 444.06 348.21 C 446.48 348.21 448.04 347.13 448.33 345.04 M 445.85 349.41 L 447.47 353.27 L 445.67 353.27 L 444.13 349.65 L 440.64 349.65 L 439.41 353.27 L 437.71 353.27 L 441.76 341.42 L 446.18 341.42 C 448.95 341.42 450.36 342.69 450.05 344.89 C 449.71 347.25 448.17 348.83 445.85 349.41 "/><path fill="currentColor" d="M 460.32 342.89 L 458.91 347.02 L 464.86 347.02 L 464.36 348.48 L 458.41 348.48 L 456.78 353.27 L 455.09 353.27 L 459.14 341.42 L 467.50 341.42 L 467.00 342.89 Z M 460.32 342.89 "/><path fill="currentColor" d="M 474.97 341.42 L 476.66 341.42 L 472.60 353.27 L 470.91 353.27 Z M 474.97 341.42 "/><path fill="currentColor" d="M 480.64 351.97 L 481.58 350.61 C 482.35 351.44 483.75 351.97 485.23 351.97 C 487.14 351.97 488.53 351.24 488.71 349.95 C 489.06 347.48 482.81 348.75 483.35 344.96 C 483.67 342.69 485.90 341.29 488.79 341.29 C 490.25 341.29 491.58 341.64 492.46 342.28 L 491.58 343.67 C 490.79 343.05 489.71 342.73 488.50 342.73 C 486.56 342.73 485.21 343.55 485.03 344.81 C 484.67 347.30 490.91 346.11 490.40 349.72 C 490.07 352.02 487.81 353.41 484.87 353.41 C 483.06 353.41 481.39 352.78 480.64 351.97 "/><path fill="currentColor" d="M 523.11 341.42 L 519.05 353.27 L 517.42 353.27 L 520.37 344.71 L 513.76 351.83 L 512.98 351.83 L 511.06 344.54 L 508.07 353.27 L 506.45 353.27 L 510.50 341.42 L 511.87 341.42 L 513.98 349.76 L 521.65 341.42 Z M 523.11 341.42 "/><path fill="currentColor" d="M 532.92 342.89 L 531.67 346.53 L 537.63 346.53 L 537.14 347.97 L 531.18 347.97 L 529.87 351.80 L 536.79 351.80 L 536.30 353.27 L 527.69 353.27 L 531.74 341.42 L 540.10 341.42 L 539.60 342.89 Z M 532.92 342.89 "/><path fill="currentColor" d="M 550 342.89 L 545.95 342.89 L 546.45 341.42 L 556.25 341.42 L 555.73 342.89 L 551.69 342.89 L 548.13 353.27 L 546.45 353.27 Z M 550 342.89 "/><path fill="currentColor" d="M 567.60 340.46 L 566.01 340.46 L 568.88 338.26 L 571 338.26 Z M 567.03 348.95 L 566.46 343.11 L 561.91 348.95 Z M 567.18 350.31 L 560.85 350.31 L 558.55 353.27 L 556.73 353.27 L 566.16 341.42 L 567.83 341.42 L 569.14 353.27 L 567.47 353.27 Z M 567.18 350.31 "/><path fill="currentColor" d="M 580.04 341.42 L 581.73 341.42 L 578.17 351.80 L 584.60 351.80 L 584.10 353.27 L 575.98 353.27 Z M 580.04 341.42 "/><path fill="currentColor" d="M 595.17 341.42 L 596.86 341.42 L 592.80 353.27 L 591.11 353.27 Z M 595.17 341.42 "/><path fill="currentColor" d="M 602.26 348.41 C 602.82 344.47 606.10 341.29 610.54 341.29 C 612.5 341.29 613.98 341.94 614.62 343.13 L 613.25 344.18 C 612.69 343.28 611.67 342.79 610.20 342.79 C 606.83 342.79 604.39 345.33 603.97 348.31 C 603.66 350.46 604.86 351.90 607.53 351.90 C 608.97 351.90 610.26 351.42 611.32 350.5 L 612.14 351.61 C 610.87 352.82 609.10 353.41 607.20 353.41 C 603.63 353.41 601.84 351.37 602.26 348.41 "/><path fill="currentColor" d="M 630.67 346.38 C 630.98 344.25 629.80 342.79 627.17 342.79 C 623.89 342.79 621.45 345.33 621.03 348.31 C 620.72 350.44 621.92 351.90 624.54 351.90 C 627.82 351.90 630.25 349.36 630.67 346.38 M 619.32 348.41 C 619.88 344.47 623.16 341.29 627.53 341.29 C 631.06 341.29 632.82 343.32 632.40 346.28 C 631.83 350.22 628.54 353.41 624.17 353.41 C 620.64 353.41 618.90 351.37 619.32 348.41 "/><path fill="currentColor" d="M 637.19 351.97 L 638.13 350.61 C 638.91 351.44 640.31 351.97 641.78 351.97 C 643.69 351.97 645.08 351.24 645.26 349.95 C 645.61 347.48 639.36 348.75 639.90 344.96 C 640.23 342.69 642.46 341.29 645.35 341.29 C 646.80 341.29 648.14 341.64 649.01 342.28 L 648.14 343.67 C 647.35 343.05 646.26 342.73 645.06 342.73 C 643.11 342.73 641.76 343.55 641.58 344.81 C 641.23 347.30 647.47 346.11 646.95 349.72 C 646.63 352.02 644.36 353.41 641.42 353.41 C 639.61 353.41 637.94 352.78 637.19 351.97 "/><path fill="#127DCB" d="M 184.14 275.14 L 184.14 253.28 L 148.01 265.07 L 148.01 286.92 Z M 184.14 275.14 "/><path fill="#127DCB" d="M 250.98 264.00 L 259.03 239.48 L 197.83 259.73 L 197.83 281.59 Z M 250.98 264.00 "/><path fill="#0B4E83" d="M 197.83 281.59 L 197.83 259.73 L 184.14 253.28 L 184.14 275.14 Z M 197.83 281.59 "/><path fill="#127DCB" d="M 184.14 287.35 L 148.01 299.14 L 148.01 321 L 184.14 309.21 Z M 184.14 287.35 "/><path fill="#127DCB" d="M 197.83 315.66 L 238.42 302.23 L 246.48 277.71 L 197.83 293.80 Z M 197.83 315.66 "/><path fill="#0B4E83" d="M 197.83 315.66 L 197.83 293.80 L 184.14 287.35 L 184.14 309.21 Z M 197.83 315.66 "/><path fill="#127DCB" d="M 148.01 333.21 L 148.01 355.07 L 184.14 343.28 L 184.14 321.42 Z M 148.01 333.21 "/><path fill="#127DCB" d="M 197.83 327.87 L 197.83 349.73 L 225.86 340.45 L 233.92 315.93 Z M 197.83 327.87 "/><path fill="#0B4E83" d="M 184.14 321.42 L 184.14 343.28 L 197.83 349.73 L 197.83 327.87 Z M 184.14 321.42 "/><path fill="currentColor" d="M 278.36 254.74 L 355.17 254.74 L 349.36 272.33 L 294.55 272.33 L 291.19 282.51 L 333.01 282.51 L 327.39 299.56 L 285.56 299.56 L 281.96 310.46 L 336.78 310.46 L 330.97 328.06 L 254.16 328.06 Z M 278.36 254.74 "/><path fill="currentColor" d="M 446.97 254.74 L 523.78 254.74 L 517.97 272.33 L 463.16 272.33 L 459.80 282.51 L 501.62 282.51 L 496 299.56 L 454.17 299.56 L 450.57 310.46 L 505.39 310.46 L 499.58 328.06 L 422.77 328.06 Z M 446.97 254.74 "/><path fill="currentColor" d="M 616.95 254.74 L 693.76 254.74 L 687.95 272.33 L 633.14 272.33 L 629.78 282.51 L 671.60 282.51 L 665.98 299.56 L 624.15 299.56 L 620.55 310.46 L 675.37 310.46 L 669.56 328.06 L 592.75 328.06 Z M 616.95 254.74 "/><path fill="currentColor" d="M 362.66 254.74 L 384.66 254.74 L 367 308.26 L 421.81 308.26 L 415.27 328.06 L 338.46 328.06 Z M 362.66 254.74 "/><path fill="currentColor" d="M 531.28 254.74 L 554.92 254.74 L 552.37 306.34 L 552.92 306.34 L 584.44 254.74 L 608.08 254.74 L 559.78 328.06 L 531.18 328.06 Z M 531.28 254.74 "/></svg>
-          <p>Portal de sistemas · selecione um sistema abaixo ou no menu lateral</p>
+          <p>Portal de sistemas corporativos</p>
         </div>
         <div class="wrap">
-        <h2>Sistemas</h2>
+        <h2>Acesso rápido</h2>
         <div class="grid" id="grid"></div>
         </div>
       </div>
@@ -123,12 +176,30 @@
 <script>
 // ===== Lista de sistemas (edite aqui para adicionar/remover) =====
 const SISTEMAS = [
-  { id:'financeiro', nome:'Financeiro',            icone:'💰', desc:'Gestão financeira, DRE e fluxo de caixa', url:'https://elevecap2025-stack.github.io/eleve/' },
-  { id:'pcp',        nome:'PCP / Planejamento',    icone:'🏭', desc:'Planejamento e controle da produção',      url:'https://elevecap2025-stack.github.io/ppcpplanejamento/' },
-  { id:'compras',    nome:'Compras',               icone:'🛒', desc:'Gestão de compras',                        url:'https://elevecap2025-stack.github.io/compras/' },
-  { id:'custos',     nome:'Sistema de Custos',     icone:'📊', desc:'Custos e formação de preço',               url:'https://elevecap2025-stack.github.io/sistemadecustos/' },
-  { id:'followup',   nome:'Follow-up / Plano de Ação', icone:'✅', desc:'Follow-up e Plano de Ação 5W2H',      url:'https://elevecap2025-stack.github.io/followupeleve/' },
+  { id:'rh',         nome:'Recursos Humanos',          icone:'users',    desc:'Gestão de pessoas e colaboradores',     url:'https://elevecap2025-stack.github.io/eleve/' },
+  { id:'pcp',        nome:'PCP / Planejamento',        icone:'factory',  desc:'Planejamento e controle da produção',   url:'https://elevecap2025-stack.github.io/ppcpplanejamento/' },
+  { id:'financeiro', nome:'Sistema Financeiro',        icone:'wallet',   desc:'Gestão financeira e fluxo de caixa',    url:'https://elevecap2025-stack.github.io/compras/' },
+  { id:'custos',     nome:'Sistema de Custos',         icone:'chart',    desc:'Custos e formação de preço',            url:'https://elevecap2025-stack.github.io/sistemadecustos/' },
+  { id:'followup',   nome:'Follow-up / Plano de Ação', icone:'check',    desc:'Follow-up e Plano de Ação 5W2H',        url:'https://elevecap2025-stack.github.io/followupeleve/' },
 ];
+
+// Ícones em linha (SVG)
+const ICON_PATHS = {
+  home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.6c2.6.2 4.4 2 5 5.4"/>',
+  factory:'<path d="M3 21V10l5 3V10l5 3V5h4l1 8h3v8z"/><path d="M7 17h2M12 17h2M17 17h1"/>',
+  wallet:'<rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M6 6V5a2 2 0 0 1 2-2h9"/><circle cx="16.5" cy="15" r="1.2"/>',
+  chart:'<path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/>',
+  check:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>',
+  reload:'<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>',
+  external:'<path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+  moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  collapse:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/><path d="m15 10-2 2 2 2"/>',
+  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+  arrow:'<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>'
+};
+const ic = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[n]}</svg>`;
 
 const nav = document.getElementById('nav'), grid = document.getElementById('grid'),
       frames = document.getElementById('frames'), home = document.getElementById('home'),
@@ -137,12 +208,14 @@ const iframes = {};
 let atual = null;
 
 // Monta menu e cards
-nav.appendChild(criarItem({id:'home', nome:'Início', icone:'🏠'}));
+nav.appendChild(criarItem({id:'home', nome:'Início', icone:'home'}));
+const sec = document.createElement('div'); sec.className = 'sec lbl'; sec.textContent = 'Sistemas';
+nav.appendChild(sec);
 SISTEMAS.forEach(s => {
   nav.appendChild(criarItem(s));
   const c = document.createElement('div');
   c.className = 'card';
-  c.innerHTML = `<div class="ic">${s.icone}</div><b>${s.nome}</b><small>${s.desc}</small>`;
+  c.innerHTML = `<div class="cic">${ic(s.icone)}</div><b>${s.nome}</b><small>${s.desc}</small><span class="go">Acessar ${ic('arrow')}</span>`;
   c.onclick = () => abrir(s.id);
   grid.appendChild(c);
 });
@@ -150,7 +223,7 @@ SISTEMAS.forEach(s => {
 function criarItem(s){
   const b = document.createElement('button');
   b.className = 'item'; b.dataset.id = s.id; b.title = s.nome;
-  b.innerHTML = `<span class="ic">${s.icone}</span><span class="lbl">${s.nome}</span><span class="dot"></span>`;
+  b.innerHTML = `<span class="ic">${ic(s.icone)}</span><span class="lbl">${s.nome}</span><span class="dot"></span>`;
   b.onclick = () => abrir(s.id);
   return b;
 }
@@ -188,12 +261,17 @@ document.getElementById('btnNova').onclick = () => {
   const s = SISTEMAS.find(x => x.id === atual);
   if(s) window.open(s.url, '_blank');
 };
+document.getElementById('icMini').innerHTML = ic('collapse');
+document.getElementById('btnMenu').innerHTML = ic('menu');
+document.getElementById('btnReload').innerHTML = ic('reload') + '<span class="t">Recarregar</span>';
+document.getElementById('btnNova').innerHTML = ic('external') + '<span class="t">Nova aba</span>';
+
 // Tema claro/escuro (claro é o padrão; a escolha fica salva no navegador)
 const btnTema = document.getElementById('btnTema');
 function aplicarTema(t){
   if(t === 'dark') document.documentElement.setAttribute('data-theme','dark');
   else document.documentElement.removeAttribute('data-theme');
-  btnTema.textContent = t === 'dark' ? '☀️' : '🌙';
+  btnTema.innerHTML = ic(t === 'dark' ? 'sun' : 'moon');
   btnTema.title = t === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro';
 }
 let tema = 'light';
@@ -208,7 +286,7 @@ btnTema.onclick = () => {
 document.getElementById('btnMini').onclick = () => side.classList.toggle('mini');
 document.getElementById('btnMenu').onclick = () => side.classList.toggle('open');
 
-// Abre o sistema indicado na URL (#financeiro, #pcp...) ou a tela inicial
+// Abre o sistema indicado na URL (#rh, #financeiro, #pcp...) ou a tela inicial
 const inicial = location.hash.slice(1);
 abrir(SISTEMAS.some(s => s.id === inicial) ? inicial : 'home');
 </script>
