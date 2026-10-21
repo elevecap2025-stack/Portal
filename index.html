@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Eleve</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22341.3%20128.8%20213.5%20222.1%22%3E%3Cpath%20fill%3D%22%23127DCB%22%20d%3D%22M%20411.44%20198.08%20L%20411.44%20156.84%20L%20343.26%20179.09%20L%20343.26%20220.33%20Z%20M%20411.44%20198.08%20%22/%3E%3Cpath%20fill%3D%22%23127DCB%22%20d%3D%22M%20537.57%20177.07%20L%20552.77%20130.79%20L%20437.26%20169.02%20L%20437.26%20210.26%20Z%20M%20537.57%20177.07%20%22/%3E%3Cpath%20fill%3D%22%230B4E83%22%20d%3D%22M%20437.26%20210.26%20L%20437.26%20169.02%20L%20411.44%20156.84%20L%20411.44%20198.08%20Z%20M%20437.26%20210.26%20%22/%3E%3Cpath%20fill%3D%22%23127DCB%22%20d%3D%22M%20411.44%20221.14%20L%20343.26%20243.39%20L%20343.26%20284.63%20L%20411.44%20262.38%20Z%20M%20411.44%20221.14%20%22/%3E%3Cpath%20fill%3D%22%23127DCB%22%20d%3D%22M%20437.26%20274.56%20L%20513.87%20249.21%20L%20529.07%20202.93%20L%20437.26%20233.32%20Z%20M%20437.26%20274.56%20%22/%3E%3Cpath%20fill%3D%22%230B4E83%22%20d%3D%22M%20437.26%20274.56%20L%20437.26%20233.32%20L%20411.44%20221.14%20L%20411.44%20262.38%20Z%20M%20437.26%20274.56%20%22/%3E%3Cpath%20fill%3D%22%23127DCB%22%20d%3D%22M%20343.26%20307.68%20L%20343.26%20348.92%20L%20411.44%20326.67%20L%20411.44%20285.43%20Z%20M%20343.26%20307.68%20%22/%3E%3Cpath%20fill%3D%22%23127DCB%22%20d%3D%22M%20437.26%20297.61%20L%20437.26%20338.85%20L%20490.16%20321.34%20L%20505.37%20275.07%20Z%20M%20437.26%20297.61%20%22/%3E%3Cpath%20fill%3D%22%230B4E83%22%20d%3D%22M%20411.44%20285.43%20L%20411.44%20326.67%20L%20437.26%20338.85%20L%20437.26%20297.61%20Z%20M%20411.44%20285.43%20%22/%3E%3C/svg%3E">
+<style>
+  /* ===== Tema CLARO (padrão) ===== */
+  :root{
+    --eleve-azul:#127DCB; --eleve-azul-esc:#0B4E83; --eleve-preto:#231F20;
+    --bg:#F4F7FB; --surface:#FFFFFF; --side:#FFFFFF; --side-hover:#EEF4FB; --side-border:#E3E8EF;
+    --txt:#231F20; --muted:#5F6B7A; --border:#DCE3EC; --logo-txt:#231F20;
+    --bar:#FFFFFF; --bar-txt:#231F20; --btn-bg:#F4F7FB; --btn-border:#DCE3EC;
+    --shadow:rgba(11,78,131,.12); --frame-bg:#FFFFFF;
+  }
+  /* ===== Tema ESCURO ===== */
+  [data-theme="dark"]{
+    --bg:#15181D; --surface:#1E2228; --side:#1A1D22; --side-hover:#262B33; --side-border:#2C323B;
+    --txt:#E9ECEF; --muted:#9AA4B2; --border:#2C323B; --logo-txt:#FFFFFF;
+    --bar:#1E2228; --bar-txt:#E9ECEF; --btn-bg:#262B33; --btn-border:#353C46;
+    --shadow:rgba(0,0,0,.35); --frame-bg:#15181D;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--txt)}
+  body,aside,.bar,.card,.hero,.btn,.item{transition:background-color .2s,color .2s,border-color .2s}
+  .app{display:flex;height:100vh;overflow:hidden}
+
+  /* Menu lateral */
+  aside{width:250px;background:var(--side);color:var(--txt);border-right:1px solid var(--side-border);display:flex;flex-direction:column;transition:width .2s,background-color .2s}
+  aside.mini{width:68px}
+  .brand{display:flex;align-items:center;justify-content:center;padding:18px 16px;border-bottom:1px solid var(--side-border);min-height:72px}
+  .brand .full{width:100%;max-width:200px;height:auto;color:var(--logo-txt)}
+  .brand .sym{width:34px;height:34px;display:none}
+  aside.mini .brand .full{display:none}
+  aside.mini .brand .sym{display:block}
+  aside.mini .lbl{display:none}
+  nav{flex:1;padding:12px 10px;overflow-y:auto}
+  .item{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;margin-bottom:4px;border:none;border-radius:8px;
+        background:transparent;color:var(--muted);font-size:14px;cursor:pointer;text-align:left;white-space:nowrap}
+  .item:hover{background:var(--side-hover);color:var(--txt)}
+  .item.active{background:var(--eleve-azul);color:#fff}
+  .item .ic{font-size:18px;width:22px;text-align:center;flex-shrink:0}
+  .item .dot{margin-left:auto;width:7px;height:7px;border-radius:50%;background:#22c55e;display:none}
+  .item.loaded .dot{display:block}
+  .item.active .dot{background:#fff}
+  aside.mini .item .dot{display:none}
+  .foot{padding:10px;border-top:1px solid var(--side-border)}
+
+  /* Área principal */
+  main{flex:1;display:flex;flex-direction:column;min-width:0}
+  .bar{height:52px;display:flex;align-items:center;gap:8px;padding:0 14px;background:var(--bar);color:var(--bar-txt);
+       border-bottom:3px solid var(--eleve-azul)}
+  .bar h1{font-size:15px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.3px}
+  .btn{border:1px solid var(--btn-border);background:var(--btn-bg);color:var(--bar-txt);border-radius:6px;padding:6px 11px;font-size:13px;cursor:pointer}
+  .btn:hover{border-color:var(--eleve-azul);color:var(--eleve-azul)}
+  .frames{flex:1;position:relative;background:var(--frame-bg)}
+  .frames iframe{position:absolute;inset:0;width:100%;height:100%;border:none;display:none;background:#fff}
+  .frames iframe.show{display:block}
+
+  /* Tela inicial */
+  .home{position:absolute;inset:0;background:var(--bg);overflow:auto;display:none}
+  .home.show{display:block}
+  .hero{background:var(--surface);border-bottom:1px solid var(--border);padding:32px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px}
+  .hero-logo{width:100%;max-width:380px;height:auto;color:var(--logo-txt)}
+  .hero p{color:var(--muted);font-size:14px}
+  .wrap{padding:28px 32px}
+  .wrap h2{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--eleve-azul);margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-top:4px solid var(--eleve-azul);border-radius:10px;padding:20px;cursor:pointer}
+  .card:hover{border-top-color:var(--eleve-azul-esc);box-shadow:0 8px 22px var(--shadow);transform:translateY(-2px)}
+  .card .ic{font-size:28px;margin-bottom:10px}
+  .card b{display:block;font-size:16px;margin-bottom:4px;color:var(--txt)}
+  .card small{color:var(--muted)}
+
+  @media (max-width:760px){
+    aside{position:fixed;z-index:20;height:100%;left:0;top:0;transform:translateX(-100%);transition:transform .2s;width:250px}
+    aside.open{transform:none}
+    aside.mini{width:250px}
+    aside.mini .brand .full{display:block}
+    aside.mini .brand .sym{display:none}
+    aside.mini .lbl{display:inline}
+    #btnMenu{display:inline-block!important}
+    #btnMini{display:none}
+    #btnReload .t,#btnNova .t{display:none}
+    .hero{padding:24px 16px}
+    .wrap{padding:20px 16px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside id="side">
+    <div class="brand"><svg class="full" xmlns="http://www.w3.org/2000/svg" viewBox="146.0 237.5 549.7 119.6"><path fill="currentColor" d="M 275.96 342.89 L 271.92 342.89 L 272.42 341.42 L 282.21 341.42 L 281.70 342.89 L 277.66 342.89 L 274.10 353.27 L 272.42 353.27 Z M 275.96 342.89 "/><path fill="currentColor" d="M 290.32 342.89 L 289.07 346.53 L 295.02 346.53 L 294.53 347.97 L 288.57 347.97 L 287.27 351.80 L 294.19 351.80 L 293.69 353.27 L 285.08 353.27 L 289.14 341.42 L 297.49 341.42 L 297 342.89 Z M 290.32 342.89 "/><path fill="currentColor" d="M 305.55 341.42 L 307.25 341.42 L 303.69 351.80 L 310.11 351.80 L 309.62 353.27 L 301.5 353.27 Z M 305.55 341.42 "/><path fill="currentColor" d="M 330.87 341.42 L 326.81 353.27 L 325.12 353.27 L 326.91 348.02 L 320.11 348.02 L 318.32 353.27 L 316.62 353.27 L 320.68 341.42 L 322.37 341.42 L 320.64 346.50 L 327.43 346.50 L 329.17 341.42 Z M 330.87 341.42 "/><path fill="currentColor" d="M 343.96 348.95 L 343.39 343.11 L 338.83 348.95 Z M 344.10 350.31 L 337.78 350.31 L 335.48 353.27 L 333.65 353.27 L 343.08 341.42 L 344.76 341.42 L 346.07 353.27 L 344.39 353.27 Z M 344.10 350.31 "/><path fill="currentColor" d="M 352.32 351.97 L 353.25 350.61 C 354.03 351.44 355.42 351.97 356.90 351.97 C 358.81 351.97 360.20 351.24 360.38 349.95 C 360.73 347.48 354.48 348.75 355.02 344.96 C 355.34 342.69 357.57 341.29 360.47 341.29 C 361.92 341.29 363.26 341.64 364.13 342.28 L 363.26 343.67 C 362.47 343.05 361.38 342.73 360.18 342.73 C 358.23 342.73 356.88 343.55 356.70 344.81 C 356.35 347.30 362.59 346.11 362.07 349.72 C 361.75 352.02 359.48 353.41 356.54 353.41 C 354.73 353.41 353.06 352.78 352.32 351.97 "/><path fill="currentColor" d="M 383.35 342.89 L 382.11 346.53 L 388.06 346.53 L 387.57 347.97 L 381.62 347.97 L 380.31 351.80 L 387.23 351.80 L 386.73 353.27 L 378.12 353.27 L 382.18 341.42 L 390.53 341.42 L 390.04 342.89 Z M 383.35 342.89 "/><path fill="currentColor" d="M 414.76 345.04 C 414.96 343.62 414.05 342.89 412.26 342.89 L 409.42 342.89 L 407.59 348.21 L 410.49 348.21 C 412.91 348.21 414.46 347.13 414.76 345.04 M 416.48 344.89 C 416.04 347.92 413.66 349.68 410.24 349.68 L 407.08 349.68 L 405.86 353.27 L 404.17 353.27 L 408.22 341.42 L 412.62 341.42 C 415.38 341.42 416.79 342.69 416.48 344.89 "/><path fill="currentColor" d="M 426.53 342.89 L 425.28 346.53 L 431.23 346.53 L 430.74 347.97 L 424.79 347.97 L 423.48 351.80 L 430.40 351.80 L 429.90 353.27 L 421.29 353.27 L 425.35 341.42 L 433.71 341.42 L 433.21 342.89 Z M 426.53 342.89 "/><path fill="currentColor" d="M 448.33 345.04 C 448.54 343.62 447.63 342.89 445.82 342.89 L 442.96 342.89 L 441.14 348.21 L 444.06 348.21 C 446.48 348.21 448.04 347.13 448.33 345.04 M 445.85 349.41 L 447.47 353.27 L 445.67 353.27 L 444.13 349.65 L 440.64 349.65 L 439.41 353.27 L 437.71 353.27 L 441.76 341.42 L 446.18 341.42 C 448.95 341.42 450.36 342.69 450.05 344.89 C 449.71 347.25 448.17 348.83 445.85 349.41 "/><path fill="currentColor" d="M 460.32 342.89 L 458.91 347.02 L 464.86 347.02 L 464.36 348.48 L 458.41 348.48 L 456.78 353.27 L 455.09 353.27 L 459.14 341.42 L 467.50 341.42 L 467.00 342.89 Z M 460.32 342.89 "/><path fill="currentColor" d="M 474.97 341.42 L 476.66 341.42 L 472.60 353.27 L 470.91 353.27 Z M 474.97 341.42 "/><path fill="currentColor" d="M 480.64 351.97 L 481.58 350.61 C 482.35 351.44 483.75 351.97 485.23 351.97 C 487.14 351.97 488.53 351.24 488.71 349.95 C 489.06 347.48 482.81 348.75 483.35 344.96 C 483.67 342.69 485.90 341.29 488.79 341.29 C 490.25 341.29 491.58 341.64 492.46 342.28 L 491.58 343.67 C 490.79 343.05 489.71 342.73 488.50 342.73 C 486.56 342.73 485.21 343.55 485.03 344.81 C 484.67 347.30 490.91 346.11 490.40 349.72 C 490.07 352.02 487.81 353.41 484.87 353.41 C 483.06 353.41 481.39 352.78 480.64 351.97 "/><path fill="currentColor" d="M 523.11 341.42 L 519.05 353.27 L 517.42 353.27 L 520.37 344.71 L 513.76 351.83 L 512.98 351.83 L 511.06 344.54 L 508.07 353.27 L 506.45 353.27 L 510.50 341.42 L 511.87 341.42 L 513.98 349.76 L 521.65 341.42 Z M 523.11 341.42 "/><path fill="currentColor" d="M 532.92 342.89 L 531.67 346.53 L 537.63 346.53 L 537.14 347.97 L 531.18 347.97 L 529.87 351.80 L 536.79 351.80 L 536.30 353.27 L 527.69 353.27 L 531.74 341.42 L 540.10 341.42 L 539.60 342.89 Z M 532.92 342.89 "/><path fill="currentColor" d="M 550 342.89 L 545.95 342.89 L 546.45 341.42 L 556.25 341.42 L 555.73 342.89 L 551.69 342.89 L 548.13 353.27 L 546.45 353.27 Z M 550 342.89 "/><path fill="currentColor" d="M 567.60 340.46 L 566.01 340.46 L 568.88 338.26 L 571 338.26 Z M 567.03 348.95 L 566.46 343.11 L 561.91 348.95 Z M 567.18 350.31 L 560.85 350.31 L 558.55 353.27 L 556.73 353.27 L 566.16 341.42 L 567.83 341.42 L 569.14 353.27 L 567.47 353.27 Z M 567.18 350.31 "/><path fill="currentColor" d="M 580.04 341.42 L 581.73 341.42 L 578.17 351.80 L 584.60 351.80 L 584.10 353.27 L 575.98 353.27 Z M 580.04 341.42 "/><path fill="currentColor" d="M 595.17 341.42 L 596.86 341.42 L 592.80 353.27 L 591.11 353.27 Z M 595.17 341.42 "/><path fill="currentColor" d="M 602.26 348.41 C 602.82 344.47 606.10 341.29 610.54 341.29 C 612.5 341.29 613.98 341.94 614.62 343.13 L 613.25 344.18 C 612.69 343.28 611.67 342.79 610.20 342.79 C 606.83 342.79 604.39 345.33 603.97 348.31 C 603.66 350.46 604.86 351.90 607.53 351.90 C 608.97 351.90 610.26 351.42 611.32 350.5 L 612.14 351.61 C 610.87 352.82 609.10 353.41 607.20 353.41 C 603.63 353.41 601.84 351.37 602.26 348.41 "/><path fill="currentColor" d="M 630.67 346.38 C 630.98 344.25 629.80 342.79 627.17 342.79 C 623.89 342.79 621.45 345.33 621.03 348.31 C 620.72 350.44 621.92 351.90 624.54 351.90 C 627.82 351.90 630.25 349.36 630.67 346.38 M 619.32 348.41 C 619.88 344.47 623.16 341.29 627.53 341.29 C 631.06 341.29 632.82 343.32 632.40 346.28 C 631.83 350.22 628.54 353.41 624.17 353.41 C 620.64 353.41 618.90 351.37 619.32 348.41 "/><path fill="currentColor" d="M 637.19 351.97 L 638.13 350.61 C 638.91 351.44 640.31 351.97 641.78 351.97 C 643.69 351.97 645.08 351.24 645.26 349.95 C 645.61 347.48 639.36 348.75 639.90 344.96 C 640.23 342.69 642.46 341.29 645.35 341.29 C 646.80 341.29 648.14 341.64 649.01 342.28 L 648.14 343.67 C 647.35 343.05 646.26 342.73 645.06 342.73 C 643.11 342.73 641.76 343.55 641.58 344.81 C 641.23 347.30 647.47 346.11 646.95 349.72 C 646.63 352.02 644.36 353.41 641.42 353.41 C 639.61 353.41 637.94 352.78 637.19 351.97 "/><path fill="#127DCB" d="M 184.14 275.14 L 184.14 253.28 L 148.01 265.07 L 148.01 286.92 Z M 184.14 275.14 "/><path fill="#127DCB" d="M 250.98 264.00 L 259.03 239.48 L 197.83 259.73 L 197.83 281.59 Z M 250.98 264.00 "/><path fill="#0B4E83" d="M 197.83 281.59 L 197.83 259.73 L 184.14 253.28 L 184.14 275.14 Z M 197.83 281.59 "/><path fill="#127DCB" d="M 184.14 287.35 L 148.01 299.14 L 148.01 321 L 184.14 309.21 Z M 184.14 287.35 "/><path fill="#127DCB" d="M 197.83 315.66 L 238.42 302.23 L 246.48 277.71 L 197.83 293.80 Z M 197.83 315.66 "/><path fill="#0B4E83" d="M 197.83 315.66 L 197.83 293.80 L 184.14 287.35 L 184.14 309.21 Z M 197.83 315.66 "/><path fill="#127DCB" d="M 148.01 333.21 L 148.01 355.07 L 184.14 343.28 L 184.14 321.42 Z M 148.01 333.21 "/><path fill="#127DCB" d="M 197.83 327.87 L 197.83 349.73 L 225.86 340.45 L 233.92 315.93 Z M 197.83 327.87 "/><path fill="#0B4E83" d="M 184.14 321.42 L 184.14 343.28 L 197.83 349.73 L 197.83 327.87 Z M 184.14 321.42 "/><path fill="currentColor" d="M 278.36 254.74 L 355.17 254.74 L 349.36 272.33 L 294.55 272.33 L 291.19 282.51 L 333.01 282.51 L 327.39 299.56 L 285.56 299.56 L 281.96 310.46 L 336.78 310.46 L 330.97 328.06 L 254.16 328.06 Z M 278.36 254.74 "/><path fill="currentColor" d="M 446.97 254.74 L 523.78 254.74 L 517.97 272.33 L 463.16 272.33 L 459.80 282.51 L 501.62 282.51 L 496 299.56 L 454.17 299.56 L 450.57 310.46 L 505.39 310.46 L 499.58 328.06 L 422.77 328.06 Z M 446.97 254.74 "/><path fill="currentColor" d="M 616.95 254.74 L 693.76 254.74 L 687.95 272.33 L 633.14 272.33 L 629.78 282.51 L 671.60 282.51 L 665.98 299.56 L 624.15 299.56 L 620.55 310.46 L 675.37 310.46 L 669.56 328.06 L 592.75 328.06 Z M 616.95 254.74 "/><path fill="currentColor" d="M 362.66 254.74 L 384.66 254.74 L 367 308.26 L 421.81 308.26 L 415.27 328.06 L 338.46 328.06 Z M 362.66 254.74 "/><path fill="currentColor" d="M 531.28 254.74 L 554.92 254.74 L 552.37 306.34 L 552.92 306.34 L 584.44 254.74 L 608.08 254.74 L 559.78 328.06 L 531.18 328.06 Z M 531.28 254.74 "/></svg><svg class="sym" xmlns="http://www.w3.org/2000/svg" viewBox="341.3 128.8 213.5 222.1"><path fill="#127DCB" d="M 411.44 198.08 L 411.44 156.84 L 343.26 179.09 L 343.26 220.33 Z M 411.44 198.08 "/><path fill="#127DCB" d="M 537.57 177.07 L 552.77 130.79 L 437.26 169.02 L 437.26 210.26 Z M 537.57 177.07 "/><path fill="#0B4E83" d="M 437.26 210.26 L 437.26 169.02 L 411.44 156.84 L 411.44 198.08 Z M 437.26 210.26 "/><path fill="#127DCB" d="M 411.44 221.14 L 343.26 243.39 L 343.26 284.63 L 411.44 262.38 Z M 411.44 221.14 "/><path fill="#127DCB" d="M 437.26 274.56 L 513.87 249.21 L 529.07 202.93 L 437.26 233.32 Z M 437.26 274.56 "/><path fill="#0B4E83" d="M 437.26 274.56 L 437.26 233.32 L 411.44 221.14 L 411.44 262.38 Z M 437.26 274.56 "/><path fill="#127DCB" d="M 343.26 307.68 L 343.26 348.92 L 411.44 326.67 L 411.44 285.43 Z M 343.26 307.68 "/><path fill="#127DCB" d="M 437.26 297.61 L 437.26 338.85 L 490.16 321.34 L 505.37 275.07 Z M 437.26 297.61 "/><path fill="#0B4E83" d="M 411.44 285.43 L 411.44 326.67 L 437.26 338.85 L 437.26 297.61 Z M 411.44 285.43 "/></svg></div>
+    <nav id="nav"></nav>
+    <div class="foot">
+      <button class="item" id="btnMini" title="Recolher menu"><span class="ic">⇔</span><span class="lbl">Recolher menu</span></button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="bar">
+      <button class="btn" id="btnMenu" style="display:none">☰</button>
+      <h1 id="titulo">Início</h1>
+      <button class="btn" id="btnReload" title="Recarregar sistema">⟳<span class="t"> Recarregar</span></button>
+      <button class="btn" id="btnNova" title="Abrir em nova aba">↗<span class="t"> Nova aba</span></button>
+      <button class="btn" id="btnTema" title="Alternar tema claro/escuro">🌙</button>
+    </div>
+    <div class="frames" id="frames">
+      <div class="home" id="home">
+        <div class="hero"><svg class="hero-logo" xmlns="http://www.w3.org/2000/svg" viewBox="146.0 237.5 549.7 119.6"><path fill="currentColor" d="M 275.96 342.89 L 271.92 342.89 L 272.42 341.42 L 282.21 341.42 L 281.70 342.89 L 277.66 342.89 L 274.10 353.27 L 272.42 353.27 Z M 275.96 342.89 "/><path fill="currentColor" d="M 290.32 342.89 L 289.07 346.53 L 295.02 346.53 L 294.53 347.97 L 288.57 347.97 L 287.27 351.80 L 294.19 351.80 L 293.69 353.27 L 285.08 353.27 L 289.14 341.42 L 297.49 341.42 L 297 342.89 Z M 290.32 342.89 "/><path fill="currentColor" d="M 305.55 341.42 L 307.25 341.42 L 303.69 351.80 L 310.11 351.80 L 309.62 353.27 L 301.5 353.27 Z M 305.55 341.42 "/><path fill="currentColor" d="M 330.87 341.42 L 326.81 353.27 L 325.12 353.27 L 326.91 348.02 L 320.11 348.02 L 318.32 353.27 L 316.62 353.27 L 320.68 341.42 L 322.37 341.42 L 320.64 346.50 L 327.43 346.50 L 329.17 341.42 Z M 330.87 341.42 "/><path fill="currentColor" d="M 343.96 348.95 L 343.39 343.11 L 338.83 348.95 Z M 344.10 350.31 L 337.78 350.31 L 335.48 353.27 L 333.65 353.27 L 343.08 341.42 L 344.76 341.42 L 346.07 353.27 L 344.39 353.27 Z M 344.10 350.31 "/><path fill="currentColor" d="M 352.32 351.97 L 353.25 350.61 C 354.03 351.44 355.42 351.97 356.90 351.97 C 358.81 351.97 360.20 351.24 360.38 349.95 C 360.73 347.48 354.48 348.75 355.02 344.96 C 355.34 342.69 357.57 341.29 360.47 341.29 C 361.92 341.29 363.26 341.64 364.13 342.28 L 363.26 343.67 C 362.47 343.05 361.38 342.73 360.18 342.73 C 358.23 342.73 356.88 343.55 356.70 344.81 C 356.35 347.30 362.59 346.11 362.07 349.72 C 361.75 352.02 359.48 353.41 356.54 353.41 C 354.73 353.41 353.06 352.78 352.32 351.97 "/><path fill="currentColor" d="M 383.35 342.89 L 382.11 346.53 L 388.06 346.53 L 387.57 347.97 L 381.62 347.97 L 380.31 351.80 L 387.23 351.80 L 386.73 353.27 L 378.12 353.27 L 382.18 341.42 L 390.53 341.42 L 390.04 342.89 Z M 383.35 342.89 "/><path fill="currentColor" d="M 414.76 345.04 C 414.96 343.62 414.05 342.89 412.26 342.89 L 409.42 342.89 L 407.59 348.21 L 410.49 348.21 C 412.91 348.21 414.46 347.13 414.76 345.04 M 416.48 344.89 C 416.04 347.92 413.66 349.68 410.24 349.68 L 407.08 349.68 L 405.86 353.27 L 404.17 353.27 L 408.22 341.42 L 412.62 341.42 C 415.38 341.42 416.79 342.69 416.48 344.89 "/><path fill="currentColor" d="M 426.53 342.89 L 425.28 346.53 L 431.23 346.53 L 430.74 347.97 L 424.79 347.97 L 423.48 351.80 L 430.40 351.80 L 429.90 353.27 L 421.29 353.27 L 425.35 341.42 L 433.71 341.42 L 433.21 342.89 Z M 426.53 342.89 "/><path fill="currentColor" d="M 448.33 345.04 C 448.54 343.62 447.63 342.89 445.82 342.89 L 442.96 342.89 L 441.14 348.21 L 444.06 348.21 C 446.48 348.21 448.04 347.13 448.33 345.04 M 445.85 349.41 L 447.47 353.27 L 445.67 353.27 L 444.13 349.65 L 440.64 349.65 L 439.41 353.27 L 437.71 353.27 L 441.76 341.42 L 446.18 341.42 C 448.95 341.42 450.36 342.69 450.05 344.89 C 449.71 347.25 448.17 348.83 445.85 349.41 "/><path fill="currentColor" d="M 460.32 342.89 L 458.91 347.02 L 464.86 347.02 L 464.36 348.48 L 458.41 348.48 L 456.78 353.27 L 455.09 353.27 L 459.14 341.42 L 467.50 341.42 L 467.00 342.89 Z M 460.32 342.89 "/><path fill="currentColor" d="M 474.97 341.42 L 476.66 341.42 L 472.60 353.27 L 470.91 353.27 Z M 474.97 341.42 "/><path fill="currentColor" d="M 480.64 351.97 L 481.58 350.61 C 482.35 351.44 483.75 351.97 485.23 351.97 C 487.14 351.97 488.53 351.24 488.71 349.95 C 489.06 347.48 482.81 348.75 483.35 344.96 C 483.67 342.69 485.90 341.29 488.79 341.29 C 490.25 341.29 491.58 341.64 492.46 342.28 L 491.58 343.67 C 490.79 343.05 489.71 342.73 488.50 342.73 C 486.56 342.73 485.21 343.55 485.03 344.81 C 484.67 347.30 490.91 346.11 490.40 349.72 C 490.07 352.02 487.81 353.41 484.87 353.41 C 483.06 353.41 481.39 352.78 480.64 351.97 "/><path fill="currentColor" d="M 523.11 341.42 L 519.05 353.27 L 517.42 353.27 L 520.37 344.71 L 513.76 351.83 L 512.98 351.83 L 511.06 344.54 L 508.07 353.27 L 506.45 353.27 L 510.50 341.42 L 511.87 341.42 L 513.98 349.76 L 521.65 341.42 Z M 523.11 341.42 "/><path fill="currentColor" d="M 532.92 342.89 L 531.67 346.53 L 537.63 346.53 L 537.14 347.97 L 531.18 347.97 L 529.87 351.80 L 536.79 351.80 L 536.30 353.27 L 527.69 353.27 L 531.74 341.42 L 540.10 341.42 L 539.60 342.89 Z M 532.92 342.89 "/><path fill="currentColor" d="M 550 342.89 L 545.95 342.89 L 546.45 341.42 L 556.25 341.42 L 555.73 342.89 L 551.69 342.89 L 548.13 353.27 L 546.45 353.27 Z M 550 342.89 "/><path fill="currentColor" d="M 567.60 340.46 L 566.01 340.46 L 568.88 338.26 L 571 338.26 Z M 567.03 348.95 L 566.46 343.11 L 561.91 348.95 Z M 567.18 350.31 L 560.85 350.31 L 558.55 353.27 L 556.73 353.27 L 566.16 341.42 L 567.83 341.42 L 569.14 353.27 L 567.47 353.27 Z M 567.18 350.31 "/><path fill="currentColor" d="M 580.04 341.42 L 581.73 341.42 L 578.17 351.80 L 584.60 351.80 L 584.10 353.27 L 575.98 353.27 Z M 580.04 341.42 "/><path fill="currentColor" d="M 595.17 341.42 L 596.86 341.42 L 592.80 353.27 L 591.11 353.27 Z M 595.17 341.42 "/><path fill="currentColor" d="M 602.26 348.41 C 602.82 344.47 606.10 341.29 610.54 341.29 C 612.5 341.29 613.98 341.94 614.62 343.13 L 613.25 344.18 C 612.69 343.28 611.67 342.79 610.20 342.79 C 606.83 342.79 604.39 345.33 603.97 348.31 C 603.66 350.46 604.86 351.90 607.53 351.90 C 608.97 351.90 610.26 351.42 611.32 350.5 L 612.14 351.61 C 610.87 352.82 609.10 353.41 607.20 353.41 C 603.63 353.41 601.84 351.37 602.26 348.41 "/><path fill="currentColor" d="M 630.67 346.38 C 630.98 344.25 629.80 342.79 627.17 342.79 C 623.89 342.79 621.45 345.33 621.03 348.31 C 620.72 350.44 621.92 351.90 624.54 351.90 C 627.82 351.90 630.25 349.36 630.67 346.38 M 619.32 348.41 C 619.88 344.47 623.16 341.29 627.53 341.29 C 631.06 341.29 632.82 343.32 632.40 346.28 C 631.83 350.22 628.54 353.41 624.17 353.41 C 620.64 353.41 618.90 351.37 619.32 348.41 "/><path fill="currentColor" d="M 637.19 351.97 L 638.13 350.61 C 638.91 351.44 640.31 351.97 641.78 351.97 C 643.69 351.97 645.08 351.24 645.26 349.95 C 645.61 347.48 639.36 348.75 639.90 344.96 C 640.23 342.69 642.46 341.29 645.35 341.29 C 646.80 341.29 648.14 341.64 649.01 342.28 L 648.14 343.67 C 647.35 343.05 646.26 342.73 645.06 342.73 C 643.11 342.73 641.76 343.55 641.58 344.81 C 641.23 347.30 647.47 346.11 646.95 349.72 C 646.63 352.02 644.36 353.41 641.42 353.41 C 639.61 353.41 637.94 352.78 637.19 351.97 "/><path fill="#127DCB" d="M 184.14 275.14 L 184.14 253.28 L 148.01 265.07 L 148.01 286.92 Z M 184.14 275.14 "/><path fill="#127DCB" d="M 250.98 264.00 L 259.03 239.48 L 197.83 259.73 L 197.83 281.59 Z M 250.98 264.00 "/><path fill="#0B4E83" d="M 197.83 281.59 L 197.83 259.73 L 184.14 253.28 L 184.14 275.14 Z M 197.83 281.59 "/><path fill="#127DCB" d="M 184.14 287.35 L 148.01 299.14 L 148.01 321 L 184.14 309.21 Z M 184.14 287.35 "/><path fill="#127DCB" d="M 197.83 315.66 L 238.42 302.23 L 246.48 277.71 L 197.83 293.80 Z M 197.83 315.66 "/><path fill="#0B4E83" d="M 197.83 315.66 L 197.83 293.80 L 184.14 287.35 L 184.14 309.21 Z M 197.83 315.66 "/><path fill="#127DCB" d="M 148.01 333.21 L 148.01 355.07 L 184.14 343.28 L 184.14 321.42 Z M 148.01 333.21 "/><path fill="#127DCB" d="M 197.83 327.87 L 197.83 349.73 L 225.86 340.45 L 233.92 315.93 Z M 197.83 327.87 "/><path fill="#0B4E83" d="M 184.14 321.42 L 184.14 343.28 L 197.83 349.73 L 197.83 327.87 Z M 184.14 321.42 "/><path fill="currentColor" d="M 278.36 254.74 L 355.17 254.74 L 349.36 272.33 L 294.55 272.33 L 291.19 282.51 L 333.01 282.51 L 327.39 299.56 L 285.56 299.56 L 281.96 310.46 L 336.78 310.46 L 330.97 328.06 L 254.16 328.06 Z M 278.36 254.74 "/><path fill="currentColor" d="M 446.97 254.74 L 523.78 254.74 L 517.97 272.33 L 463.16 272.33 L 459.80 282.51 L 501.62 282.51 L 496 299.56 L 454.17 299.56 L 450.57 310.46 L 505.39 310.46 L 499.58 328.06 L 422.77 328.06 Z M 446.97 254.74 "/><path fill="currentColor" d="M 616.95 254.74 L 693.76 254.74 L 687.95 272.33 L 633.14 272.33 L 629.78 282.51 L 671.60 282.51 L 665.98 299.56 L 624.15 299.56 L 620.55 310.46 L 675.37 310.46 L 669.56 328.06 L 592.75 328.06 Z M 616.95 254.74 "/><path fill="currentColor" d="M 362.66 254.74 L 384.66 254.74 L 367 308.26 L 421.81 308.26 L 415.27 328.06 L 338.46 328.06 Z M 362.66 254.74 "/><path fill="currentColor" d="M 531.28 254.74 L 554.92 254.74 L 552.37 306.34 L 552.92 306.34 L 584.44 254.74 L 608.08 254.74 L 559.78 328.06 L 531.18 328.06 Z M 531.28 254.74 "/></svg>
+          <p>Portal de sistemas · selecione um sistema abaixo ou no menu lateral</p>
+        </div>
+        <div class="wrap">
+        <h2>Sistemas</h2>
+        <div class="grid" id="grid"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ===== Lista de sistemas (edite aqui para adicionar/remover) =====
+const SISTEMAS = [
+  { id:'financeiro', nome:'Financeiro',            icone:'💰', desc:'Gestão financeira, DRE e fluxo de caixa', url:'https://elevecap2025-stack.github.io/eleve/' },
+  { id:'pcp',        nome:'PCP / Planejamento',    icone:'🏭', desc:'Planejamento e controle da produção',      url:'https://elevecap2025-stack.github.io/ppcpplanejamento/' },
+  { id:'compras',    nome:'Compras',               icone:'🛒', desc:'Gestão de compras',                        url:'https://elevecap2025-stack.github.io/compras/' },
+  { id:'custos',     nome:'Sistema de Custos',     icone:'📊', desc:'Custos e formação de preço',               url:'https://elevecap2025-stack.github.io/sistemadecustos/' },
+  { id:'followup',   nome:'Follow-up / Plano de Ação', icone:'✅', desc:'Follow-up e Plano de Ação 5W2H',      url:'https://elevecap2025-stack.github.io/followupeleve/' },
+];
+
+const nav = document.getElementById('nav'), grid = document.getElementById('grid'),
+      frames = document.getElementById('frames'), home = document.getElementById('home'),
+      titulo = document.getElementById('titulo'), side = document.getElementById('side');
+const iframes = {};
+let atual = null;
+
+// Monta menu e cards
+nav.appendChild(criarItem({id:'home', nome:'Início', icone:'🏠'}));
+SISTEMAS.forEach(s => {
+  nav.appendChild(criarItem(s));
+  const c = document.createElement('div');
+  c.className = 'card';
+  c.innerHTML = `<div class="ic">${s.icone}</div><b>${s.nome}</b><small>${s.desc}</small>`;
+  c.onclick = () => abrir(s.id);
+  grid.appendChild(c);
+});
+
+function criarItem(s){
+  const b = document.createElement('button');
+  b.className = 'item'; b.dataset.id = s.id; b.title = s.nome;
+  b.innerHTML = `<span class="ic">${s.icone}</span><span class="lbl">${s.nome}</span><span class="dot"></span>`;
+  b.onclick = () => abrir(s.id);
+  return b;
+}
+
+// Abre um sistema (carrega só na primeira vez, depois mantém em memória)
+function abrir(id){
+  atual = id;
+  document.querySelectorAll('.item').forEach(i => i.classList.toggle('active', i.dataset.id === id));
+  Object.values(iframes).forEach(f => f.classList.remove('show'));
+  side.classList.remove('open');
+
+  if(id === 'home'){
+    home.classList.add('show'); titulo.textContent = 'Início';
+  } else {
+    home.classList.remove('show');
+    const s = SISTEMAS.find(x => x.id === id);
+    if(!iframes[id]){
+      const f = document.createElement('iframe');
+      f.src = s.url; f.title = s.nome;
+      f.setAttribute('allow','clipboard-read; clipboard-write; fullscreen');
+      frames.appendChild(f);
+      iframes[id] = f;
+      document.querySelector(`.item[data-id="${id}"]`).classList.add('loaded');
+    }
+    iframes[id].classList.add('show');
+    titulo.textContent = s.nome;
+  }
+  history.replaceState(null, '', '#' + id);
+}
+
+document.getElementById('btnReload').onclick = () => {
+  if(atual && iframes[atual]) iframes[atual].src = SISTEMAS.find(s => s.id === atual).url;
+};
+document.getElementById('btnNova').onclick = () => {
+  const s = SISTEMAS.find(x => x.id === atual);
+  if(s) window.open(s.url, '_blank');
+};
+// Tema claro/escuro (claro é o padrão; a escolha fica salva no navegador)
+const btnTema = document.getElementById('btnTema');
+function aplicarTema(t){
+  if(t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+  else document.documentElement.removeAttribute('data-theme');
+  btnTema.textContent = t === 'dark' ? '☀️' : '🌙';
+  btnTema.title = t === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro';
+}
+let tema = 'light';
+try { tema = localStorage.getItem('portalEleveTema') || 'light'; } catch(e){}
+aplicarTema(tema);
+btnTema.onclick = () => {
+  tema = tema === 'dark' ? 'light' : 'dark';
+  aplicarTema(tema);
+  try { localStorage.setItem('portalEleveTema', tema); } catch(e){}
+};
+
+document.getElementById('btnMini').onclick = () => side.classList.toggle('mini');
+document.getElementById('btnMenu').onclick = () => side.classList.toggle('open');
+
+// Abre o sistema indicado na URL (#financeiro, #pcp...) ou a tela inicial
+const inicial = location.hash.slice(1);
+abrir(SISTEMAS.some(s => s.id === inicial) ? inicial : 'home');
+</script>
+</body>
+</html>
