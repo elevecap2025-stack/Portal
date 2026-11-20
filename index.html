@@ -179,7 +179,39 @@
          box-shadow:0 1px 2px var(--shadow);transition:border-color .15s,box-shadow .15s,transform .15s}
   .kcard:hover,.kcard:focus-visible{border-color:var(--eleve-azul);box-shadow:0 10px 26px var(--shadow);transform:translateY(-2px);outline:none}
   .ktop{display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .tag{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--eleve-azul);background:var(--active-bg);padding:3px 8px;border-radius:5px}
+  .tag svg{width:13px;height:13px}
+  .chip{display:inline-flex;align-items:center;gap:6px}
+  .chip svg{width:15px;height:15px}
+  .agrp+.agrp{margin-top:26px}
+  .ah{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--txt);margin-bottom:12px}
+  .ah svg{width:20px;height:20px;color:var(--eleve-azul)}
+  .ah span{font-size:11px;font-weight:600;color:var(--muted);background:var(--btn-bg);border:1px solid var(--border);border-radius:10px;padding:1px 8px;letter-spacing:0}
+  .ah::after{content:"";flex:1;height:1px;background:var(--border);margin-left:6px}
+  .hm-g td{text-align:left!important;background:var(--bg);padding:0!important;cursor:default}
+  .hm-g span{position:sticky;left:0;display:inline-flex;align-items:center;gap:7px;padding:8px 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--eleve-azul)}
+  .hm-g svg{width:15px;height:15px}
+  .mhead small svg{width:13px;height:13px;vertical-align:-2px}
+  /* gerenciar áreas */
+  .alist{display:flex;flex-direction:column;gap:6px}
+  .arow{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+  .arow.dragging{opacity:.35}
+  .arow.dropb{box-shadow:0 -3px 0 var(--eleve-azul)}
+  .arow.dropa{box-shadow:0 3px 0 var(--eleve-azul)}
+  .arow.rem{background:rgba(208,59,59,.06);border-style:dashed}
+  .arow.rem .ain{text-decoration:line-through}
+  .aic{width:36px;height:36px;border-radius:8px;border:1px solid var(--btn-border);background:var(--active-bg);color:var(--eleve-azul);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+  .aic svg{width:20px;height:20px}
+  .aic:hover,.aic.on{border-color:var(--eleve-azul)}
+  .ain{flex:1;min-width:0;height:36px;border:1px solid var(--btn-border);background:var(--bg);color:var(--txt);border-radius:8px;padding:0 10px;font:inherit;font-size:14px}
+  .ain:focus{outline:2px solid var(--eleve-azul);outline-offset:-1px}
+  .acnt{font-size:12px;color:var(--muted);white-space:nowrap;min-width:84px;text-align:right}
+  .picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px;padding:10px;margin:0 0 4px 34px;border:1px solid var(--border);border-radius:10px;background:var(--bg)}
+  .pk{height:40px;border-radius:8px;border:1px solid var(--btn-border);background:var(--surface);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+  .pk svg{width:20px;height:20px}
+  .pk:hover{color:var(--eleve-azul);border-color:var(--eleve-azul)}
+  .pk.on{background:var(--eleve-azul);border-color:var(--eleve-azul);color:#fff}
+  .arem{font-size:12.5px;color:var(--muted);margin:0 0 4px 34px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--eleve-azul);background:var(--active-bg);padding:3px 8px;border-radius:5px}
   .kname{font-size:15px;font-weight:600;line-height:1.3;min-height:39px}
   .kmid{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
   .kpct{font-size:30px;font-weight:700;line-height:1;letter-spacing:-.5px}
@@ -220,10 +252,28 @@
   .lt .stk{min-width:250px;max-width:250px;white-space:normal;vertical-align:top;padding:12px 12px;border-right:1px solid var(--border)}
   .lt .stk2{position:sticky;left:250px;background:var(--surface);z-index:1;min-width:112px;border-right:1px solid var(--border)}
   .lt th.stk2{z-index:3}
-  .lt tr.g1 td{border-top:2px solid var(--border)}
-  .lt tbody tr.g1:first-child td{border-top:none}
+  .lt tbody.grp tr:first-child td{border-top:2px solid var(--border)}
+  .lt tbody.ahd td{text-align:left;background:var(--active-bg);padding:0;border-bottom:1px solid var(--border);border-top:2px solid var(--border)}
+  .lt thead + tbody.ahd td{border-top:none}
+  .ahl{position:sticky;left:0;display:inline-flex;align-items:center;gap:9px;padding:10px 14px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--eleve-azul)}
+  .ahl svg{width:18px;height:18px}
+  .ahl span{font-size:11.5px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted)}
+  .lt tbody.ahd.dropa td{box-shadow:inset 0 -3px 0 var(--eleve-azul)}
+  .lt tbody.grp.dropb tr:first-child td{box-shadow:inset 0 3px 0 var(--eleve-azul)}
+  .lt tbody.grp.dropa tr:last-child td{box-shadow:inset 0 -3px 0 var(--eleve-azul)}
+  .lt tbody.grp.dragging td{opacity:.35}
+  .lt tbody.grp.moved td{animation:pisca .9s ease}
+  @keyframes pisca{0%,40%{background:var(--active-bg)}}
+  .li-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .grip{width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;border:1px solid transparent;background:transparent;color:var(--muted);border-radius:6px;cursor:grab;flex-shrink:0}
+  .grip svg{width:16px;height:16px;fill:currentColor}
+  .grip:hover,.grip:focus-visible{border-color:var(--btn-border);background:var(--side-hover);color:var(--eleve-azul);outline:none}
+  .grip:active{cursor:grabbing}
+  .grip:disabled{opacity:.3;cursor:default}
+  .gripi svg{width:14px;height:14px;fill:currentColor;vertical-align:-2px}
   .lb{font-size:12px;font-weight:600;color:var(--muted)}
-  .li-a{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--eleve-azul)}
+  .li-a{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--eleve-azul)}
+  .li-a svg{width:14px;height:14px}
   .li-n{font-weight:600;font-size:14px;margin:3px 0 4px;line-height:1.3}
   .li-u{font-size:12px;color:var(--muted)}
   .li-acts{display:flex;gap:6px;margin-top:10px}
@@ -313,6 +363,8 @@
   .rp-tb td{border-bottom:1px solid #E3E8EF;padding:4px 6px;text-align:right;white-space:nowrap}
   .rp-tb .l{text-align:left}
   .rp-tb tr,.rp-tb tbody{break-inside:avoid;page-break-inside:avoid}
+  .rp-grp td svg{width:11px;height:11px;vertical-align:-2px;margin-right:5px}
+  .rp-gh{break-after:avoid;page-break-after:avoid}
   .rp-grp td{background:#EAF3FC;color:#0B4E83;font-weight:700;text-transform:uppercase;font-size:8.5px;letter-spacing:.6px}
   .rp-bar{display:inline-block;width:42px;height:5px;background:#E3E8EF;border-radius:3px;vertical-align:middle;margin-right:5px;overflow:hidden}
   .rp-bar i{display:block;height:100%;border-radius:3px}
@@ -415,8 +467,39 @@ const ICON_PATHS = {
   upload:'<path d="M12 20V9"/><path d="m7 14 5-5 5 5"/><path d="M5 4h14"/>',
   undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
   close:'<path d="M6 6l12 12M18 6 6 18"/>',
-  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'
+  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  grip:'<circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/>',
+  layers:'<path d="M12 3 3 8l9 5 9-5z"/><path d="m3 13 9 5 9-5"/>',
+  // ícones de áreas
+  cart:'<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.2a1 1 0 0 0 1 .8h9.3a1 1 0 0 0 1-.8L21 7H6"/>',
+  coin:'<circle cx="12" cy="12" r="9"/><path d="M15 9.2c-.6-.9-1.7-1.4-3-1.4-1.7 0-3 .9-3 2.1 0 2.9 6 1.4 6 4.3 0 1.2-1.3 2.1-3 2.1-1.4 0-2.6-.6-3.1-1.5"/><path d="M12 6v1.8M12 16.3V18"/>',
+  gantt:'<path d="M4 4v16h16"/><path d="M8 8h6M10 12h7M8 16h5"/>',
+  grid:'<rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/>',
+  truck:'<path d="M3 6h11v10H3z"/><path d="M14 9h4l3 3.5V16h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/>',
+  badge:'<path d="M12 3l2.4 1.8 3-.1.9 2.9 2.4 1.8-1 2.8 1 2.8-2.4 1.8-.9 2.9-3-.1L12 21l-2.4-1.8-3 .1-.9-2.9-2.4-1.8 1-2.8-1-2.8 2.4-1.8.9-2.9 3 .1z"/><path d="m9 12 2 2 4-4"/>',
+  bag:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+  wrench:'<path d="M15 4a5 5 0 0 0-4.6 6.9L4 17.3V20h2.7l6.4-6.4A5 5 0 0 0 20 9l-3 1-2-2 1-3z"/>',
+  monitor:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+  shield:'<path d="M12 3 5 6v6c0 4.4 3 7.6 7 9 4-1.4 7-4.6 7-9V6z"/>',
+  megaphone:'<path d="M4 10v4h3l9 5V5L7 10z"/><path d="M19 9.5a3 3 0 0 1 0 5"/>',
+  box:'<path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/>',
+  leaf:'<path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19 14 10"/>',
+  tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.3"/>'
 };
+// Ícones que podem ser escolhidos para as áreas
+const ICONES_AREA = [
+  {v:'cart',n:'Comercial / Vendas'},{v:'coin',n:'Financeiro'},{v:'factory',n:'Produção'},{v:'gantt',n:'PPCP / Planejamento'},
+  {v:'grid',n:'Geral'},{v:'users',n:'RH / Pessoas'},{v:'truck',n:'Logística'},{v:'badge',n:'Qualidade'},{v:'bag',n:'Compras'},
+  {v:'wrench',n:'Manutenção'},{v:'monitor',n:'TI'},{v:'shield',n:'Segurança'},{v:'megaphone',n:'Marketing'},{v:'box',n:'Estoque'},
+  {v:'leaf',n:'Meio ambiente'},{v:'chart',n:'Indicadores'},{v:'check',n:'Processos'},{v:'tag',n:'Outros'}
+];
+function iconePorNome(nome){
+  const n = String(nome).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const R = [[/comerc|venda/, 'cart'], [/financ|contab|fiscal/, 'coin'], [/ppcp|planej/, 'gantt'], [/produ|fabri|industr/, 'factory'], [/geral|diretor/, 'grid'],
+    [/\brh\b|pesso|recursos hum/, 'users'], [/logist|expedi|transp/, 'truck'], [/qualid/, 'badge'], [/compra|suprim/, 'bag'], [/manuten/, 'wrench'],
+    [/\bti\b|tecnolog|sistema/, 'monitor'], [/segur|sesmt/, 'shield'], [/marketing/, 'megaphone'], [/estoque|almox/, 'box'], [/ambient|sustent/, 'leaf']];
+  const r = R.find(([re]) => re.test(n)); return r ? r[1] : 'tag';
+}
 const ic = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[n]}</svg>`;
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -529,7 +612,7 @@ const UNIDADES = [
   {v:'t', n:'toneladas', ag:'soma'}, {v:'m', n:'metros', ag:'soma'}, {v:'un', n:'unidades', ag:'soma'},
   {v:'dias', n:'dias', ag:'media'}, {v:'nota', n:'nota', ag:'media'}
 ];
-const AREAS_PADRAO = ['Comercial','Financeiro','Produção','PPCP','Geral'];
+const AREAS_PADRAO = ['Comercial','Financeiro','Produção','PPCP','RH','Geral'];
 const LIMIAR_ATENCAO = 0.9;                // ≥ 90% e < 100% = Atenção
 const CHAVE_DB = 'portalEleveIndicadores'; // onde os dados ficam salvos no navegador
 const ST = {
@@ -581,12 +664,21 @@ function dadosPlanilha(){
   };
   const valores = { '2027': {} };
   Object.entries(v).forEach(([k, o]) => valores['2027'][k] = { meta:r12(o.meta), real:r12(o.real) });
-  return { versao:1, indicadores, valores };
+  return normalizarDB({ versao:2, indicadores, valores });
 }
 
 const validoDB = d => d && Array.isArray(d.indicadores) && d.valores && typeof d.valores === 'object';
+// Garante a lista de áreas (ordem + ícone) e que toda área usada por um indicador exista nela
+function normalizarDB(d){
+  if(!Array.isArray(d.areas)) d.areas = AREAS_PADRAO.map(nome => ({ nome, icone:iconePorNome(nome) }));
+  d.areas = d.areas.filter(a => a && a.nome).map(a => ({ nome:String(a.nome), icone:ICON_PATHS[a.icone] ? a.icone : iconePorNome(a.nome) }));
+  d.indicadores.forEach(i => { if(!i.area) i.area = 'Geral'; if(!d.areas.some(a => a.nome === i.area)) d.areas.push({ nome:i.area, icone:iconePorNome(i.area) }); });
+  if(!d.areas.length) d.areas.push({ nome:'Geral', icone:'grid' });
+  d.versao = 2;
+  return d;
+}
 function carregarDB(){
-  try { const t = localStorage.getItem(CHAVE_DB); if(t){ const d = JSON.parse(t); if(validoDB(d)) return d; } } catch(e){}
+  try { const t = localStorage.getItem(CHAVE_DB); if(t){ const d = JSON.parse(t); if(validoDB(d)) return normalizarDB(d); } } catch(e){}
   return dadosPlanilha();
 }
 function salvarDB(){
@@ -601,12 +693,17 @@ function vals(ano, id){
   return A[id];
 }
 function anos(){ const a = Object.keys(DB.valores); if(!a.length) a.push(String(new Date().getFullYear())); return a.sort(); }
-function areas(){
-  const s = new Set(AREAS_PADRAO.filter(a => DB.indicadores.some(i => i.area === a)));
-  DB.indicadores.forEach(i => s.add(i.area));
-  return [...s];
+const areasTodas = () => DB.areas.map(a => a.nome);                                          // todas as áreas cadastradas
+const areas = () => areasTodas().filter(a => DB.indicadores.some(i => i.area === a));        // só as que têm indicadores
+const areaIcone = nome => (DB.areas.find(a => a.nome === nome) || {}).icone || 'tag';
+const tagArea = (nome, cls = 'tag') => `<span class="${cls}">${ic(areaIcone(nome))}${esc(nome)}</span>`;
+// Indicadores agrupados pela ordem das áreas e, dentro da área, pela ordem definida ao arrastar
+function filtrados(area){
+  const ord = areasTodas();
+  return DB.indicadores.map((i, k) => ({ i, k })).filter(o => area === 'todas' || o.i.area === area)
+    .sort((x, y) => (ord.indexOf(x.i.area) - ord.indexOf(y.i.area)) || x.k - y.k).map(o => o.i);
 }
-const filtrados = area => DB.indicadores.filter(i => area === 'todas' || i.area === area);
+const grupos = lista => [...new Set(lista.map(i => i.area))].map(a => ({ area:a, itens:lista.filter(i => i.area === a) }));
 
 // ---- Formatação de números (padrão brasileiro)
 const nfCache = {};
@@ -751,7 +848,7 @@ function renderPainel(){
       ${selAnos('fAno')}
       <select class="sel" id="fMes" title="Período">${MESES_LONGO.map((m, k) => `<option value="${k}" ${k === EST.mes ? 'selected' : ''}>${m}</option>`).join('')}
         <option value="acum" ${EST.mes === 'acum' ? 'selected' : ''}>Acumulado no ano</option></select>
-      <div class="chips">${['todas', ...areas()].map(a => `<button class="chip ${a === EST.area ? 'on' : ''}" data-area="${esc(a)}">${a === 'todas' ? 'Todas' : esc(a)}</button>`).join('')}</div>
+      <div class="chips">${['todas', ...areas()].map(a => `<button class="chip ${a === EST.area ? 'on' : ''}" data-area="${esc(a)}">${a === 'todas' ? ic('layers') + 'Todas' : ic(areaIcone(a)) + esc(a)}</button>`).join('')}</div>
     </div>
     <div class="stats">
       ${stat('Metas atingidas', com ? Math.round(cnt.ok / com * 100) + '%' : '–', `${cnt.ok} de ${com} com lançamento`, null, true)}
@@ -760,7 +857,9 @@ function renderPainel(){
       ${stat('Abaixo da meta', cnt.abaixo, 'menos de 90%', 'abaixo')}
       ${stat('Sem lançamento', cnt.sem, 'falta meta ou realizado', 'sem')}
     </div>
-    ${lista.length ? `<div class="kgrid">${res.map(cardInd).join('')}</div>`
+    ${lista.length ? grupos(lista).map(g => `<section class="agrp">
+        ${EST.area === 'todas' ? `<h3 class="ah">${ic(areaIcone(g.area))}${esc(g.area)}<span>${g.itens.length}</span></h3>` : ''}
+        <div class="kgrid">${res.filter(r => r.i.area === g.area).map(cardInd).join('')}</div></section>`).join('')
       : `<div class="vazio">Nenhum indicador cadastrado nesta área. <br><br><button class="btn pri" data-act="ir-lanc">${ic('plus')}<span class="t">Cadastrar indicador</span></button></div>`}
     <div class="panel"><h3>Visão anual ${EST.ano} — % de atingimento por mês</h3>
       <div class="tscroll">${tabelaAnual(lista)}</div>
@@ -772,7 +871,7 @@ function renderPainel(){
 function cardInd({ i, p, s }){
   const w = p.a == null ? 0 : Math.max(0, Math.min(1, p.a)) * 100;
   return `<div class="kcard" data-id="${esc(i.id)}" tabindex="0">
-    <div class="ktop"><span class="tag">${esc(i.area)}</span>${sPill(s)}</div>
+    <div class="ktop">${tagArea(i.area)}${sPill(s)}</div>
     <div class="kname">${esc(i.nome)}</div>
     <div class="kmid"><span class="kpct">${pct(p.a)}</span><span class="kdir">${dirTxt(i)}</span></div>
     <div class="barp"><i style="width:${w}%;background:${ST[s].c}"></i></div>
@@ -784,12 +883,13 @@ function tabelaAnual(lista){
   if(!lista.length) return '';
   const cel = (i, p, mes) => {
     const s = status(p.a);
-    const tip = `${esc(i.nome)} · ${nomeMes(mes, EST.ano)}\nMeta: ${fmt(p.meta, i.unidade)}\nRealizado: ${fmt(p.real, i.unidade)}\n${ST[s].n}`;
+    const tip = `${i.nome} · ${nomeMes(mes, EST.ano)}\nMeta: ${fmt(p.meta, i.unidade)}\nRealizado: ${fmt(p.real, i.unidade)}\n${ST[s].n}`;
     return `<td class="${p.a == null ? '' : 'h-' + s}" data-tip="${esc(tip)}">${p.a == null ? '<span style="color:var(--muted)">·</span>' : `<span class="hc">${ST[s].i}</span>${pct(p.a)}`}</td>`;
   };
   return `<table class="tb hm"><thead><tr><th class="l stk">Indicador</th>${MESES.map(m => `<th>${m}</th>`).join('')}<th>Acum.</th></tr></thead><tbody>
-    ${lista.map(i => `<tr data-id="${esc(i.id)}"><td class="l stk"><span class="hm-a">${esc(i.area)}</span>${esc(i.nome)}</td>
-      ${MESES.map((_, k) => cel(i, periodo(i, EST.ano, k), k)).join('')}${cel(i, periodo(i, EST.ano, 'acum'), 'acum')}</tr>`).join('')}
+    ${grupos(lista).map(g => `<tr class="hm-g"><td colspan="14"><span>${ic(areaIcone(g.area))}${esc(g.area)}</span></td></tr>` +
+      g.itens.map(i => `<tr data-id="${esc(i.id)}"><td class="l stk">${esc(i.nome)}</td>
+      ${MESES.map((_, k) => cel(i, periodo(i, EST.ano, k), k)).join('')}${cel(i, periodo(i, EST.ano, 'acum'), 'acum')}</tr>`).join('')).join('')}
   </tbody></table>`;
 }
 function abrirDetalhe(id){
@@ -801,7 +901,7 @@ function abrirDetalhe(id){
   }).join('');
   abrirModal({
     largo:true,
-    titulo:`${esc(i.nome)}<small>${esc(i.area)} · ${esc(u)} · ${dirTxt(i)} · ${EST.ano}</small>`,
+    titulo:`${esc(i.nome)}<small>${ic(areaIcone(i.area))} ${esc(i.area)} · ${esc(u)} · ${dirTxt(i)} · ${EST.ano}</small>`,
     corpo:`<div class="dchart">${grafico(i, EST.ano, { w:900, h:290, sel:EST.mes === 'acum' ? -1 : EST.mes })}</div>
       <div class="leg"><span><i class="sw" style="background:#0ca30c"></i><i class="sw" style="background:#fab219"></i><i class="sw" style="background:#d03b3b"></i>Realizado (cor = status)</span><span><i class="ln"></i>Meta</span></div>
       <div class="tscroll"><table class="tb"><thead><tr><th class="l">Mês</th><th>Meta</th><th>Realizado</th><th>% Ating.</th><th class="l">Status</th></tr></thead>
@@ -829,7 +929,7 @@ vInd.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.classLi
 // ---- Tela: LANÇAR VALORES
 function renderLanc(){
   garantirAno();
-  if(EST.lancArea !== 'todas' && !areas().includes(EST.lancArea)) EST.lancArea = 'todas';
+  if(EST.lancArea !== 'todas' && !areasTodas().includes(EST.lancArea)) EST.lancArea = 'todas';
   const lista = filtrados(EST.lancArea);
   vLanc.innerHTML = `<div class="vwrap">
     <div class="vhead">
@@ -842,7 +942,8 @@ function renderLanc(){
     <div class="tools">
       ${selAnos('lAno')}
       <button class="btn" data-act="novo-ano" title="Criar um novo ano">${ic('cal')}<span class="t">Novo ano</span></button>
-      <select class="sel" id="lArea" title="Área"><option value="todas">Todas as áreas</option>${areas().map(a => `<option ${a === EST.lancArea ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select>
+      <select class="sel" id="lArea" title="Área"><option value="todas">Todas as áreas</option>${areasTodas().map(a => `<option ${a === EST.lancArea ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select>
+      <button class="btn" data-act="areas" title="Criar, renomear, ordenar e escolher ícones das áreas">${ic('layers')}<span class="t">Áreas</span></button>
       <span class="salvo" id="salvoInfo"></span>
       <span class="sp"></span>
       <button class="btn" data-act="exportar" title="Baixar uma cópia de todos os dados (.json)">${ic('download')}<span class="t">Exportar backup</span></button>
@@ -852,10 +953,12 @@ function renderLanc(){
     ${lista.length ? `<div class="panel" style="margin-top:0"><div class="tscroll lscroll"><table class="tb lt">
       <thead><tr><th class="l stk">Indicador</th><th class="l stk2">Linha</th>${MESES.map(m => `<th>${m}/${String(EST.ano).slice(2)}</th>`).join('')}
         <th title="Considera apenas os meses com meta e realizado preenchidos">Acum.</th></tr></thead>
-      <tbody>${lista.map(linhasLanc).join('')}</tbody></table></div></div>`
+      ${grupos(lista).map(g => `<tbody class="ahd" data-area="${esc(g.area)}"><tr><td colspan="15"><div class="ahl">${ic(areaIcone(g.area))}${esc(g.area)}<span>${g.itens.length} ${g.itens.length === 1 ? 'indicador' : 'indicadores'}</span></div></td></tr></tbody>`
+        + g.itens.map(linhasLanc).join('')).join('')}</table></div></div>`
       : `<div class="vazio">Nenhum indicador nesta área.<br><br><button class="btn pri" data-act="novo">${ic('plus')}<span class="t">Nova meta / indicador</span></button></div>`}
     <p class="info" style="margin-top:14px">Dica: aceita números como <b>3.200.000</b>, <b>3200000</b> ou <b>65,5</b>. Para percentuais, digite o número (ex.: 65 para 65%).
-      <b>Enter</b> desce para o próximo campo do mesmo mês. Use <b>Exportar backup</b> para guardar uma cópia ou levar os dados para outro computador.</p>
+      <b>Enter</b> desce para o próximo campo do mesmo mês.
+      Para mudar a ordem, arraste pelo ícone ${'<span class="gripi">' + ic('grip') + '</span>'} (ou selecione-o e use as setas ↑ ↓). Use <b>Exportar backup</b> para guardar uma cópia ou levar os dados para outro computador.</p>
   </div>`;
 }
 const pctCell = (i, k) => {
@@ -869,8 +972,8 @@ function acumCells(i){
 function linhasLanc(i){
   const v = vals(EST.ano, i.id), id = esc(i.id), ac = acumCells(i);
   const inp = (k, c) => `<td><input class="num" inputmode="decimal" autocomplete="off" data-id="${id}" data-c="${c}" data-m="${k}" value="${num(v[c][k], 4)}" aria-label="${esc(i.nome)} – ${c === 'meta' ? 'Meta' : 'Realizado'} ${MESES_LONGO[k]}"></td>`;
-  return `<tr class="g1"><td class="l stk" rowspan="3">
-      <div class="li-a">${esc(i.area)}</div><div class="li-n">${esc(i.nome)}</div><div class="li-u">${esc(i.unidade)} · ${dirTxt(i)}</div>
+  return `<tbody class="grp" data-id="${id}"><tr><td class="l stk" rowspan="3">
+      <div class="li-top">${tagArea(i.area, 'li-a')}<span class="grip" role="button" tabindex="0" draggable="true" data-grip="${id}" title="Arraste para mudar a ordem (ou use as setas ↑ ↓)" aria-label="Mover ${esc(i.nome)}">${ic('grip')}</span></div><div class="li-n">${esc(i.nome)}</div><div class="li-u">${esc(i.unidade)} · ${dirTxt(i)}</div>
       <div class="li-acts">
         <button class="mini" data-act="editar" data-id="${id}" title="Editar indicador">${ic('edit')}</button>
         <button class="mini" data-act="repetir" data-id="${id}" title="Repetir a meta de janeiro em todos os meses">${ic('fill')}</button>
@@ -878,7 +981,7 @@ function linhasLanc(i){
       </div></td>
     <td class="l stk2 lb">Meta${i.unidade === '%' ? ' (%)' : ''}</td>${MESES.map((_, k) => inp(k, 'meta')).join('')}<td class="ac" data-ac="meta-${id}">${ac.meta}</td></tr>
     <tr><td class="l stk2 lb">Realizado${i.unidade === '%' ? ' (%)' : ''}</td>${MESES.map((_, k) => inp(k, 'real')).join('')}<td class="ac" data-ac="real-${id}">${ac.real}</td></tr>
-    <tr><td class="l stk2 lb">% Atingimento</td>${MESES.map((_, k) => pctCell(i, k)).join('')}<td class="ac ${ac.a == null ? '' : 'h-' + ac.s}" data-ac="pct-${id}">${ac.pct}</td></tr>`;
+    <tr><td class="l stk2 lb">% Atingimento</td>${MESES.map((_, k) => pctCell(i, k)).join('')}<td class="ac ${ac.a == null ? '' : 'h-' + ac.s}" data-ac="pct-${id}">${ac.pct}</td></tr></tbody>`;
 }
 function atualizarLinha(i, k){
   const id = CSS.escape(i.id), cell = vLanc.querySelector(`[data-pc="${id}-${k}"]`);
@@ -938,6 +1041,7 @@ vLanc.addEventListener('click', e => {
       }
       break;
     case 'novo-ano': modalAno(); break;
+    case 'areas': modalAreas(); break;
     case 'exportar': exportarBackup(); break;
     case 'importar': document.getElementById('fileImport').click(); break;
     case 'restaurar':
@@ -948,6 +1052,64 @@ vLanc.addEventListener('click', e => {
   }
 });
 
+// ---- Reordenar indicadores (arrastar e soltar ou setas no teclado)
+function moverIndicador(id, alvoId, depois, areaAlvo){
+  const ind = DB.indicadores.find(x => x.id === id); if(!ind) return;
+  const alvo = alvoId ? DB.indicadores.find(x => x.id === alvoId) : null;
+  const novaArea = alvo ? alvo.area : areaAlvo;
+  if(!novaArea || (alvo === ind)) return;
+  if(novaArea !== ind.area && !confirm(`Mover "${ind.nome}" da área ${ind.area} para ${novaArea}?`)) return;
+  const mudouArea = novaArea !== ind.area;
+  ind.area = novaArea;
+  const arr = DB.indicadores.filter(x => x !== ind);
+  let pos;
+  if(alvo) pos = arr.indexOf(alvo) + (depois ? 1 : 0);
+  else { const p = arr.findIndex(x => x.area === novaArea); pos = p < 0 ? arr.length : p; }
+  arr.splice(pos, 0, ind);
+  DB.indicadores = arr; salvarDB(); renderLanc(); marcarSalvo();
+  const tb = vLanc.querySelector(`tbody.grp[data-id="${CSS.escape(id)}"]`);
+  if(tb){ tb.classList.add('moved'); setTimeout(() => tb.classList.remove('moved'), 900); }
+  if(mudouArea) toast(`Movido para ${novaArea}`);
+  return tb;
+}
+let arrastando = null;
+const limparDrop = () => vLanc.querySelectorAll('.dropb,.dropa').forEach(t => t.classList.remove('dropb', 'dropa'));
+function fimArraste(){ arrastando = null; limparDrop(); vLanc.querySelectorAll('tbody.grp.dragging').forEach(t => t.classList.remove('dragging')); }
+vLanc.addEventListener('dragstart', e => {
+  const g = e.target.closest && e.target.closest('.grip'); if(!g) return;
+  const tb = g.closest('tbody.grp');
+  arrastando = tb.dataset.id;
+  e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', arrastando);
+  try { e.dataTransfer.setDragImage(tb.querySelector('td.stk'), 24, 20); } catch(_){}
+  setTimeout(() => tb.classList.add('dragging'), 0);
+});
+vLanc.addEventListener('dragover', e => {
+  if(!arrastando) return;
+  const alvo = e.target.closest('tbody.grp, tbody.ahd'); limparDrop(); if(!alvo) return;
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+  if(alvo.classList.contains('ahd')){ alvo.classList.add('dropa'); return; }
+  if(alvo.dataset.id === arrastando) return;
+  const r = alvo.getBoundingClientRect();
+  alvo.classList.add(e.clientY < r.top + r.height / 2 ? 'dropb' : 'dropa');
+});
+vLanc.addEventListener('drop', e => {
+  if(!arrastando) return; e.preventDefault();
+  const alvo = vLanc.querySelector('.dropb,.dropa'), id = arrastando, depois = !!alvo && alvo.classList.contains('dropa');
+  fimArraste(); if(!alvo) return;
+  if(alvo.classList.contains('ahd')) moverIndicador(id, null, false, alvo.dataset.area);
+  else moverIndicador(id, alvo.dataset.id, depois);
+});
+vLanc.addEventListener('dragend', fimArraste);
+vLanc.addEventListener('keydown', e => {
+  const g = e.target.closest && e.target.closest('.grip');
+  if(!g || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+  e.preventDefault();
+  const lista = filtrados(EST.lancArea), k = lista.findIndex(x => x.id === g.dataset.grip);
+  const viz = lista[k + (e.key === 'ArrowDown' ? 1 : -1)]; if(!viz) return;
+  const tb = moverIndicador(g.dataset.grip, viz.id, e.key === 'ArrowDown');
+  tb?.querySelector('.grip')?.focus();
+});
+
 // ---- Cadastro de indicador / meta
 function modalIndicador(i){
   const novo = !i;
@@ -956,8 +1118,11 @@ function modalIndicador(i){
     titulo:(novo ? 'Nova meta / indicador' : 'Editar indicador') + `<small>${novo ? 'Cadastre um novo indicador para acompanhar no painel' : esc(d.nome)}</small>`,
     corpo:`<div class="fld"><label for="iNome">Nome do indicador</label><input id="iNome" maxlength="80" value="${esc(d.nome)}" placeholder="Ex.: Ticket médio, OTIF, Absenteísmo"></div>
       <div class="row2">
-        <div class="fld"><label for="iArea">Área</label><input id="iArea" list="dlAreas" value="${esc(d.area)}" placeholder="Selecione ou digite uma nova">
-          <datalist id="dlAreas">${[...new Set([...AREAS_PADRAO, ...areas()])].map(a => `<option value="${esc(a)}">`).join('')}</datalist></div>
+        <div class="fld"><label for="iArea">Área</label><select id="iArea">
+            ${d.area ? '' : '<option value="" selected disabled>Selecione…</option>'}
+            ${areasTodas().map(a => `<option ${a === d.area ? 'selected' : ''}>${esc(a)}</option>`).join('')}
+            <option value="__nova">＋ Nova área…</option></select>
+          <input id="iAreaNova" maxlength="40" placeholder="Nome da nova área (ex.: Qualidade)" style="display:none;margin-top:6px"></div>
         <div class="fld"><label for="iUn">Unidade</label><select id="iUn">${UNIDADES.map(x => `<option value="${x.v}" ${x.v === d.unidade ? 'selected' : ''}>${x.n}</option>`).join('')}</select></div>
       </div>
       <div class="row2">
@@ -970,14 +1135,19 @@ function modalIndicador(i){
       </div>
       <div class="fld"><label for="iMeta">Meta mensal ${EST.ano} <small>(opcional — preenche os meses que ainda estão sem meta)</small></label>
         <input id="iMeta" inputmode="decimal" placeholder="Ex.: 120000"></div>
-      <p class="info">“Menor é melhor” serve para custos, perdas, prazos e cancelamentos: o atingimento é calculado como meta ÷ realizado.</p>`,
+      <p class="info">Para renomear áreas, trocar ícones ou mudar a ordem delas, use o botão <b>Áreas</b> na tela de lançamento.<br>“Menor é melhor” serve para custos, perdas, prazos e cancelamentos: o atingimento é calculado como meta ÷ realizado.</p>`,
     rodape:`<button class="btn" data-close>Cancelar</button><button class="btn pri" data-m="salvar">Salvar</button>`,
     acoes:{ salvar:() => {
       const g = id => document.getElementById(id);
-      const nome = g('iNome').value.trim(), area = g('iArea').value.trim(), meta = parseNum(g('iMeta').value);
+      const nome = g('iNome').value.trim(), meta = parseNum(g('iMeta').value), nova = g('iArea').value === '__nova';
+      let area = nova ? g('iAreaNova').value.trim() : g('iArea').value;
       if(!nome){ g('iNome').focus(); toast('Informe o nome do indicador'); return; }
-      if(!area){ g('iArea').focus(); toast('Informe a área'); return; }
+      if(!area){ (nova ? g('iAreaNova') : g('iArea')).focus(); toast('Informe a área'); return; }
       if(Number.isNaN(meta)){ g('iMeta').focus(); toast('Meta inválida'); return; }
+      if(nova){
+        const ex = DB.areas.find(a => a.nome.toLowerCase() === area.toLowerCase());
+        if(ex) area = ex.nome; else DB.areas.push({ nome:area, icone:iconePorNome(area) });
+      }
       const alvo = i || { id:'i' + Date.now().toString(36) };
       Object.assign(alvo, { nome, area, unidade:g('iUn').value, direcao:g('iDir').value, agregacao:g('iAg').value });
       if(novo) DB.indicadores.push(alvo);
@@ -988,9 +1158,112 @@ function modalIndicador(i){
     aoAbrir:() => {
       const un = document.getElementById('iUn');
       if(novo) un.onchange = () => { document.getElementById('iAg').value = UNIDADES.find(x => x.v === un.value).ag; };
+      const sa = document.getElementById('iArea'), na = document.getElementById('iAreaNova');
+      sa.onchange = () => { na.style.display = sa.value === '__nova' ? 'block' : 'none'; if(sa.value === '__nova') na.focus(); };
       document.getElementById('iNome').focus();
     }
   });
+}
+// ---- Gerenciar áreas (tipos): criar, renomear, escolher ícone, ordenar e excluir
+function modalAreas(){
+  const cont = n => n == null ? 0 : DB.indicadores.filter(i => i.area === n).length;
+  let L = DB.areas.map(a => ({ nome:a.nome, icone:a.icone, orig:a.nome, rem:false, dest:null, pick:false, auto:false }));
+  let arr = null;
+  const ativos = () => L.filter(a => !a.rem);
+  function desenhar(){
+    const box = document.getElementById('aList'); if(!box) return;
+    box.innerHTML = L.map((a, k) => {
+      const n = cont(a.orig), outros = L.map((b, j) => ({ b, j })).filter(o => !o.b.rem && o.j !== k);
+      return `<div class="arow ${a.rem ? 'rem' : ''}" data-k="${k}">
+        <button class="grip" data-ag="${k}" title="Arraste para mudar a ordem (ou use as setas ↑ ↓)" ${a.rem ? 'disabled' : ''}>${ic('grip')}</button>
+        <button class="aic ${a.pick ? 'on' : ''}" data-pick="${k}" title="Escolher ícone" ${a.rem ? 'disabled' : ''}>${ic(a.icone)}</button>
+        <input class="ain" data-nome="${k}" value="${esc(a.nome)}" maxlength="40" placeholder="Nome da área" ${a.rem ? 'disabled' : ''}>
+        <span class="acnt">${n} ${n === 1 ? 'indicador' : 'indicadores'}</span>
+        ${a.rem ? `<button class="btn" data-undo="${k}">Desfazer</button>` : `<button class="mini dng" data-del="${k}" title="Excluir área">${ic('trash')}</button>`}
+      </div>
+      ${a.pick && !a.rem ? `<div class="picker">${ICONES_AREA.map(x => `<button class="pk ${x.v === a.icone ? 'on' : ''}" data-k="${k}" data-ic="${x.v}" title="${x.n}">${ic(x.v)}</button>`).join('')}</div>` : ''}
+      ${a.rem ? `<div class="arem">${n ? `${n === 1 ? 'O indicador desta área será movido' : `Os ${n} indicadores desta área serão movidos`} para:
+          <select class="sel" data-dest="${k}">${outros.map(o => `<option value="${o.j}" ${o.b === a.dest ? 'selected' : ''}>${esc(o.b.nome || '(sem nome)')}</option>`).join('')}</select>` : 'Esta área será excluída ao salvar.'}</div>` : ''}`;
+    }).join('');
+  }
+  abrirModal({
+    titulo:'Áreas<small>Tipos usados para agrupar os indicadores (Comercial, Financeiro, Produção, RH, Geral…)</small>',
+    corpo:`<div id="aList" class="alist"></div>
+      <button class="btn" data-anova style="margin-top:12px">${ic('plus')}<span class="t">Nova área</span></button>
+      <p class="info" style="margin-top:14px">A ordem aqui é a ordem em que as áreas aparecem no painel, nos lançamentos e no relatório. Ao renomear uma área, todos os indicadores dela são atualizados.</p>`,
+    rodape:`<button class="btn" data-close>Cancelar</button><button class="btn pri" data-m="salvar">Salvar áreas</button>`,
+    aoAbrir:() => {
+      desenhar();
+      const box = document.getElementById('aList'), corpo = box.parentElement;
+      corpo.addEventListener('click', e => {
+        const t = e.target.closest('button'); if(!t) return;
+        if(t.hasAttribute('data-anova')){
+          L.push({ nome:'', icone:'tag', orig:null, rem:false, dest:null, pick:false, auto:true }); desenhar();
+          box.querySelector(`[data-nome="${L.length - 1}"]`).focus(); return;
+        }
+        if(t.dataset.pick != null){ const a = L[+t.dataset.pick]; a.pick = !a.pick; desenhar(); return; }
+        if(t.dataset.ic){ const a = L[+t.dataset.k]; a.icone = t.dataset.ic; a.auto = false; a.pick = false; desenhar(); return; }
+        if(t.dataset.del != null){
+          const k = +t.dataset.del;
+          if(ativos().length <= 1){ toast('É preciso ter pelo menos uma área'); return; }
+          if(L[k].orig == null){ L.splice(k, 1); desenhar(); return; }
+          L[k].rem = true; L[k].pick = false; L[k].dest = L.find((b, j) => !b.rem && j !== k); desenhar(); return;
+        }
+        if(t.dataset.undo != null){ L[+t.dataset.undo].rem = false; desenhar(); }
+      });
+      corpo.addEventListener('input', e => {
+        const k = e.target.dataset.nome; if(k == null) return;
+        const a = L[+k]; a.nome = e.target.value;
+        if(a.auto){ a.icone = iconePorNome(a.nome); e.target.parentElement.querySelector('.aic').innerHTML = ic(a.icone); }
+      });
+      corpo.addEventListener('change', e => { if(e.target.dataset.dest != null) L[+e.target.dataset.dest].dest = L[+e.target.value]; });
+      // ordenar áreas arrastando
+      box.addEventListener('mousedown', e => { const g = e.target.closest('.grip'); if(g) g.closest('.arow').draggable = true; });
+      box.addEventListener('dragstart', e => {
+        const r = e.target.closest && e.target.closest('.arow'); if(!r || !r.draggable){ e.preventDefault(); return; }
+        arr = +r.dataset.k; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(arr)); setTimeout(() => r.classList.add('dragging'), 0);
+      });
+      box.addEventListener('dragover', e => {
+        if(arr == null) return; const r = e.target.closest('.arow');
+        box.querySelectorAll('.dropb,.dropa').forEach(x => x.classList.remove('dropb', 'dropa'));
+        if(!r || +r.dataset.k === arr) return; e.preventDefault();
+        const b = r.getBoundingClientRect(); r.classList.add(e.clientY < b.top + b.height / 2 ? 'dropb' : 'dropa');
+      });
+      box.addEventListener('drop', e => {
+        if(arr == null) return; e.preventDefault();
+        const r = box.querySelector('.dropb,.dropa'); if(r) moverArea(arr, +r.dataset.k, r.classList.contains('dropa'));
+        arr = null; desenhar();
+      });
+      box.addEventListener('dragend', () => { arr = null; desenhar(); });
+      box.addEventListener('keydown', e => {
+        const g = e.target.closest('.grip'); if(!g || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+        e.preventDefault(); const k = +g.dataset.ag, j = k + (e.key === 'ArrowDown' ? 1 : -1);
+        if(j < 0 || j >= L.length) return;
+        const novo = moverArea(k, j, e.key === 'ArrowDown'); desenhar(); box.querySelector(`[data-ag="${novo}"]`)?.focus();
+      });
+    },
+    acoes:{ salvar:() => {
+      const kept = ativos();
+      for(const a of kept){ a.nome = a.nome.trim(); if(!a.nome){ toast('Dê um nome para todas as áreas'); return; } }
+      const nomes = kept.map(a => a.nome.toLowerCase());
+      if(new Set(nomes).size !== nomes.length){ toast('Existem duas áreas com o mesmo nome'); return; }
+      const mapa = {};
+      L.forEach(a => { if(a.orig == null) return; mapa[a.orig] = a.rem ? (a.dest && !a.dest.rem ? a.dest.nome : kept[0].nome) : a.nome; });
+      DB.indicadores.forEach(i => { if(mapa[i.area] != null) i.area = mapa[i.area]; });
+      DB.areas = kept.map(a => ({ nome:a.nome, icone:a.icone }));
+      if(mapa[EST.area] != null) EST.area = mapa[EST.area];
+      if(mapa[EST.lancArea] != null) EST.lancArea = mapa[EST.lancArea];
+      salvarDB(); fecharModal(); INTERNOS.find(x => x.id === atual)?.render(); toast('Áreas salvas');
+    } }
+  });
+  // move a área "de" para antes/depois de "para" e devolve a nova posição
+  function moverArea(de, para, depois){
+    const item = L[de], alvo = L[para];
+    L.splice(de, 1);
+    const pos = L.indexOf(alvo) + (depois ? 1 : 0);
+    L.splice(pos, 0, item);
+    return pos;
+  }
 }
 function modalAno(){
   const prox = String(Math.max(...anos().map(Number)) + 1);
@@ -1026,7 +1299,7 @@ document.getElementById('fileImport').addEventListener('change', e => {
       const d = JSON.parse(r.result);
       if(!validoDB(d)) throw 0;
       if(!confirm(`Importar o backup "${f.name}"? Os dados atuais deste navegador serão substituídos.`)) return;
-      DB = d; EST.ano = null; salvarDB();
+      DB = normalizarDB(d); EST.ano = null; salvarDB();
       INTERNOS.find(x => x.id === atual)?.render(); toast('Backup importado');
     } catch(err){ toast('Arquivo de backup inválido'); }
   };
@@ -1075,7 +1348,7 @@ function gerarRelatorio(o){
     corpo += `<div class="rp-sum">${box('Metas atingidas', com ? Math.round(cnt.ok / com * 100) + '%' : '–', null, true)}${box('Atingidos', cnt.ok, 'ok')}${box('Atenção', cnt.atencao, 'atencao')}${box('Abaixo da meta', cnt.abaixo, 'abaixo')}${box('Sem lançamento', cnt.sem, 'sem')}</div>`;
     corpo += `<table class="rp-tb"><thead><tr><th class="l">Indicador</th><th class="l">Unid.</th><th class="l">Sentido</th><th>Meta</th><th>Realizado</th><th>% Atingimento</th><th class="l">Status</th></tr></thead><tbody>`;
     [...new Set(res.map(r => r.i.area))].forEach(a => {
-      corpo += `<tr class="rp-grp"><td class="l" colspan="7">${esc(a)}</td></tr>`;
+      corpo += `<tr class="rp-grp"><td class="l" colspan="7">${ic(areaIcone(a))}${esc(a)}</td></tr>`;
       res.filter(r => r.i.area === a).forEach(({ i, p, s }) => {
         const w = p.a == null ? 0 : Math.max(0, Math.min(1, p.a)) * 100;
         corpo += `<tr><td class="l">${esc(i.nome)}</td><td class="l">${esc(i.unidade)}</td><td class="l">${i.direcao === 'menor' ? '↓ menor' : '↑ maior'}</td>
@@ -1086,10 +1359,12 @@ function gerarRelatorio(o){
     corpo += `</tbody></table>`;
   } else {
     corpo += `<table class="rp-tb rp-ano"><thead><tr><th class="l">Indicador</th><th class="l">Linha</th>${MESES.map(m => `<th>${m}</th>`).join('')}<th>Acum.</th></tr></thead>`;
+    let areaAnt = null;
     lista.forEach(i => {
+      if(i.area !== areaAnt){ areaAnt = i.area; corpo += `<tbody class="rp-gh"><tr class="rp-grp"><td class="l" colspan="15">${ic(areaIcone(i.area))}${esc(i.area)}</td></tr></tbody>`; }
       const v = vals(ano, i.id), u = i.unidade, ac = periodo(i, ano, 'acum');
       const pc = a => { const s = status(a); return `<td class="${a == null ? '' : 'h-' + s}">${a == null ? '–' : `<span class="hc">${ST[s].i}</span>${pct(a)}`}</td>`; };
-      corpo += `<tbody><tr><td class="l rp-n" rowspan="3"><small>${esc(i.area)}</small>${esc(i.nome)}<br><span style="font-weight:400;color:#5F6B7A">${esc(u)} · ${i.direcao === 'menor' ? '↓ menor é melhor' : '↑ maior é melhor'}</span></td>
+      corpo += `<tbody><tr><td class="l rp-n" rowspan="3">${esc(i.nome)}<br><span style="font-weight:400;color:#5F6B7A">${esc(u)} · ${i.direcao === 'menor' ? '↓ menor é melhor' : '↑ maior é melhor'}</span></td>
           <td class="l rp-lb">Meta</td>${v.meta.map(x => `<td>${fmtCurto(x, u)}</td>`).join('')}<td><b>${fmtCurto(ac.meta, u)}</b></td></tr>
         <tr><td class="l rp-lb">Realizado</td>${v.real.map(x => `<td>${fmtCurto(x, u)}</td>`).join('')}<td><b>${fmtCurto(ac.real, u)}</b></td></tr>
         <tr><td class="l rp-lb">% Ating.</td>${MESES.map((_, k) => pc(atingimento(i, v.meta[k], v.real[k]))).join('')}${pc(ac.a)}</tr></tbody>`;
