@@ -393,6 +393,11 @@
   .nw.pre::before{left:8px}
   .nw.suf::before{right:8px}
   .lt .num{width:122px}
+  .rp-u{font-weight:400;color:#127DCB}
+  #relatorio .rp-ano td{font-variant-numeric:tabular-nums}
+  #relatorio.portrait .rp-ano td,#relatorio.portrait .rp-ano th{padding:3px 2px}
+  #relatorio.portrait .rp-ano td.rp-n{width:92px}
+  #relatorio.portrait .rp-ano{font-size:6.6px}
 </style>
 <style id="pageStyle"></style>
 </head>
@@ -1413,10 +1418,11 @@ function gerarRelatorio(o){
     lista.forEach(i => {
       if(i.area !== areaAnt){ areaAnt = i.area; corpo += `<tbody class="rp-gh"><tr class="rp-grp"><td class="l" colspan="15">${ic(areaIcone(i.area))}${esc(i.area)}</td></tr></tbody>`; }
       const v = vals(ano, i.id), u = i.unidade, ac = periodo(i, ano, 'acum');
+      const nC = x => x == null || isNaN(x) ? '–' : num(x);   // número completo, sem abreviar
       const pc = a => { const s = status(a); return `<td class="${a == null ? '' : 'h-' + s}">${a == null ? '–' : `<span class="hc">${ST[s].i}</span>${pct(a)}`}</td>`; };
       corpo += `<tbody><tr><td class="l rp-n" rowspan="3">${esc(i.nome)}<br><span style="font-weight:400;color:#5F6B7A">${esc(u)} · ${i.direcao === 'menor' ? '↓ menor é melhor' : '↑ maior é melhor'}</span></td>
-          <td class="l rp-lb">Meta</td>${v.meta.map(x => `<td>${fmtCurto(x, u)}</td>`).join('')}<td><b>${fmtCurto(ac.meta, u)}</b></td></tr>
-        <tr><td class="l rp-lb">Realizado</td>${v.real.map(x => `<td>${fmtCurto(x, u)}</td>`).join('')}<td><b>${fmtCurto(ac.real, u)}</b></td></tr>
+          <td class="l rp-lb">Meta <span class="rp-u">(${esc(u)})</span></td>${v.meta.map(x => `<td>${nC(x)}</td>`).join('')}<td><b>${nC(ac.meta)}</b></td></tr>
+        <tr><td class="l rp-lb">Realizado <span class="rp-u">(${esc(u)})</span></td>${v.real.map(x => `<td>${nC(x)}</td>`).join('')}<td><b>${nC(ac.real)}</b></td></tr>
         <tr><td class="l rp-lb">% Ating.</td>${MESES.map((_, k) => pc(atingimento(i, v.meta[k], v.real[k]))).join('')}${pc(ac.a)}</tr></tbody>`;
     });
     corpo += `</table>`;
