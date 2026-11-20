@@ -250,7 +250,7 @@
   .lt td{padding:5px 6px}
   .lt th{padding:9px 6px}
   .lt .stk{min-width:250px;max-width:250px;white-space:normal;vertical-align:top;padding:12px 12px;border-right:1px solid var(--border)}
-  .lt .stk2{position:sticky;left:250px;background:var(--surface);z-index:1;min-width:112px;border-right:1px solid var(--border)}
+  .lt .stk2{position:sticky;left:250px;background:var(--surface);z-index:1;min-width:146px;border-right:1px solid var(--border)}
   .lt th.stk2{z-index:3}
   .lt tbody.grp tr:first-child td{border-top:2px solid var(--border)}
   .lt tbody.ahd td{text-align:left;background:var(--active-bg);padding:0;border-bottom:1px solid var(--border);border-top:2px solid var(--border)}
@@ -381,6 +381,18 @@
   .rp-obs{margin-top:12px;border:1px solid #DCE3EC;border-radius:6px;padding:8px 10px;white-space:pre-wrap;break-inside:avoid}
   .rp-obs b{display:block;font-size:8.5px;text-transform:uppercase;color:#0B4E83;margin-bottom:4px}
   .rp-foot{border-top:1px solid #DCE3EC;margin-top:10px;padding-top:5px;font-size:8px;color:#5F6B7A;display:flex;justify-content:space-between}
+  /* unidade nas linhas de lançamento */
+  .lbw{display:flex;align-items:center;justify-content:space-between;gap:6px}
+  .usel{height:26px;max-width:62px;border:1px solid var(--eleve-azul);background:var(--active-bg);color:var(--eleve-azul);border-radius:6px;padding:0 4px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+  .usel:hover{background:var(--eleve-azul);color:#fff}
+  .usel:focus{outline:2px solid var(--eleve-azul);outline-offset:1px}
+  .usel option{background:var(--surface);color:var(--txt);font-weight:500}
+  .ub{font-size:12px;font-weight:700;color:var(--muted);padding:0 6px}
+  .nw{position:relative;display:inline-block}
+  .nw::before{content:attr(data-u);position:absolute;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--muted);pointer-events:none;opacity:.85}
+  .nw.pre::before{left:8px}
+  .nw.suf::before{right:8px}
+  .lt .num{width:122px}
 </style>
 <style id="pageStyle"></style>
 </head>
@@ -610,8 +622,20 @@ const MESES_LONGO = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julh
 const UNIDADES = [
   {v:'R$', n:'R$ (moeda)', ag:'soma'}, {v:'%', n:'% (percentual)', ag:'media'}, {v:'kg', n:'kg', ag:'soma'},
   {v:'t', n:'toneladas', ag:'soma'}, {v:'m', n:'metros', ag:'soma'}, {v:'un', n:'unidades', ag:'soma'},
-  {v:'dias', n:'dias', ag:'media'}, {v:'nota', n:'nota', ag:'media'}
+  {v:'pç', n:'peças', ag:'soma'}, {v:'L', n:'litros', ag:'soma'}, {v:'m²', n:'m²', ag:'soma'},
+  {v:'h', n:'horas', ag:'soma'}, {v:'dias', n:'dias', ag:'media'}, {v:'nota', n:'nota', ag:'media'}
 ];
+// Opções de unidade para um <select>, incluindo uma unidade personalizada já em uso e "Outra…"
+function opcoesUnidade(atualU, curto){
+  const lista = UNIDADES.some(x => x.v === atualU) || !atualU ? UNIDADES : [...UNIDADES, { v:atualU, n:atualU }];
+  return lista.map(x => `<option value="${esc(x.v)}" ${x.v === atualU ? 'selected' : ''}>${esc(curto ? x.v : x.n)}</option>`).join('')
+    + `<option value="__outra">Outra…</option>`;
+}
+// Símbolo da unidade dentro do campo: R$ antes do número; as demais depois
+function campoUnidade(u){
+  const pre = u === 'R$', w = 9 + [...u].length * 6.6 + 3;
+  return { cls:pre ? 'pre' : 'suf', pad:`padding-${pre ? 'left' : 'right'}:${Math.round(w)}px` };
+}
 const AREAS_PADRAO = ['Comercial','Financeiro','Produção','PPCP','RH','Geral'];
 const LIMIAR_ATENCAO = 0.9;                // ≥ 90% e < 100% = Atenção
 const CHAVE_DB = 'portalEleveIndicadores'; // onde os dados ficam salvos no navegador
@@ -928,6 +952,17 @@ vInd.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.classLi
 
 // ---- Tela: LANÇAR VALORES
 function renderLanc(){
+  const sc = vLanc.querySelector('.lscroll'), pos = sc ? [sc.scrollTop, sc.scrollLeft, vLanc.scrollTop] : null;
+  desenharLanc();
+  const sc2 = vLanc.querySelector('.lscroll');
+  if(pos && sc2){ sc2.scrollTop = pos[0]; sc2.scrollLeft = pos[1]; vLanc.scrollTop = pos[2]; }
+}
+// Pergunta uma unidade personalizada (ex.: "cx", "lote", "km")
+function pedirUnidade(){
+  const t = (prompt('Digite a unidade (até 6 caracteres). Ex.: cx, km, lote') || '').trim().slice(0, 6);
+  return t || null;
+}
+function desenharLanc(){
   garantirAno();
   if(EST.lancArea !== 'todas' && !areasTodas().includes(EST.lancArea)) EST.lancArea = 'todas';
   const lista = filtrados(EST.lancArea);
@@ -971,7 +1006,8 @@ function acumCells(i){
 }
 function linhasLanc(i){
   const v = vals(EST.ano, i.id), id = esc(i.id), ac = acumCells(i);
-  const inp = (k, c) => `<td><input class="num" inputmode="decimal" autocomplete="off" data-id="${id}" data-c="${c}" data-m="${k}" value="${num(v[c][k], 4)}" aria-label="${esc(i.nome)} – ${c === 'meta' ? 'Meta' : 'Realizado'} ${MESES_LONGO[k]}"></td>`;
+  const cu = campoUnidade(i.unidade);
+  const inp = (k, c) => `<td><span class="nw ${cu.cls}" data-u="${esc(i.unidade)}"><input class="num" style="${cu.pad}" inputmode="decimal" autocomplete="off" data-id="${id}" data-c="${c}" data-m="${k}" value="${num(v[c][k], 4)}" aria-label="${esc(i.nome)} – ${c === 'meta' ? 'Meta' : 'Realizado'} ${MESES_LONGO[k]} (${esc(i.unidade)})"></span></td>`;
   return `<tbody class="grp" data-id="${id}"><tr><td class="l stk" rowspan="3">
       <div class="li-top">${tagArea(i.area, 'li-a')}<span class="grip" role="button" tabindex="0" draggable="true" data-grip="${id}" title="Arraste para mudar a ordem (ou use as setas ↑ ↓)" aria-label="Mover ${esc(i.nome)}">${ic('grip')}</span></div><div class="li-n">${esc(i.nome)}</div><div class="li-u">${esc(i.unidade)} · ${dirTxt(i)}</div>
       <div class="li-acts">
@@ -979,8 +1015,8 @@ function linhasLanc(i){
         <button class="mini" data-act="repetir" data-id="${id}" title="Repetir a meta de janeiro em todos os meses">${ic('fill')}</button>
         <button class="mini dng" data-act="excluir" data-id="${id}" title="Excluir indicador">${ic('trash')}</button>
       </div></td>
-    <td class="l stk2 lb">Meta${i.unidade === '%' ? ' (%)' : ''}</td>${MESES.map((_, k) => inp(k, 'meta')).join('')}<td class="ac" data-ac="meta-${id}">${ac.meta}</td></tr>
-    <tr><td class="l stk2 lb">Realizado${i.unidade === '%' ? ' (%)' : ''}</td>${MESES.map((_, k) => inp(k, 'real')).join('')}<td class="ac" data-ac="real-${id}">${ac.real}</td></tr>
+    <td class="l stk2 lb"><div class="lbw">Meta<select class="usel" data-un="${id}" title="Unidade do indicador — clique para alterar" aria-label="Unidade de ${esc(i.nome)}">${opcoesUnidade(i.unidade, true)}</select></div></td>${MESES.map((_, k) => inp(k, 'meta')).join('')}<td class="ac" data-ac="meta-${id}">${ac.meta}</td></tr>
+    <tr><td class="l stk2 lb"><div class="lbw">Realizado<span class="ub">${esc(i.unidade)}</span></div></td>${MESES.map((_, k) => inp(k, 'real')).join('')}<td class="ac" data-ac="real-${id}">${ac.real}</td></tr>
     <tr><td class="l stk2 lb">% Atingimento</td>${MESES.map((_, k) => pctCell(i, k)).join('')}<td class="ac ${ac.a == null ? '' : 'h-' + ac.s}" data-ac="pct-${id}">${ac.pct}</td></tr></tbody>`;
 }
 function atualizarLinha(i, k){
@@ -1000,6 +1036,13 @@ vLanc.addEventListener('change', e => {
   const t = e.target;
   if(t.id === 'lAno'){ EST.ano = t.value; EST.mes = null; renderLanc(); return; }
   if(t.id === 'lArea'){ EST.lancArea = t.value; renderLanc(); return; }
+  if(t.classList.contains('usel')){
+    const i = DB.indicadores.find(x => x.id === t.dataset.un); if(!i) return;
+    let u = t.value;
+    if(u === '__outra'){ u = pedirUnidade(); if(!u){ t.value = i.unidade; return; } }
+    i.unidade = u; salvarDB(); renderLanc(); toast(`Unidade de "${i.nome}" alterada para ${u}`);
+    return;
+  }
   if(t.classList.contains('num')){
     const i = DB.indicadores.find(x => x.id === t.dataset.id); if(!i) return;
     const n = parseNum(t.value);
@@ -1123,7 +1166,8 @@ function modalIndicador(i){
             ${areasTodas().map(a => `<option ${a === d.area ? 'selected' : ''}>${esc(a)}</option>`).join('')}
             <option value="__nova">＋ Nova área…</option></select>
           <input id="iAreaNova" maxlength="40" placeholder="Nome da nova área (ex.: Qualidade)" style="display:none;margin-top:6px"></div>
-        <div class="fld"><label for="iUn">Unidade</label><select id="iUn">${UNIDADES.map(x => `<option value="${x.v}" ${x.v === d.unidade ? 'selected' : ''}>${x.n}</option>`).join('')}</select></div>
+        <div class="fld"><label for="iUn">Unidade</label><select id="iUn">${opcoesUnidade(d.unidade, false)}</select>
+          <input id="iUnOutra" maxlength="6" placeholder="Unidade (ex.: cx, km, lote)" style="display:none;margin-top:6px"></div>
       </div>
       <div class="row2">
         <div class="fld"><label for="iDir">Sentido da meta</label><select id="iDir">
@@ -1144,12 +1188,14 @@ function modalIndicador(i){
       if(!nome){ g('iNome').focus(); toast('Informe o nome do indicador'); return; }
       if(!area){ (nova ? g('iAreaNova') : g('iArea')).focus(); toast('Informe a área'); return; }
       if(Number.isNaN(meta)){ g('iMeta').focus(); toast('Meta inválida'); return; }
+      const unid = g('iUn').value === '__outra' ? g('iUnOutra').value.trim() : g('iUn').value;
+      if(!unid){ g('iUnOutra').focus(); toast('Informe a unidade'); return; }
       if(nova){
         const ex = DB.areas.find(a => a.nome.toLowerCase() === area.toLowerCase());
         if(ex) area = ex.nome; else DB.areas.push({ nome:area, icone:iconePorNome(area) });
       }
       const alvo = i || { id:'i' + Date.now().toString(36) };
-      Object.assign(alvo, { nome, area, unidade:g('iUn').value, direcao:g('iDir').value, agregacao:g('iAg').value });
+      Object.assign(alvo, { nome, area, unidade:unid, direcao:g('iDir').value, agregacao:g('iAg').value });
       if(novo) DB.indicadores.push(alvo);
       if(meta != null){ const v = vals(EST.ano, alvo.id); v.meta = v.meta.map(x => x == null ? meta : x); }
       salvarDB(); fecharModal(); renderLanc();
@@ -1157,7 +1203,11 @@ function modalIndicador(i){
     } },
     aoAbrir:() => {
       const un = document.getElementById('iUn');
-      if(novo) un.onchange = () => { document.getElementById('iAg').value = UNIDADES.find(x => x.v === un.value).ag; };
+      const uo = document.getElementById('iUnOutra');
+      un.onchange = () => {
+        uo.style.display = un.value === '__outra' ? 'block' : 'none'; if(un.value === '__outra') uo.focus();
+        const x = UNIDADES.find(x => x.v === un.value); if(novo && x) document.getElementById('iAg').value = x.ag;
+      };
       const sa = document.getElementById('iArea'), na = document.getElementById('iAreaNova');
       sa.onchange = () => { na.style.display = sa.value === '__nova' ? 'block' : 'none'; if(sa.value === '__nova') na.focus(); };
       document.getElementById('iNome').focus();
