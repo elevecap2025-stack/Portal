@@ -139,7 +139,198 @@
     .btn .t{display:none}
     .btn{width:34px;padding:0;justify-content:center}
   }
+
+  /* ===== Indicadores de desempenho ===== */
+  .view{position:absolute;inset:0;overflow:auto;background:var(--bg);display:none}
+  .view.show{display:block}
+  .view:focus{outline:none}
+  .vwrap{padding:26px 30px 40px;max-width:1440px;margin:0 auto}
+  .vhead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+  .vtitle{font-size:20px;font-weight:700;letter-spacing:.2px}
+  .vsub{color:var(--muted);font-size:13px;margin-top:4px}
+  .vacts{display:flex;gap:8px;flex-wrap:wrap}
+  .btn.pri{background:var(--eleve-azul);border-color:var(--eleve-azul);color:#fff}
+  .btn.pri:hover{background:var(--eleve-azul-esc);border-color:var(--eleve-azul-esc);color:#fff}
+  .btn.dng:hover{border-color:#d03b3b;color:#d03b3b;background:rgba(208,59,59,.08)}
+  .tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+  .tools .sp{flex:1}
+  .sel{height:34px;border:1px solid var(--btn-border);background:var(--surface);color:var(--txt);border-radius:7px;padding:0 10px;font:inherit;font-size:13px;cursor:pointer}
+  .sel:focus,.num:focus,.fld input:focus,.fld select:focus,.fld textarea:focus{outline:2px solid var(--eleve-azul);outline-offset:-1px;border-color:var(--eleve-azul)}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{height:32px;padding:0 13px;border-radius:16px;border:1px solid var(--btn-border);background:var(--surface);color:var(--muted);font:inherit;font-size:13px;font-weight:500;cursor:pointer}
+  .chip:hover{color:var(--txt);border-color:var(--eleve-azul)}
+  .chip.on{background:var(--eleve-azul);border-color:var(--eleve-azul);color:#fff}
+  .salvo{font-size:12px;color:var(--muted)}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:14px;margin-bottom:22px}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:0 1px 2px var(--shadow)}
+  .stat small{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.8px}
+  .stat b{display:block;font-size:28px;font-weight:700;margin-top:8px;line-height:1.1}
+  .stat span.s{display:block;font-size:12px;color:var(--muted);margin-top:4px}
+  .stat.hl{border-color:var(--eleve-azul);background:var(--active-bg)}
+  .stat.hl b{color:var(--eleve-azul)}
+
+  .sicon{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;font-size:10.5px;font-weight:800;color:#fff;flex-shrink:0;line-height:1}
+  .s-ok{background:#0ca30c}.s-atencao{background:#fab219;color:#0b0b0b}.s-abaixo{background:#d03b3b}.s-sem{background:#9AA4B2}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--txt);white-space:nowrap}
+
+  .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:16px}
+  .kcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;display:flex;flex-direction:column;gap:9px;
+         box-shadow:0 1px 2px var(--shadow);transition:border-color .15s,box-shadow .15s,transform .15s}
+  .kcard:hover,.kcard:focus-visible{border-color:var(--eleve-azul);box-shadow:0 10px 26px var(--shadow);transform:translateY(-2px);outline:none}
+  .ktop{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .tag{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--eleve-azul);background:var(--active-bg);padding:3px 8px;border-radius:5px}
+  .kname{font-size:15px;font-weight:600;line-height:1.3;min-height:39px}
+  .kmid{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .kpct{font-size:30px;font-weight:700;line-height:1;letter-spacing:-.5px}
+  .kdir{font-size:11.5px;color:var(--muted);white-space:nowrap}
+  .barp{height:6px;border-radius:3px;background:var(--border);overflow:hidden}
+  .barp i{display:block;height:100%;border-radius:3px}
+  .kval{font-size:12.5px;color:var(--muted)}
+  .kval b{color:var(--txt);font-weight:600}
+  .kchart{margin-top:2px;border-top:1px solid var(--border);padding-top:10px}
+  .kchart svg{width:100%;height:56px;display:block}
+  .vazio{background:var(--surface);border:1px dashed var(--border);border-radius:12px;padding:40px;text-align:center;color:var(--muted)}
+
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-top:24px;overflow:hidden;box-shadow:0 1px 2px var(--shadow)}
+  .panel h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1.1px;color:var(--muted);padding:14px 18px;border-bottom:1px solid var(--border)}
+  .tscroll{overflow:auto}
+  .tb{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+  .tb th,.tb td{padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap;text-align:right}
+  .tb th{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);background:var(--surface);position:sticky;top:0;z-index:2}
+  .tb .l{text-align:left}
+  .tb .stk{position:sticky;left:0;background:var(--surface);z-index:1}
+  .tb th.stk{z-index:3}
+  .tb tbody tr[data-id]{cursor:pointer}
+  .tb tbody tr[data-id]:hover td{background:var(--side-hover)}
+  .hm td{font-variant-numeric:tabular-nums}
+  .hm-a{display:inline-block;min-width:76px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--eleve-azul)}
+  .hc{display:inline-block;width:12px;font-weight:800;margin-right:4px;text-align:center}
+  .h-ok{background:rgba(12,163,12,.13)}.h-atencao{background:rgba(250,178,25,.22)}.h-abaixo{background:rgba(208,59,59,.14)}
+  .tb tbody tr[data-id]:hover td.h-ok{background:rgba(12,163,12,.22)}
+  .tb tbody tr[data-id]:hover td.h-atencao{background:rgba(250,178,25,.32)}
+  .tb tbody tr[data-id]:hover td.h-abaixo{background:rgba(208,59,59,.22)}
+  .hmleg{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:12px 18px;font-size:12px;color:var(--muted);border-top:1px solid var(--border)}
+  .hmleg span{display:inline-flex;align-items:center;gap:6px}
+
+  /* Lançamentos */
+  .lscroll{max-height:calc(100vh - 290px);min-height:300px}
+  .lt td{padding:5px 6px}
+  .lt th{padding:9px 6px}
+  .lt .stk{min-width:250px;max-width:250px;white-space:normal;vertical-align:top;padding:12px 12px;border-right:1px solid var(--border)}
+  .lt .stk2{position:sticky;left:250px;background:var(--surface);z-index:1;min-width:112px;border-right:1px solid var(--border)}
+  .lt th.stk2{z-index:3}
+  .lt tr.g1 td{border-top:2px solid var(--border)}
+  .lt tbody tr.g1:first-child td{border-top:none}
+  .lb{font-size:12px;font-weight:600;color:var(--muted)}
+  .li-a{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--eleve-azul)}
+  .li-n{font-weight:600;font-size:14px;margin:3px 0 4px;line-height:1.3}
+  .li-u{font-size:12px;color:var(--muted)}
+  .li-acts{display:flex;gap:6px;margin-top:10px}
+  .mini{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--btn-border);background:var(--surface);color:var(--muted);border-radius:7px;cursor:pointer}
+  .mini svg{width:15px;height:15px}
+  .mini:hover{border-color:var(--eleve-azul);color:var(--eleve-azul);background:var(--active-bg)}
+  .mini.dng:hover{border-color:#d03b3b;color:#d03b3b;background:rgba(208,59,59,.08)}
+  .num{width:104px;height:31px;border:1px solid var(--border);background:var(--bg);color:var(--txt);border-radius:6px;text-align:right;padding:0 8px;font:inherit;font-size:13px;font-variant-numeric:tabular-nums}
+  .num.err{border-color:#d03b3b;background:rgba(208,59,59,.08)}
+  .pc,.ac{font-size:12.5px;font-variant-numeric:tabular-nums}
+  .ac{font-weight:600}
+
+  /* Modal */
+  .modal{position:fixed;inset:0;background:rgba(10,20,35,.5);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+  .modal.show{display:flex}
+  .mbox{background:var(--surface);color:var(--txt);border-radius:14px;width:min(560px,100%);max-height:94vh;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+  .mbox.lg{width:min(960px,100%)}
+  .mhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)}
+  .mhead h3{font-size:16px;font-weight:600}
+  .mhead small{display:block;font-size:12px;color:var(--muted);margin-top:2px;font-weight:400}
+  .mbody{padding:20px;overflow:auto}
+  .mfoot{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+  .fld{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .fld label{font-size:12.5px;font-weight:600}
+  .fld label small{font-weight:400;color:var(--muted)}
+  .fld input,.fld select,.fld textarea{height:38px;border:1px solid var(--btn-border);background:var(--bg);color:var(--txt);border-radius:8px;padding:0 11px;font:inherit;font-size:14px}
+  .fld textarea{height:80px;padding:9px 11px;resize:vertical}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .opt{border:1px solid var(--btn-border);border-radius:10px;padding:12px;cursor:pointer;display:flex;gap:11px;align-items:center;font-size:13px}
+  .opt input{accent-color:var(--eleve-azul)}
+  .opt b{display:block;font-size:13.5px}
+  .opt small{color:var(--muted);font-size:12px}
+  .opt:has(input:checked){border-color:var(--eleve-azul);background:var(--active-bg)}
+  .ori{border:2px solid var(--muted);border-radius:3px;flex-shrink:0}
+  .ori.p{width:17px;height:23px}.ori.l{width:23px;height:17px}
+  .chk{display:flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer}
+  .chk input{accent-color:var(--eleve-azul);width:16px;height:16px}
+  .info{font-size:12.5px;color:var(--muted);background:var(--bg);border-radius:8px;padding:10px 12px;line-height:1.5}
+  .dchart svg{width:100%;height:auto;display:block}
+  .leg{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:8px 0 16px}
+  .leg span{display:inline-flex;align-items:center;gap:7px}
+  .leg .sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .leg .ln{width:16px;height:2px;background:var(--txt);border-radius:1px;display:inline-block}
+  .dmeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;font-size:13px;color:var(--muted)}
+
+  #tip{position:fixed;z-index:100;pointer-events:none;background:var(--surface);color:var(--txt);border:1px solid var(--border);box-shadow:0 8px 24px var(--shadow);
+       border-radius:8px;padding:8px 11px;font-size:12px;line-height:1.5;white-space:pre-line;display:none;max-width:300px}
+  #tip.show{display:block}
+  #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#231F20;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;
+         opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:110}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (max-width:760px){
+    .vwrap{padding:18px 14px 30px}
+    .lt .stk{min-width:170px;max-width:170px}
+    .lt .stk2{position:static}
+    .row2,.opts{grid-template-columns:1fr}
+  }
+
+  /* ===== Relatório (impressão / PDF) ===== */
+  #relatorio{display:none}
+  @media print{
+    html,body{height:auto!important;background:#fff!important;overflow:visible!important}
+    .app,.modal,#toast,#tip{display:none!important}
+    #relatorio{display:block}
+  }
+  #relatorio{font-family:Arial,Helvetica,sans-serif;color:#231F20;font-size:10px;-webkit-print-color-adjust:exact;print-color-adjust:exact;background:#fff}
+  .rp-wrap{width:100%;border-collapse:collapse}
+  .rp-wrap>thead>tr>td,.rp-wrap>tbody>tr>td,.rp-wrap>tfoot>tr>td{padding:0}
+  .rp-head{display:flex;align-items:center;gap:16px;padding-bottom:9px;border-bottom:3px solid #127DCB;margin-bottom:12px}
+  .rp-logo{width:150px;height:auto;color:#231F20;display:block;flex-shrink:0}
+  .rp-ht{flex:1;border-left:1px solid #DCE3EC;padding-left:16px}
+  .rp-t{font-size:14px;font-weight:700;letter-spacing:.4px;color:#0B4E83}
+  .rp-s{font-size:10px;color:#5F6B7A;margin-top:3px}
+  .rp-meta{text-align:right;font-size:9px;color:#5F6B7A;line-height:1.5}
+  .rp-meta b{color:#231F20}
+  .rp-sum{display:flex;gap:8px;margin:0 0 12px}
+  .rp-box{flex:1;border:1px solid #DCE3EC;border-radius:6px;padding:7px 9px}
+  .rp-box small{display:flex;gap:5px;align-items:center;color:#5F6B7A;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  .rp-box b{display:block;font-size:17px;margin-top:3px}
+  .rp-box.hl{background:#EAF3FC;border-color:#127DCB}.rp-box.hl b{color:#0B4E83}
+  #relatorio .sicon{width:13px;height:13px;font-size:8px}
+  #relatorio .pill{font-size:9px;color:#231F20;gap:4px}
+  .rp-tb{width:100%;border-collapse:collapse}
+  .rp-tb th{background:#0B4E83;color:#fff;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:5px 6px;text-align:right}
+  .rp-tb td{border-bottom:1px solid #E3E8EF;padding:4px 6px;text-align:right;white-space:nowrap}
+  .rp-tb .l{text-align:left}
+  .rp-tb tr,.rp-tb tbody{break-inside:avoid;page-break-inside:avoid}
+  .rp-grp td{background:#EAF3FC;color:#0B4E83;font-weight:700;text-transform:uppercase;font-size:8.5px;letter-spacing:.6px}
+  .rp-bar{display:inline-block;width:42px;height:5px;background:#E3E8EF;border-radius:3px;vertical-align:middle;margin-right:5px;overflow:hidden}
+  .rp-bar i{display:block;height:100%;border-radius:3px}
+  .rp-ano td,.rp-ano th{padding:3px 4px}
+  .rp-ano td.rp-n{white-space:normal;vertical-align:top;font-weight:700;width:120px}
+  .rp-ano td.rp-n small{display:block;font-weight:700;color:#127DCB;font-size:7px;text-transform:uppercase;letter-spacing:.5px}
+  .rp-ano tbody tr:first-child td{border-top:1.5px solid #0B4E83}
+  .rp-ano .rp-lb{color:#5F6B7A;font-weight:700}
+  #relatorio.portrait .rp-ano{font-size:7px}
+  #relatorio.portrait .rp-ano th{font-size:6.5px}
+  #relatorio.landscape .rp-ano{font-size:8.5px}
+  .rp-legend{margin-top:10px;font-size:8.5px;color:#5F6B7A;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .rp-legend span{display:inline-flex;gap:4px;align-items:center}
+  .rp-obs{margin-top:12px;border:1px solid #DCE3EC;border-radius:6px;padding:8px 10px;white-space:pre-wrap;break-inside:avoid}
+  .rp-obs b{display:block;font-size:8.5px;text-transform:uppercase;color:#0B4E83;margin-bottom:4px}
+  .rp-foot{border-top:1px solid #DCE3EC;margin-top:10px;padding-top:5px;font-size:8px;color:#5F6B7A;display:flex;justify-content:space-between}
 </style>
+<style id="pageStyle"></style>
 </head>
 <body>
 <div class="app">
@@ -165,13 +356,23 @@
           <p>Portal de sistemas corporativos</p>
         </div>
         <div class="wrap">
+        <h2>Indicadores de desempenho</h2>
+        <div class="grid" id="gridInd" style="margin-bottom:30px"></div>
         <h2>Acesso rápido</h2>
         <div class="grid" id="grid"></div>
         </div>
       </div>
+      <div class="view" id="vInd" tabindex="-1"></div>
+      <div class="view" id="vLanc" tabindex="-1"></div>
     </div>
   </main>
 </div>
+
+<div class="modal" id="modal" aria-hidden="true"><div class="mbox" id="mbox" role="dialog" aria-modal="true"></div></div>
+<div id="tip" role="tooltip"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="fileImport" accept="application/json,.json" hidden>
+<div id="relatorio"></div>
 
 <script>
 // ===== Lista de sistemas (edite aqui para adicionar/remover) =====
@@ -181,6 +382,12 @@ const SISTEMAS = [
   { id:'financeiro', nome:'Sistema Financeiro',        icone:'wallet',   desc:'Gestão financeira e fluxo de caixa',    url:'https://elevecap2025-stack.github.io/compras/' },
   { id:'custos',     nome:'Sistema de Custos',         icone:'chart',    desc:'Custos e formação de preço',            url:'https://elevecap2025-stack.github.io/sistemadecustos/' },
   { id:'followup',   nome:'Follow-up / Plano de Ação', icone:'check',    desc:'Follow-up e Plano de Ação 5W2H',        url:'https://elevecap2025-stack.github.io/followupeleve/' },
+];
+
+// ===== Telas internas do portal (não abrem em iframe) =====
+const INTERNOS = [
+  { id:'indicadores', nome:'Painel de Indicadores', icone:'gauge', desc:'Painel de Indicadores de Desempenho Eleve', render:()=>renderPainel() },
+  { id:'lancamentos', nome:'Lançar Valores',        icone:'edit',  desc:'Lançamento manual de metas e realizados',   render:()=>renderLanc() },
 ];
 
 // Ícones em linha (SVG)
@@ -197,28 +404,44 @@ const ICON_PATHS = {
   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   collapse:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/><path d="m15 10-2 2 2 2"/>',
   menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
-  arrow:'<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>'
+  arrow:'<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
+  gauge:'<path d="M3.5 18a9 9 0 1 1 17 0"/><path d="m12 14 4.5-4.5"/><circle cx="12" cy="14" r="1.6"/>',
+  edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  trash:'<path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/>',
+  fill:'<path d="M3 12h13"/><path d="m12 7 5 5-5 5"/><path d="M21 5v14"/>',
+  pdf:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/>',
+  download:'<path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/>',
+  upload:'<path d="M12 20V9"/><path d="m7 14 5-5 5 5"/><path d="M5 4h14"/>',
+  undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
+  close:'<path d="M6 6l12 12M18 6 6 18"/>',
+  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'
 };
 const ic = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[n]}</svg>`;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-const nav = document.getElementById('nav'), grid = document.getElementById('grid'),
+const nav = document.getElementById('nav'), grid = document.getElementById('grid'), gridInd = document.getElementById('gridInd'),
       frames = document.getElementById('frames'), home = document.getElementById('home'),
-      titulo = document.getElementById('titulo'), side = document.getElementById('side');
+      titulo = document.getElementById('titulo'), side = document.getElementById('side'),
+      vInd = document.getElementById('vInd'), vLanc = document.getElementById('vLanc');
+const VIEWS = { indicadores: vInd, lancamentos: vLanc };
 const iframes = {};
 let atual = null;
 
 // Monta menu e cards
-nav.appendChild(criarItem({id:'home', nome:'Início', icone:'home'}));
-const sec = document.createElement('div'); sec.className = 'sec lbl'; sec.textContent = 'Sistemas';
-nav.appendChild(sec);
-SISTEMAS.forEach(s => {
-  nav.appendChild(criarItem(s));
+function secao(t){ const d = document.createElement('div'); d.className = 'sec lbl'; d.textContent = t; nav.appendChild(d); }
+function criarCard(s, destino){
   const c = document.createElement('div');
   c.className = 'card';
   c.innerHTML = `<div class="cic">${ic(s.icone)}</div><b>${s.nome}</b><small>${s.desc}</small><span class="go">Acessar ${ic('arrow')}</span>`;
   c.onclick = () => abrir(s.id);
-  grid.appendChild(c);
-});
+  destino.appendChild(c);
+}
+nav.appendChild(criarItem({id:'home', nome:'Início', icone:'home'}));
+secao('Indicadores');
+INTERNOS.forEach(s => { nav.appendChild(criarItem(s)); criarCard(s, gridInd); });
+secao('Sistemas');
+SISTEMAS.forEach(s => { nav.appendChild(criarItem(s)); criarCard(s, grid); });
 
 function criarItem(s){
   const b = document.createElement('button');
@@ -233,12 +456,18 @@ function abrir(id){
   atual = id;
   document.querySelectorAll('.item').forEach(i => i.classList.toggle('active', i.dataset.id === id));
   Object.values(iframes).forEach(f => f.classList.remove('show'));
+  Object.values(VIEWS).forEach(v => v.classList.remove('show'));
+  home.classList.remove('show');
   side.classList.remove('open');
+  const interno = INTERNOS.find(x => x.id === id);
 
   if(id === 'home'){
     home.classList.add('show'); titulo.textContent = 'Início';
+  } else if(interno){
+    interno.render();
+    VIEWS[id].classList.add('show'); VIEWS[id].scrollTop = 0;
+    titulo.textContent = interno.nome;
   } else {
-    home.classList.remove('show');
     const s = SISTEMAS.find(x => x.id === id);
     if(!iframes[id]){
       const f = document.createElement('iframe');
@@ -255,11 +484,14 @@ function abrir(id){
 }
 
 document.getElementById('btnReload').onclick = () => {
-  if(atual && iframes[atual]) iframes[atual].src = SISTEMAS.find(s => s.id === atual).url;
+  const interno = INTERNOS.find(x => x.id === atual);
+  if(interno) interno.render();
+  else if(atual && iframes[atual]) iframes[atual].src = SISTEMAS.find(s => s.id === atual).url;
 };
 document.getElementById('btnNova').onclick = () => {
   const s = SISTEMAS.find(x => x.id === atual);
   if(s) window.open(s.url, '_blank');
+  else if(INTERNOS.some(x => x.id === atual)) window.open(location.href.split('#')[0] + '#' + atual, '_blank');
 };
 document.getElementById('icMini').innerHTML = ic('collapse');
 document.getElementById('btnMenu').innerHTML = ic('menu');
@@ -286,9 +518,643 @@ btnTema.onclick = () => {
 document.getElementById('btnMini').onclick = () => side.classList.toggle('mini');
 document.getElementById('btnMenu').onclick = () => side.classList.toggle('open');
 
-// Abre o sistema indicado na URL (#rh, #financeiro, #pcp...) ou a tela inicial
+
+/* =====================================================================
+   INDICADORES DE DESEMPENHO
+   ===================================================================== */
+const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const MESES_LONGO = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const UNIDADES = [
+  {v:'R$', n:'R$ (moeda)', ag:'soma'}, {v:'%', n:'% (percentual)', ag:'media'}, {v:'kg', n:'kg', ag:'soma'},
+  {v:'t', n:'toneladas', ag:'soma'}, {v:'m', n:'metros', ag:'soma'}, {v:'un', n:'unidades', ag:'soma'},
+  {v:'dias', n:'dias', ag:'media'}, {v:'nota', n:'nota', ag:'media'}
+];
+const AREAS_PADRAO = ['Comercial','Financeiro','Produção','PPCP','Geral'];
+const LIMIAR_ATENCAO = 0.9;                // ≥ 90% e < 100% = Atenção
+const CHAVE_DB = 'portalEleveIndicadores'; // onde os dados ficam salvos no navegador
+const ST = {
+  ok:      { n:'Atingido',       i:'✓', c:'#0ca30c' },
+  atencao: { n:'Atenção',        i:'!', c:'#fab219' },
+  abaixo:  { n:'Abaixo da meta', i:'✕', c:'#d03b3b' },
+  sem:     { n:'Sem lançamento', i:'–', c:'#9AA4B2' }
+};
+
+const x12 = v => Array(12).fill(v);
+const r12 = arr => { const a = x12(null); (arr || []).forEach((v, i) => { if(i < 12) a[i] = v ?? null; }); return a; };
+
+// Dados iniciais (vindos da planilha INDICADORES_DE_DESEMPENHO_ELEVE.xlsx)
+function dadosPlanilha(){
+  const I = (id, area, nome, unidade, direcao, agregacao) => ({id, area, nome, unidade, direcao, agregacao});
+  const indicadores = [
+    I('com_rob',   'Comercial',  'ROB – Receita Operacional Bruta',     'R$',   'maior', 'soma'),
+    I('fin_cpv',   'Financeiro', 'CPV',                                  '%',    'menor', 'media'),
+    I('fin_cf',    'Financeiro', 'Gasto com Custo Fixo',                 'R$',   'menor', 'soma'),
+    I('fin_ebitda','Financeiro', 'EBITDA',                               '%',    'maior', 'media'),
+    I('fin_ro',    'Financeiro', 'Resultado Operacional',                '%',    'maior', 'media'),
+    I('prd_perf',  'Produção',   'Produção Perfilar',                    'un',   'maior', 'soma'),
+    I('prd_col',   'Produção',   'Produção Colagem',                     'un',   'maior', 'soma'),
+    I('prd_lam',   'Produção',   'Perda de Lâmina',                      'un',   'menor', 'soma'),
+    I('prd_ton',   'Produção',   'Tonel/Metro',                          'un',   'maior', 'media'),
+    I('ppcp_lead', 'PPCP',       'Lead Time',                            'dias', 'menor', 'media'),
+    I('ger_5s',    'Geral',      'Nota 5S',                              'nota', 'maior', 'media'),
+    I('fin_inad',  'Financeiro', 'Inadimplência',                        '%',    'menor', 'media'),
+    I('com_canc',  'Comercial',  'Pedidos Cancelados (valor)',           'R$',   'menor', 'soma'),
+    I('com_canc2', 'Comercial',  'Pedidos Cancelados (valor) – 2',       'R$',   'menor', 'soma'),
+    I('com_kg',    'Comercial',  'Total de kg vendido por mês',          'kg',   'maior', 'soma'),
+  ];
+  const v = {
+    com_rob:   { meta:[2000000,3200000,3500000,3500000,3500000,4000000,4000000,4000000,4500000,4500000,4500000,2000000], real:[1500000,3200000] },
+    fin_cpv:   { meta:[65,65], real:[60,70] },
+    fin_cf:    { meta:[250000,250000], real:[280000,250000] },
+    fin_ebitda:{ meta:[30,30], real:[28,50] },
+    fin_ro:    { meta:[15,15], real:[10,-1] },
+    prd_perf:  { meta:[2200,2200], real:[2000,3000] },
+    prd_col:   { meta:[950,950], real:[900,200] },
+    prd_lam:   { meta:[2000,2000], real:[1000,2500] },
+    prd_ton:   { meta:[4500,4800], real:[4200,4000] },
+    ppcp_lead: { meta:x12(10), real:[] },
+    ger_5s:    { meta:x12(10), real:[] },
+    fin_inad:  { meta:x12(0.5), real:[] },
+    com_canc:  { meta:x12(1000), real:[] },
+    com_canc2: { meta:[1500,1500], real:[1000,1000] },
+    com_kg:    { meta:x12(120000), real:[] },
+  };
+  const valores = { '2027': {} };
+  Object.entries(v).forEach(([k, o]) => valores['2027'][k] = { meta:r12(o.meta), real:r12(o.real) });
+  return { versao:1, indicadores, valores };
+}
+
+const validoDB = d => d && Array.isArray(d.indicadores) && d.valores && typeof d.valores === 'object';
+function carregarDB(){
+  try { const t = localStorage.getItem(CHAVE_DB); if(t){ const d = JSON.parse(t); if(validoDB(d)) return d; } } catch(e){}
+  return dadosPlanilha();
+}
+function salvarDB(){
+  try { localStorage.setItem(CHAVE_DB, JSON.stringify(DB)); marcarSalvo(); return true; }
+  catch(e){ toast('Não foi possível salvar neste navegador'); return false; }
+}
+let DB = carregarDB();
+
+function vals(ano, id){
+  const A = DB.valores[ano] || (DB.valores[ano] = {});
+  if(!A[id]) A[id] = { meta:x12(null), real:x12(null) };
+  return A[id];
+}
+function anos(){ const a = Object.keys(DB.valores); if(!a.length) a.push(String(new Date().getFullYear())); return a.sort(); }
+function areas(){
+  const s = new Set(AREAS_PADRAO.filter(a => DB.indicadores.some(i => i.area === a)));
+  DB.indicadores.forEach(i => s.add(i.area));
+  return [...s];
+}
+const filtrados = area => DB.indicadores.filter(i => area === 'todas' || i.area === area);
+
+// ---- Formatação de números (padrão brasileiro)
+const nfCache = {};
+const nf = d => nfCache[d] || (nfCache[d] = new Intl.NumberFormat('pt-BR', {maximumFractionDigits:d}));
+const nfc = new Intl.NumberFormat('pt-BR', {notation:'compact', maximumFractionDigits:1});
+const num = (v, d = 2) => v == null || isNaN(v) ? '' : nf(d).format(v);
+function fmt(v, u){
+  if(v == null || isNaN(v)) return '–';
+  if(u === 'R$') return 'R$ ' + num(v);
+  if(u === '%') return num(v) + '%';
+  if(u === 'nota') return num(v);
+  return num(v) + ' ' + u;
+}
+function fmtCurto(v, u){
+  if(v == null || isNaN(v)) return '–';
+  const n = Math.abs(v) >= 10000 ? nfc.format(v) : num(v, 1);
+  if(u === 'R$') return 'R$ ' + n;
+  if(u === '%') return n + '%';
+  if(u === 'nota') return n;
+  return n + ' ' + u;
+}
+const pct = a => a == null ? '–' : (a * 100 > 999 ? '>999%' : num(a * 100, 1) + '%');
+function parseNum(s){
+  s = String(s ?? '').trim().replace(/R\$|%|\s/g, '');
+  if(s === '') return null;
+  if(s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+  else if(/^-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+  const n = Number(s);
+  return isFinite(n) ? n : NaN;
+}
+
+// ---- Regras de cálculo
+// "maior é melhor": atingimento = realizado ÷ meta
+// "menor é melhor": atingimento = meta ÷ realizado (realizado zero = meta cumprida)
+function atingimento(ind, meta, real){
+  if(meta == null || real == null) return null;
+  if(ind.direcao === 'menor'){ if(real <= 0) return meta >= 0 ? 1 : null; if(meta <= 0) return 0; return meta / real; }
+  if(meta === 0) return null;
+  return real / meta;
+}
+const status = a => a == null ? 'sem' : a >= 1 ? 'ok' : a >= LIMIAR_ATENCAO ? 'atencao' : 'abaixo';
+const sIcon = s => `<span class="sicon s-${s}" aria-hidden="true">${ST[s].i}</span>`;
+const sPill = s => `<span class="pill">${sIcon(s)}${ST[s].n}</span>`;
+const dirTxt = i => i.direcao === 'menor' ? '↓ menor é melhor' : '↑ maior é melhor';
+
+// Valor de um mês (0–11) ou acumulado do ano ('acum': soma ou média dos meses com meta e realizado)
+function periodo(ind, ano, mes){
+  const v = vals(ano, ind.id);
+  if(mes !== 'acum'){ const meta = v.meta[mes], real = v.real[mes]; return { meta, real, a:atingimento(ind, meta, real) }; }
+  const idx = [...Array(12).keys()].filter(i => v.meta[i] != null && v.real[i] != null);
+  if(!idx.length) return { meta:null, real:null, a:null, n:0 };
+  const soma = k => idx.reduce((t, i) => t + v[k][i], 0);
+  let meta = soma('meta'), real = soma('real');
+  if(ind.agregacao === 'media'){ meta /= idx.length; real /= idx.length; }
+  return { meta, real, a:atingimento(ind, meta, real), n:idx.length };
+}
+const nomeMes = (m, ano) => m === 'acum' ? `Acumulado ${ano}` : `${MESES_LONGO[m]}/${ano}`;
+
+// ---- Estado das telas
+const EST = { ano:null, mes:null, area:'todas', lancArea:'todas' };
+function ultimoMes(ano){
+  let u = -1;
+  DB.indicadores.forEach(i => vals(ano, i.id).real.forEach((x, k) => { if(x != null && k > u) u = k; }));
+  if(u >= 0) return u;
+  const h = new Date(); return String(h.getFullYear()) === ano ? h.getMonth() : 0;
+}
+function garantirAno(){
+  const a = anos();
+  if(!EST.ano || !a.includes(EST.ano)){
+    const cur = String(new Date().getFullYear());
+    EST.ano = a.includes(cur) ? cur : a[a.length - 1]; EST.mes = null;
+  }
+  if(EST.mes == null) EST.mes = ultimoMes(EST.ano);
+}
+
+// ---- Gráfico de barras (realizado, cor = status) com marcação da meta
+function escala(min, max){
+  const raw = (max - min) / 4 || 1, mag = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / mag;
+  const step = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * mag;
+  const a = Math.floor(min / step) * step, b = Math.ceil(max / step) * step, ticks = [];
+  for(let t = a; t <= b + step / 2; t += step) ticks.push(Math.round(t * 1e6) / 1e6);
+  return { min:a, max:b, ticks };
+}
+function barra(x, w, yb, yt, r){
+  if(Math.abs(yb - yt) < .5) return '';
+  r = Math.min(r, w / 2, Math.abs(yb - yt));
+  return yt < yb
+    ? `M${x} ${yb}V${yt + r}Q${x} ${yt} ${x + r} ${yt}H${x + w - r}Q${x + w} ${yt} ${x + w} ${yt + r}V${yb}Z`
+    : `M${x} ${yb}V${yt - r}Q${x} ${yt} ${x + r} ${yt}H${x + w - r}Q${x + w} ${yt} ${x + w} ${yt - r}V${yb}Z`;
+}
+function grafico(ind, ano, o){
+  const v = vals(ano, ind.id), W = o.w, H = o.h, mini = !!o.mini;
+  const P = mini ? {l:2, r:2, t:4, b:4} : {l:70, r:12, t:14, b:30};
+  const iw = W - P.l - P.r, ih = H - P.t - P.b;
+  const todos = [...v.meta, ...v.real].filter(x => x != null);
+  let max = Math.max(0, ...todos), min = Math.min(0, ...todos), ticks = [];
+  if(max === min) max = min + 1;
+  if(!mini) ({min, max, ticks} = escala(min, max));
+  const y = val => P.t + (max - val) / (max - min) * ih, y0 = y(0);
+  const slot = iw / 12, bw = Math.min(slot * .56, 36), u = ind.unidade;
+  let s = `<svg viewBox="0 0 ${W} ${H}" ${mini ? 'preserveAspectRatio="none"' : ''} role="img" aria-label="Gráfico mensal de ${esc(ind.nome)}">`;
+  ticks.forEach(t => {
+    s += `<line x1="${P.l}" x2="${W - P.r}" y1="${y(t)}" y2="${y(t)}" style="stroke:var(--border)" stroke-width="1"/>`;
+    s += `<text x="${P.l - 8}" y="${y(t) + 4}" text-anchor="end" style="fill:var(--muted);font-size:11px">${esc(fmtCurto(t, u))}</text>`;
+  });
+  for(let k = 0; k < 12; k++){
+    const cx = P.l + slot * k + slot / 2, m = v.meta[k], r = v.real[k];
+    if(o.sel === k) s += `<rect x="${P.l + slot * k + 1}" y="${P.t - (mini ? 4 : 6)}" width="${slot - 2}" height="${ih + (mini ? 8 : 12)}" rx="4" style="fill:var(--active-bg)"/>`;
+    const a = atingimento(ind, m, r), st = status(a);
+    if(r != null) s += `<path d="${barra(cx - bw / 2, bw, y0, y(r), mini ? 2 : 4)}" fill="${st === 'sem' ? '#127DCB' : ST[st].c}"/>`;
+    if(m != null) s += `<line x1="${cx - slot * .38}" x2="${cx + slot * .38}" y1="${y(m)}" y2="${y(m)}" style="stroke:var(--txt)" stroke-width="2" stroke-linecap="round"/>`;
+    if(!mini) s += `<text x="${cx}" y="${H - 9}" text-anchor="middle" style="fill:${o.sel === k ? 'var(--eleve-azul)' : 'var(--muted)'};font-size:11px;font-weight:${o.sel === k ? 700 : 400}">${MESES[k]}</text>`;
+    const tip = `${MESES_LONGO[k]}/${ano}\nMeta: ${fmt(m, u)}\nRealizado: ${fmt(r, u)}\nAtingimento: ${pct(a)} · ${ST[st].n}`;
+    s += `<rect x="${P.l + slot * k}" y="0" width="${slot}" height="${H}" fill="transparent" data-tip="${esc(tip)}"/>`;
+  }
+  s += `<line x1="${P.l}" x2="${W - P.r}" y1="${y0}" y2="${y0}" style="stroke:var(--muted)" stroke-opacity=".5" stroke-width="1"/>`;
+  return s + '</svg>';
+}
+
+// ---- Tela: PAINEL DE INDICADORES
+function stat(label, valor, sub, s, hl){
+  return `<div class="stat ${hl ? 'hl' : ''}"><small>${s ? sIcon(s) : ''}${label}</small><b>${valor}</b><span class="s">${sub}</span></div>`;
+}
+function selAnos(id){ return `<select class="sel" id="${id}" title="Ano">${anos().map(a => `<option ${a === EST.ano ? 'selected' : ''}>${a}</option>`).join('')}</select>`; }
+
+function renderPainel(){
+  garantirAno();
+  const lista = filtrados(EST.area);
+  const res = lista.map(i => { const p = periodo(i, EST.ano, EST.mes); return { i, p, s:status(p.a) }; });
+  const cnt = { ok:0, atencao:0, abaixo:0, sem:0 }; res.forEach(r => cnt[r.s]++);
+  const com = res.length - cnt.sem;
+  vInd.innerHTML = `<div class="vwrap">
+    <div class="vhead">
+      <div><h2 class="vtitle">Painel de Indicadores de Desempenho Eleve</h2>
+        <p class="vsub">${nomeMes(EST.mes, EST.ano)} · ${EST.area === 'todas' ? 'Todas as áreas' : esc(EST.area)}</p></div>
+      <div class="vacts">
+        <button class="btn" data-act="ir-lanc" title="Lançar valores">${ic('edit')}<span class="t">Lançar valores</span></button>
+        <button class="btn pri" data-act="pdf" title="Gerar relatório em PDF">${ic('pdf')}<span class="t">Relatório PDF</span></button>
+      </div>
+    </div>
+    <div class="tools">
+      ${selAnos('fAno')}
+      <select class="sel" id="fMes" title="Período">${MESES_LONGO.map((m, k) => `<option value="${k}" ${k === EST.mes ? 'selected' : ''}>${m}</option>`).join('')}
+        <option value="acum" ${EST.mes === 'acum' ? 'selected' : ''}>Acumulado no ano</option></select>
+      <div class="chips">${['todas', ...areas()].map(a => `<button class="chip ${a === EST.area ? 'on' : ''}" data-area="${esc(a)}">${a === 'todas' ? 'Todas' : esc(a)}</button>`).join('')}</div>
+    </div>
+    <div class="stats">
+      ${stat('Metas atingidas', com ? Math.round(cnt.ok / com * 100) + '%' : '–', `${cnt.ok} de ${com} com lançamento`, null, true)}
+      ${stat('Atingidos', cnt.ok, '≥ 100% da meta', 'ok')}
+      ${stat('Atenção', cnt.atencao, '90% a 99% da meta', 'atencao')}
+      ${stat('Abaixo da meta', cnt.abaixo, 'menos de 90%', 'abaixo')}
+      ${stat('Sem lançamento', cnt.sem, 'falta meta ou realizado', 'sem')}
+    </div>
+    ${lista.length ? `<div class="kgrid">${res.map(cardInd).join('')}</div>`
+      : `<div class="vazio">Nenhum indicador cadastrado nesta área. <br><br><button class="btn pri" data-act="ir-lanc">${ic('plus')}<span class="t">Cadastrar indicador</span></button></div>`}
+    <div class="panel"><h3>Visão anual ${EST.ano} — % de atingimento por mês</h3>
+      <div class="tscroll">${tabelaAnual(lista)}</div>
+      <div class="hmleg"><span>${sIcon('ok')} Atingido (≥ 100%)</span><span>${sIcon('atencao')} Atenção (90–99%)</span><span>${sIcon('abaixo')} Abaixo da meta (&lt; 90%)</span>
+        <span>Indicadores “↓ menor é melhor”: atingimento = meta ÷ realizado</span></div>
+    </div>
+  </div>`;
+}
+function cardInd({ i, p, s }){
+  const w = p.a == null ? 0 : Math.max(0, Math.min(1, p.a)) * 100;
+  return `<div class="kcard" data-id="${esc(i.id)}" tabindex="0">
+    <div class="ktop"><span class="tag">${esc(i.area)}</span>${sPill(s)}</div>
+    <div class="kname">${esc(i.nome)}</div>
+    <div class="kmid"><span class="kpct">${pct(p.a)}</span><span class="kdir">${dirTxt(i)}</span></div>
+    <div class="barp"><i style="width:${w}%;background:${ST[s].c}"></i></div>
+    <div class="kval">Realizado <b>${fmt(p.real, i.unidade)}</b> · Meta <b>${fmt(p.meta, i.unidade)}</b>${EST.mes === 'acum' && p.n ? ` · ${p.n} ${p.n === 1 ? 'mês' : 'meses'}` : ''}</div>
+    <div class="kchart">${grafico(i, EST.ano, { w:280, h:56, mini:true, sel:EST.mes === 'acum' ? -1 : EST.mes })}</div>
+  </div>`;
+}
+function tabelaAnual(lista){
+  if(!lista.length) return '';
+  const cel = (i, p, mes) => {
+    const s = status(p.a);
+    const tip = `${esc(i.nome)} · ${nomeMes(mes, EST.ano)}\nMeta: ${fmt(p.meta, i.unidade)}\nRealizado: ${fmt(p.real, i.unidade)}\n${ST[s].n}`;
+    return `<td class="${p.a == null ? '' : 'h-' + s}" data-tip="${esc(tip)}">${p.a == null ? '<span style="color:var(--muted)">·</span>' : `<span class="hc">${ST[s].i}</span>${pct(p.a)}`}</td>`;
+  };
+  return `<table class="tb hm"><thead><tr><th class="l stk">Indicador</th>${MESES.map(m => `<th>${m}</th>`).join('')}<th>Acum.</th></tr></thead><tbody>
+    ${lista.map(i => `<tr data-id="${esc(i.id)}"><td class="l stk"><span class="hm-a">${esc(i.area)}</span>${esc(i.nome)}</td>
+      ${MESES.map((_, k) => cel(i, periodo(i, EST.ano, k), k)).join('')}${cel(i, periodo(i, EST.ano, 'acum'), 'acum')}</tr>`).join('')}
+  </tbody></table>`;
+}
+function abrirDetalhe(id){
+  const i = DB.indicadores.find(x => x.id === id); if(!i) return;
+  const v = vals(EST.ano, id), u = i.unidade, ac = periodo(i, EST.ano, 'acum');
+  const linhas = MESES.map((_, k) => {
+    const a = atingimento(i, v.meta[k], v.real[k]);
+    return `<tr><td class="l">${MESES_LONGO[k]}</td><td>${fmt(v.meta[k], u)}</td><td>${fmt(v.real[k], u)}</td><td>${pct(a)}</td><td class="l">${sPill(status(a))}</td></tr>`;
+  }).join('');
+  abrirModal({
+    largo:true,
+    titulo:`${esc(i.nome)}<small>${esc(i.area)} · ${esc(u)} · ${dirTxt(i)} · ${EST.ano}</small>`,
+    corpo:`<div class="dchart">${grafico(i, EST.ano, { w:900, h:290, sel:EST.mes === 'acum' ? -1 : EST.mes })}</div>
+      <div class="leg"><span><i class="sw" style="background:#0ca30c"></i><i class="sw" style="background:#fab219"></i><i class="sw" style="background:#d03b3b"></i>Realizado (cor = status)</span><span><i class="ln"></i>Meta</span></div>
+      <div class="tscroll"><table class="tb"><thead><tr><th class="l">Mês</th><th>Meta</th><th>Realizado</th><th>% Ating.</th><th class="l">Status</th></tr></thead>
+      <tbody>${linhas}</tbody>
+      <tfoot><tr><td class="l"><b>Acumulado</b>${ac.n ? ` <small style="color:var(--muted)">(${ac.n} ${ac.n === 1 ? 'mês' : 'meses'}, ${i.agregacao === 'media' ? 'média' : 'soma'})</small>` : ''}</td>
+        <td><b>${fmt(ac.meta, u)}</b></td><td><b>${fmt(ac.real, u)}</b></td><td><b>${pct(ac.a)}</b></td><td class="l">${sPill(status(ac.a))}</td></tr></tfoot></table></div>`,
+    rodape:`<button class="btn" data-close>Fechar</button><button class="btn pri" data-m="editar">${ic('edit')}<span class="t">Editar valores</span></button>`,
+    acoes:{ editar:() => { fecharModal(); EST.lancArea = i.area; abrir('lancamentos');
+      setTimeout(() => { const el = vLanc.querySelector(`.num[data-id="${CSS.escape(id)}"]`); if(el){ el.scrollIntoView({block:'center'}); el.focus(); } }, 30); } }
+  });
+}
+
+vInd.addEventListener('change', e => {
+  if(e.target.id === 'fAno'){ EST.ano = e.target.value; EST.mes = null; renderPainel(); }
+  if(e.target.id === 'fMes'){ EST.mes = e.target.value === 'acum' ? 'acum' : +e.target.value; renderPainel(); }
+});
+vInd.addEventListener('click', e => {
+  const chip = e.target.closest('.chip'); if(chip){ EST.area = chip.dataset.area; renderPainel(); return; }
+  const act = e.target.closest('[data-act]');
+  if(act){ if(act.dataset.act === 'pdf') modalRelatorio(); if(act.dataset.act === 'ir-lanc'){ EST.lancArea = EST.area; abrir('lancamentos'); } return; }
+  const card = e.target.closest('[data-id]'); if(card) abrirDetalhe(card.dataset.id);
+});
+vInd.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.classList.contains('kcard')) abrirDetalhe(e.target.dataset.id); });
+
+// ---- Tela: LANÇAR VALORES
+function renderLanc(){
+  garantirAno();
+  if(EST.lancArea !== 'todas' && !areas().includes(EST.lancArea)) EST.lancArea = 'todas';
+  const lista = filtrados(EST.lancArea);
+  vLanc.innerHTML = `<div class="vwrap">
+    <div class="vhead">
+      <div><h2 class="vtitle">Lançar Valores</h2><p class="vsub">Digite as metas e os valores realizados de cada mês. Tudo é salvo automaticamente neste navegador.</p></div>
+      <div class="vacts">
+        <button class="btn" data-act="ir-painel" title="Ver painel">${ic('gauge')}<span class="t">Ver painel</span></button>
+        <button class="btn pri" data-act="novo" title="Nova meta / indicador">${ic('plus')}<span class="t">Nova meta / indicador</span></button>
+      </div>
+    </div>
+    <div class="tools">
+      ${selAnos('lAno')}
+      <button class="btn" data-act="novo-ano" title="Criar um novo ano">${ic('cal')}<span class="t">Novo ano</span></button>
+      <select class="sel" id="lArea" title="Área"><option value="todas">Todas as áreas</option>${areas().map(a => `<option ${a === EST.lancArea ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select>
+      <span class="salvo" id="salvoInfo"></span>
+      <span class="sp"></span>
+      <button class="btn" data-act="exportar" title="Baixar uma cópia de todos os dados (.json)">${ic('download')}<span class="t">Exportar backup</span></button>
+      <button class="btn" data-act="importar" title="Carregar um backup (.json)">${ic('upload')}<span class="t">Importar backup</span></button>
+      <button class="btn dng" data-act="restaurar" title="Voltar aos dados originais da planilha">${ic('undo')}<span class="t">Restaurar planilha</span></button>
+    </div>
+    ${lista.length ? `<div class="panel" style="margin-top:0"><div class="tscroll lscroll"><table class="tb lt">
+      <thead><tr><th class="l stk">Indicador</th><th class="l stk2">Linha</th>${MESES.map(m => `<th>${m}/${String(EST.ano).slice(2)}</th>`).join('')}
+        <th title="Considera apenas os meses com meta e realizado preenchidos">Acum.</th></tr></thead>
+      <tbody>${lista.map(linhasLanc).join('')}</tbody></table></div></div>`
+      : `<div class="vazio">Nenhum indicador nesta área.<br><br><button class="btn pri" data-act="novo">${ic('plus')}<span class="t">Nova meta / indicador</span></button></div>`}
+    <p class="info" style="margin-top:14px">Dica: aceita números como <b>3.200.000</b>, <b>3200000</b> ou <b>65,5</b>. Para percentuais, digite o número (ex.: 65 para 65%).
+      <b>Enter</b> desce para o próximo campo do mesmo mês. Use <b>Exportar backup</b> para guardar uma cópia ou levar os dados para outro computador.</p>
+  </div>`;
+}
+const pctCell = (i, k) => {
+  const v = vals(EST.ano, i.id), a = atingimento(i, v.meta[k], v.real[k]), s = status(a);
+  return `<td class="pc ${a == null ? '' : 'h-' + s}" data-pc="${esc(i.id)}-${k}">${a == null ? '' : `<span class="hc">${ST[s].i}</span>${pct(a)}`}</td>`;
+};
+function acumCells(i){
+  const p = periodo(i, EST.ano, 'acum'), s = status(p.a);
+  return { meta:fmt(p.meta, i.unidade), real:fmt(p.real, i.unidade), pct:p.a == null ? '–' : `<span class="hc">${ST[s].i}</span>${pct(p.a)}`, s, a:p.a };
+}
+function linhasLanc(i){
+  const v = vals(EST.ano, i.id), id = esc(i.id), ac = acumCells(i);
+  const inp = (k, c) => `<td><input class="num" inputmode="decimal" autocomplete="off" data-id="${id}" data-c="${c}" data-m="${k}" value="${num(v[c][k], 4)}" aria-label="${esc(i.nome)} – ${c === 'meta' ? 'Meta' : 'Realizado'} ${MESES_LONGO[k]}"></td>`;
+  return `<tr class="g1"><td class="l stk" rowspan="3">
+      <div class="li-a">${esc(i.area)}</div><div class="li-n">${esc(i.nome)}</div><div class="li-u">${esc(i.unidade)} · ${dirTxt(i)}</div>
+      <div class="li-acts">
+        <button class="mini" data-act="editar" data-id="${id}" title="Editar indicador">${ic('edit')}</button>
+        <button class="mini" data-act="repetir" data-id="${id}" title="Repetir a meta de janeiro em todos os meses">${ic('fill')}</button>
+        <button class="mini dng" data-act="excluir" data-id="${id}" title="Excluir indicador">${ic('trash')}</button>
+      </div></td>
+    <td class="l stk2 lb">Meta${i.unidade === '%' ? ' (%)' : ''}</td>${MESES.map((_, k) => inp(k, 'meta')).join('')}<td class="ac" data-ac="meta-${id}">${ac.meta}</td></tr>
+    <tr><td class="l stk2 lb">Realizado${i.unidade === '%' ? ' (%)' : ''}</td>${MESES.map((_, k) => inp(k, 'real')).join('')}<td class="ac" data-ac="real-${id}">${ac.real}</td></tr>
+    <tr><td class="l stk2 lb">% Atingimento</td>${MESES.map((_, k) => pctCell(i, k)).join('')}<td class="ac ${ac.a == null ? '' : 'h-' + ac.s}" data-ac="pct-${id}">${ac.pct}</td></tr>`;
+}
+function atualizarLinha(i, k){
+  const id = CSS.escape(i.id), cell = vLanc.querySelector(`[data-pc="${id}-${k}"]`);
+  if(cell) cell.outerHTML = pctCell(i, k);
+  const ac = acumCells(i);
+  const m = vLanc.querySelector(`[data-ac="meta-${id}"]`), r = vLanc.querySelector(`[data-ac="real-${id}"]`), p = vLanc.querySelector(`[data-ac="pct-${id}"]`);
+  if(m) m.innerHTML = ac.meta; if(r) r.innerHTML = ac.real;
+  if(p){ p.innerHTML = ac.pct; p.className = 'ac' + (ac.a == null ? '' : ' h-' + ac.s); }
+}
+function marcarSalvo(){
+  const el = document.getElementById('salvoInfo');
+  if(el) el.textContent = '✓ Salvo às ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+}
+
+vLanc.addEventListener('change', e => {
+  const t = e.target;
+  if(t.id === 'lAno'){ EST.ano = t.value; EST.mes = null; renderLanc(); return; }
+  if(t.id === 'lArea'){ EST.lancArea = t.value; renderLanc(); return; }
+  if(t.classList.contains('num')){
+    const i = DB.indicadores.find(x => x.id === t.dataset.id); if(!i) return;
+    const n = parseNum(t.value);
+    if(Number.isNaN(n)){ t.classList.add('err'); toast('Valor inválido — use apenas números'); return; }
+    t.classList.remove('err');
+    vals(EST.ano, i.id)[t.dataset.c][+t.dataset.m] = n;
+    t.value = num(n, 4);
+    salvarDB(); atualizarLinha(i, +t.dataset.m);
+  }
+});
+vLanc.addEventListener('keydown', e => {
+  if(e.key !== 'Enter' || !e.target.classList.contains('num')) return;
+  e.preventDefault();
+  const col = [...vLanc.querySelectorAll(`.num[data-m="${e.target.dataset.m}"]`)], k = col.indexOf(e.target);
+  e.target.dispatchEvent(new Event('change', {bubbles:true}));
+  const prox = col[k + 1]; if(prox){ prox.focus(); prox.select(); }
+});
+vLanc.addEventListener('focusin', e => { if(e.target.classList.contains('num')) e.target.select(); });
+vLanc.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if(!b) return;
+  const i = DB.indicadores.find(x => x.id === b.dataset.id);
+  switch(b.dataset.act){
+    case 'ir-painel': EST.area = EST.lancArea; abrir('indicadores'); break;
+    case 'novo': modalIndicador(null); break;
+    case 'editar': if(i) modalIndicador(i); break;
+    case 'repetir': {
+      if(!i) break; const v = vals(EST.ano, i.id);
+      if(v.meta[0] == null){ toast('Preencha primeiro a meta de janeiro'); break; }
+      if(confirm(`Repetir a meta de janeiro (${fmt(v.meta[0], i.unidade)}) em todos os meses de ${EST.ano} para "${i.nome}"?`)){
+        v.meta = x12(v.meta[0]); salvarDB(); renderLanc(); marcarSalvo();
+      }
+      break;
+    }
+    case 'excluir':
+      if(i && confirm(`Excluir o indicador "${i.nome}" e todos os seus valores (todos os anos)?`)){
+        DB.indicadores = DB.indicadores.filter(x => x !== i);
+        Object.values(DB.valores).forEach(A => delete A[i.id]);
+        salvarDB(); renderLanc(); toast('Indicador excluído');
+      }
+      break;
+    case 'novo-ano': modalAno(); break;
+    case 'exportar': exportarBackup(); break;
+    case 'importar': document.getElementById('fileImport').click(); break;
+    case 'restaurar':
+      if(confirm('Restaurar os dados originais da planilha? Todos os lançamentos e indicadores criados aqui serão substituídos.\n\nDica: exporte um backup antes.')){
+        DB = dadosPlanilha(); EST.ano = null; salvarDB(); renderLanc(); toast('Dados da planilha restaurados');
+      }
+      break;
+  }
+});
+
+// ---- Cadastro de indicador / meta
+function modalIndicador(i){
+  const novo = !i;
+  const d = i || { nome:'', area:EST.lancArea !== 'todas' ? EST.lancArea : '', unidade:'R$', direcao:'maior', agregacao:'soma' };
+  abrirModal({
+    titulo:(novo ? 'Nova meta / indicador' : 'Editar indicador') + `<small>${novo ? 'Cadastre um novo indicador para acompanhar no painel' : esc(d.nome)}</small>`,
+    corpo:`<div class="fld"><label for="iNome">Nome do indicador</label><input id="iNome" maxlength="80" value="${esc(d.nome)}" placeholder="Ex.: Ticket médio, OTIF, Absenteísmo"></div>
+      <div class="row2">
+        <div class="fld"><label for="iArea">Área</label><input id="iArea" list="dlAreas" value="${esc(d.area)}" placeholder="Selecione ou digite uma nova">
+          <datalist id="dlAreas">${[...new Set([...AREAS_PADRAO, ...areas()])].map(a => `<option value="${esc(a)}">`).join('')}</datalist></div>
+        <div class="fld"><label for="iUn">Unidade</label><select id="iUn">${UNIDADES.map(x => `<option value="${x.v}" ${x.v === d.unidade ? 'selected' : ''}>${x.n}</option>`).join('')}</select></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label for="iDir">Sentido da meta</label><select id="iDir">
+          <option value="maior" ${d.direcao === 'maior' ? 'selected' : ''}>↑ Maior é melhor</option>
+          <option value="menor" ${d.direcao === 'menor' ? 'selected' : ''}>↓ Menor é melhor</option></select></div>
+        <div class="fld"><label for="iAg">Acumulado do ano</label><select id="iAg">
+          <option value="soma" ${d.agregacao === 'soma' ? 'selected' : ''}>Soma dos meses</option>
+          <option value="media" ${d.agregacao === 'media' ? 'selected' : ''}>Média dos meses</option></select></div>
+      </div>
+      <div class="fld"><label for="iMeta">Meta mensal ${EST.ano} <small>(opcional — preenche os meses que ainda estão sem meta)</small></label>
+        <input id="iMeta" inputmode="decimal" placeholder="Ex.: 120000"></div>
+      <p class="info">“Menor é melhor” serve para custos, perdas, prazos e cancelamentos: o atingimento é calculado como meta ÷ realizado.</p>`,
+    rodape:`<button class="btn" data-close>Cancelar</button><button class="btn pri" data-m="salvar">Salvar</button>`,
+    acoes:{ salvar:() => {
+      const g = id => document.getElementById(id);
+      const nome = g('iNome').value.trim(), area = g('iArea').value.trim(), meta = parseNum(g('iMeta').value);
+      if(!nome){ g('iNome').focus(); toast('Informe o nome do indicador'); return; }
+      if(!area){ g('iArea').focus(); toast('Informe a área'); return; }
+      if(Number.isNaN(meta)){ g('iMeta').focus(); toast('Meta inválida'); return; }
+      const alvo = i || { id:'i' + Date.now().toString(36) };
+      Object.assign(alvo, { nome, area, unidade:g('iUn').value, direcao:g('iDir').value, agregacao:g('iAg').value });
+      if(novo) DB.indicadores.push(alvo);
+      if(meta != null){ const v = vals(EST.ano, alvo.id); v.meta = v.meta.map(x => x == null ? meta : x); }
+      salvarDB(); fecharModal(); renderLanc();
+      toast(novo ? 'Indicador criado' : 'Indicador atualizado');
+    } },
+    aoAbrir:() => {
+      const un = document.getElementById('iUn');
+      if(novo) un.onchange = () => { document.getElementById('iAg').value = UNIDADES.find(x => x.v === un.value).ag; };
+      document.getElementById('iNome').focus();
+    }
+  });
+}
+function modalAno(){
+  const prox = String(Math.max(...anos().map(Number)) + 1);
+  abrirModal({
+    titulo:'Novo ano<small>Cria um novo ano para lançamento</small>',
+    corpo:`<div class="fld"><label for="nAno">Ano</label><input id="nAno" type="number" min="2000" max="2100" value="${prox}"></div>
+      <label class="chk"><input type="checkbox" id="nCopiar" checked> Copiar as metas de ${EST.ano}</label>`,
+    rodape:`<button class="btn" data-close>Cancelar</button><button class="btn pri" data-m="criar">Criar ano</button>`,
+    acoes:{ criar:() => {
+      const a = String(parseInt(document.getElementById('nAno').value, 10));
+      if(!/^\d{4}$/.test(a)){ toast('Ano inválido'); return; }
+      if(DB.valores[a]){ toast('Esse ano já existe'); return; }
+      const copiar = document.getElementById('nCopiar').checked, base = EST.ano;
+      DB.valores[a] = {};
+      DB.indicadores.forEach(i => { DB.valores[a][i.id] = { meta:copiar ? [...vals(base, i.id).meta] : x12(null), real:x12(null) }; });
+      EST.ano = a; EST.mes = null; salvarDB(); fecharModal(); renderLanc(); toast(`Ano ${a} criado`);
+    } }
+  });
+}
+function exportarBackup(){
+  const blob = new Blob([JSON.stringify(DB, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `indicadores-eleve-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+document.getElementById('fileImport').addEventListener('change', e => {
+  const f = e.target.files[0]; e.target.value = ''; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const d = JSON.parse(r.result);
+      if(!validoDB(d)) throw 0;
+      if(!confirm(`Importar o backup "${f.name}"? Os dados atuais deste navegador serão substituídos.`)) return;
+      DB = d; EST.ano = null; salvarDB();
+      INTERNOS.find(x => x.id === atual)?.render(); toast('Backup importado');
+    } catch(err){ toast('Arquivo de backup inválido'); }
+  };
+  r.readAsText(f);
+});
+
+// ---- Relatório em PDF (retrato ou paisagem, com cabeçalho e logo)
+function modalRelatorio(){
+  garantirAno();
+  abrirModal({
+    titulo:'Relatório em PDF<small>Painel de Indicadores de Desempenho Eleve</small>',
+    corpo:`<div class="fld"><label>Orientação da página</label><div class="opts">
+        <label class="opt"><input type="radio" name="rOri" value="landscape" checked><span class="ori l"></span><span><b>Paisagem</b><small>Melhor para o relatório anual</small></span></label>
+        <label class="opt"><input type="radio" name="rOri" value="portrait"><span class="ori p"></span><span><b>Retrato</b><small>A4 em pé</small></span></label></div></div>
+      <div class="fld"><label>Conteúdo</label><div class="opts">
+        <label class="opt"><input type="radio" name="rCon" value="periodo" checked><span><b>Resumo do período</b><small>${nomeMes(EST.mes, EST.ano)}</small></span></label>
+        <label class="opt"><input type="radio" name="rCon" value="anual"><span><b>Anual – 12 meses</b><small>Meta, realizado e % de ${EST.ano}</small></span></label></div></div>
+      <div class="fld"><label for="rArea">Área</label><select id="rArea"><option value="todas">Todas as áreas</option>${areas().map(a => `<option ${a === EST.area ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select></div>
+      <div class="fld"><label for="rObs">Observações <small>(opcional — aparece no fim do relatório)</small></label><textarea id="rObs" placeholder="Comentários, planos de ação, justificativas..."></textarea></div>
+      <p class="info">Na janela que abrir, escolha <b>“Salvar como PDF”</b> como destino. Se o cabeçalho do navegador aparecer, desmarque “Cabeçalhos e rodapés”.</p>`,
+    rodape:`<button class="btn" data-close>Cancelar</button><button class="btn pri" data-m="gerar">${ic('pdf')}<span class="t">Gerar PDF</span></button>`,
+    acoes:{ gerar:() => gerarRelatorio({
+      orient:document.querySelector('input[name="rOri"]:checked').value,
+      conteudo:document.querySelector('input[name="rCon"]:checked').value,
+      area:document.getElementById('rArea').value,
+      obs:document.getElementById('rObs').value.trim()
+    }) }
+  });
+}
+function gerarRelatorio(o){
+  const rp = document.getElementById('relatorio'), lista = filtrados(o.area), ano = EST.ano, mes = EST.mes;
+  const logo = document.querySelector('.brand .full').outerHTML.replace('class="full"', 'class="rp-logo"');
+  const agora = new Date(), emit = agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+  const per = o.conteudo === 'anual' ? `Ano ${ano} (janeiro a dezembro)` : nomeMes(mes, ano);
+  const areaTxt = o.area === 'todas' ? 'Todas as áreas' : o.area;
+  const cab = `<div class="rp-head">${logo}<div class="rp-ht"><div class="rp-t">PAINEL DE INDICADORES DE DESEMPENHO ELEVE</div>
+      <div class="rp-s">${o.conteudo === 'anual' ? 'Relatório anual' : 'Relatório do período'} · ${esc(per)} · ${esc(areaTxt)}</div></div>
+      <div class="rp-meta">Emitido em<br><b>${emit}</b></div></div>`;
+
+  let corpo = '';
+  if(o.conteudo === 'periodo'){
+    const res = lista.map(i => { const p = periodo(i, ano, mes); return { i, p, s:status(p.a) }; });
+    const cnt = { ok:0, atencao:0, abaixo:0, sem:0 }; res.forEach(r => cnt[r.s]++);
+    const com = res.length - cnt.sem;
+    const box = (l, v, s, hl) => `<div class="rp-box ${hl ? 'hl' : ''}"><small>${s ? sIcon(s) : ''}${l}</small><b>${v}</b></div>`;
+    corpo += `<div class="rp-sum">${box('Metas atingidas', com ? Math.round(cnt.ok / com * 100) + '%' : '–', null, true)}${box('Atingidos', cnt.ok, 'ok')}${box('Atenção', cnt.atencao, 'atencao')}${box('Abaixo da meta', cnt.abaixo, 'abaixo')}${box('Sem lançamento', cnt.sem, 'sem')}</div>`;
+    corpo += `<table class="rp-tb"><thead><tr><th class="l">Indicador</th><th class="l">Unid.</th><th class="l">Sentido</th><th>Meta</th><th>Realizado</th><th>% Atingimento</th><th class="l">Status</th></tr></thead><tbody>`;
+    [...new Set(res.map(r => r.i.area))].forEach(a => {
+      corpo += `<tr class="rp-grp"><td class="l" colspan="7">${esc(a)}</td></tr>`;
+      res.filter(r => r.i.area === a).forEach(({ i, p, s }) => {
+        const w = p.a == null ? 0 : Math.max(0, Math.min(1, p.a)) * 100;
+        corpo += `<tr><td class="l">${esc(i.nome)}</td><td class="l">${esc(i.unidade)}</td><td class="l">${i.direcao === 'menor' ? '↓ menor' : '↑ maior'}</td>
+          <td>${fmt(p.meta, i.unidade)}</td><td>${fmt(p.real, i.unidade)}</td>
+          <td><span class="rp-bar"><i style="width:${w}%;background:${ST[s].c}"></i></span><b>${pct(p.a)}</b></td><td class="l">${sPill(s)}</td></tr>`;
+      });
+    });
+    corpo += `</tbody></table>`;
+  } else {
+    corpo += `<table class="rp-tb rp-ano"><thead><tr><th class="l">Indicador</th><th class="l">Linha</th>${MESES.map(m => `<th>${m}</th>`).join('')}<th>Acum.</th></tr></thead>`;
+    lista.forEach(i => {
+      const v = vals(ano, i.id), u = i.unidade, ac = periodo(i, ano, 'acum');
+      const pc = a => { const s = status(a); return `<td class="${a == null ? '' : 'h-' + s}">${a == null ? '–' : `<span class="hc">${ST[s].i}</span>${pct(a)}`}</td>`; };
+      corpo += `<tbody><tr><td class="l rp-n" rowspan="3"><small>${esc(i.area)}</small>${esc(i.nome)}<br><span style="font-weight:400;color:#5F6B7A">${esc(u)} · ${i.direcao === 'menor' ? '↓ menor é melhor' : '↑ maior é melhor'}</span></td>
+          <td class="l rp-lb">Meta</td>${v.meta.map(x => `<td>${fmtCurto(x, u)}</td>`).join('')}<td><b>${fmtCurto(ac.meta, u)}</b></td></tr>
+        <tr><td class="l rp-lb">Realizado</td>${v.real.map(x => `<td>${fmtCurto(x, u)}</td>`).join('')}<td><b>${fmtCurto(ac.real, u)}</b></td></tr>
+        <tr><td class="l rp-lb">% Ating.</td>${MESES.map((_, k) => pc(atingimento(i, v.meta[k], v.real[k]))).join('')}${pc(ac.a)}</tr></tbody>`;
+    });
+    corpo += `</table>`;
+  }
+  if(!lista.length) corpo = '<p>Nenhum indicador cadastrado para esta área.</p>';
+  corpo += `<div class="rp-legend"><b>Critério:</b><span>${sIcon('ok')} Atingido ≥ 100%</span><span>${sIcon('atencao')} Atenção 90–99%</span><span>${sIcon('abaixo')} Abaixo &lt; 90%</span>
+    <span>${sIcon('sem')} Sem lançamento</span><span>↓ menor é melhor: atingimento = meta ÷ realizado · Acumulado considera só os meses lançados</span></div>`;
+  if(o.obs) corpo += `<div class="rp-obs"><b>Observações</b>${esc(o.obs)}</div>`;
+
+  const rod = `<div class="rp-foot"><span>Eleve · Portal de sistemas corporativos</span><span>Painel de Indicadores de Desempenho · ${esc(per)}</span></div>`;
+  rp.className = o.orient;
+  rp.innerHTML = `<table class="rp-wrap"><thead><tr><td>${cab}</td></tr></thead><tbody><tr><td>${corpo}</td></tr></tbody><tfoot><tr><td>${rod}</td></tr></tfoot></table>`;
+  document.getElementById('pageStyle').textContent =
+    `@page{size:A4 ${o.orient};margin:10mm 10mm 12mm;@bottom-right{content:"Página " counter(page) " de " counter(pages);font:8px Arial,sans-serif;color:#5F6B7A}}`;
+  const tituloOrig = document.title;
+  const sufixo = o.conteudo === 'anual' ? ano : (mes === 'acum' ? 'acumulado_' + ano : ano + '-' + String(mes + 1).padStart(2, '0'));
+  document.title = `Indicadores_Eleve_${sufixo}${o.area === 'todas' ? '' : '_' + o.area.replace(/\s+/g, '_')}`;
+  fecharModal();
+  setTimeout(() => { window.print(); document.title = tituloOrig; }, 60);
+}
+
+// ---- Modal genérico, dica (tooltip) e aviso (toast)
+const modal = document.getElementById('modal'), mbox = document.getElementById('mbox');
+let acoesModal = {};
+function abrirModal({ titulo, corpo, rodape, acoes = {}, largo = false, aoAbrir }){
+  acoesModal = acoes;
+  mbox.className = 'mbox' + (largo ? ' lg' : '');
+  mbox.innerHTML = `<div class="mhead"><h3>${titulo}</h3><button class="mini" data-close title="Fechar">${ic('close')}</button></div>
+    <div class="mbody">${corpo}</div><div class="mfoot">${rodape}</div>`;
+  modal.classList.add('show'); modal.setAttribute('aria-hidden', 'false');
+  if(aoAbrir) aoAbrir(); else mbox.querySelector('.mfoot .pri')?.focus();
+}
+function fecharModal(){ modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true'); mbox.innerHTML = ''; tip.classList.remove('show'); }
+modal.addEventListener('click', e => {
+  if(e.target === modal || e.target.closest('[data-close]')){ fecharModal(); return; }
+  const b = e.target.closest('[data-m]'); if(b && acoesModal[b.dataset.m]) acoesModal[b.dataset.m]();
+});
+document.addEventListener('keydown', e => {
+  if(!modal.classList.contains('show')) return;
+  if(e.key === 'Escape') fecharModal();
+  if(e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.type !== 'checkbox' && e.target.type !== 'radio'){
+    const p = mbox.querySelector('.mfoot [data-m]'); if(p){ e.preventDefault(); p.click(); }
+  }
+});
+
+const tip = document.getElementById('tip');
+document.addEventListener('mouseover', e => {
+  const t = e.target.closest && e.target.closest('[data-tip]');
+  if(!t){ tip.classList.remove('show'); return; }
+  tip.textContent = t.getAttribute('data-tip'); tip.classList.add('show');
+});
+document.addEventListener('mousemove', e => {
+  if(!tip.classList.contains('show')) return;
+  const x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8);
+  const y = e.clientY + 18 + tip.offsetHeight > innerHeight ? e.clientY - tip.offsetHeight - 10 : e.clientY + 18;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+});
+let toastT;
+function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400); }
+
+// Abre a tela indicada na URL (#indicadores, #lancamentos, #rh, #financeiro...) ou a tela inicial
 const inicial = location.hash.slice(1);
-abrir(SISTEMAS.some(s => s.id === inicial) ? inicial : 'home');
+abrir(SISTEMAS.some(s => s.id === inicial) || INTERNOS.some(s => s.id === inicial) ? inicial : 'home');
 </script>
 </body>
 </html>
