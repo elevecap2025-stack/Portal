@@ -522,6 +522,14 @@
     .gfeat{grid-template-columns:1fr}
   }
 </style>
+<style>
+  /* cadeado no menu para telas protegidas por senha */
+  .item.locked::after{content:"";margin-left:auto;width:14px;height:14px;flex-shrink:0;opacity:.6;background:currentColor;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E") center/contain no-repeat}
+  aside.mini .item.locked::after{display:none}
+  .fld input.err{border-color:#d03b3b;background:rgba(208,59,59,.08)}
+</style>
 <style id="pageStyle"></style>
 </head>
 <body>
@@ -540,6 +548,7 @@
       <div class="ttl"><small>Portal Eleve</small><h1 id="titulo">Início</h1></div>
       <button class="btn" id="btnReload" title="Recarregar sistema"></button>
       <button class="btn" id="btnNova" title="Abrir em nova aba"></button>
+      <button class="btn" id="btnBloq" title="Bloquear lançamentos (pede a senha de novo)" style="display:none"></button>
       <button class="btn ico" id="btnTema" title="Alternar tema claro/escuro">🌙</button>
     </div>
     <div class="frames" id="frames">
@@ -650,6 +659,7 @@ const ICON_PATHS = {
   grip:'<circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/>',
   layers:'<path d="M12 3 3 8l9 5 9-5z"/><path d="m3 13 9 5 9-5"/>',
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   // ícones de áreas
   cart:'<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.2a1 1 0 0 0 1 .8h9.3a1 1 0 0 0 1-.8L21 7H6"/>',
   coin:'<circle cx="12" cy="12" r="9"/><path d="M15 9.2c-.6-.9-1.7-1.4-3-1.4-1.7 0-3 .9-3 2.1 0 2.9 6 1.4 6 4.3 0 1.2-1.3 2.1-3 2.1-1.4 0-2.6-.6-3.1-1.5"/><path d="M12 6v1.8M12 16.3V18"/>',
@@ -730,6 +740,11 @@ function criarItem(s){
 
 // Abre um sistema (carrega só na primeira vez, depois mantém em memória)
 function abrir(id){
+  if(PROTEGIDAS.includes(id) && !liberado()){
+    if(!atual) abrir('home');
+    pedirSenha(() => abrir(id));
+    return;
+  }
   atual = id;
   document.querySelectorAll('.item').forEach(i => i.classList.toggle('active', i.dataset.id === id));
   Object.values(iframes).forEach(f => f.classList.remove('show'));
@@ -775,6 +790,7 @@ document.getElementById('icMini').innerHTML = ic('collapse');
 document.getElementById('btnMenu').innerHTML = ic('menu');
 document.getElementById('btnReload').innerHTML = ic('reload') + '<span class="t">Recarregar</span>';
 document.getElementById('btnNova').innerHTML = ic('external') + '<span class="t">Nova aba</span>';
+document.getElementById('btnBloq').innerHTML = ic('lock') + '<span class="t">Bloquear</span>';
 
 // Tema claro/escuro (claro é o padrão; a escolha fica salva no navegador)
 const btnTema = document.getElementById('btnTema');
@@ -794,6 +810,74 @@ btnTema.onclick = () => {
 };
 
 document.getElementById('btnMini').onclick = () => side.classList.toggle('mini');
+
+/* =====================================================================
+   SENHA PARA LANÇAR / ALTERAR VALORES
+   Quem não tem a senha só consegue VER o Painel de Indicadores.
+   Senha padrão: eleve2026
+   Para trocar a senha: abra o portal, aperte F12 → aba "Console", digite
+     gerarHashSenha('SuaNovaSenha')
+   e cole o código que aparecer no lugar do valor de SENHA_HASH abaixo.
+   ===================================================================== */
+const SENHA_HASH = '13a8e37ca1560c44278bfd7252e317942fe145b5029d69eb4894ab8a63b021b6';
+const PROTEGIDAS = ['lancamentos'];          // telas que exigem senha
+const CHAVE_LIB = 'portalEleveLiberado';     // liberação dura até fechar a aba
+function sha256(str){
+  const b = [...new TextEncoder().encode(str)], l = b.length * 8;
+  const P = [], K = [], H = [];
+  for(let n = 2; P.length < 64; n++) if(P.every(p => n % p)) P.push(n);
+  P.forEach((p, i) => { K[i] = (Math.pow(p, 1/3) % 1) * 4294967296 | 0; if(i < 8) H[i] = (Math.pow(p, 1/2) % 1) * 4294967296 | 0; });
+  b.push(0x80); while(b.length % 64 !== 56) b.push(0);
+  for(let i = 7; i >= 0; i--) b.push(i > 3 ? 0 : (l >>> (i * 8)) & 255);
+  const rr = (x, n) => (x >>> n) | (x << (32 - n));
+  for(let o = 0; o < b.length; o += 64){
+    const w = [];
+    for(let i = 0; i < 64; i++){
+      if(i < 16) w[i] = (b[o + i * 4] << 24) | (b[o + i * 4 + 1] << 16) | (b[o + i * 4 + 2] << 8) | b[o + i * 4 + 3];
+      else { const a = w[i - 15], c = w[i - 2];
+        w[i] = (w[i - 16] + (rr(a, 7) ^ rr(a, 18) ^ (a >>> 3)) + w[i - 7] + (rr(c, 17) ^ rr(c, 19) ^ (c >>> 10))) | 0; }
+    }
+    let [A, B, C, D, E, F, G, Hh] = H;
+    for(let i = 0; i < 64; i++){
+      const t1 = (Hh + (rr(E, 6) ^ rr(E, 11) ^ rr(E, 25)) + ((E & F) ^ (~E & G)) + K[i] + w[i]) | 0;
+      const t2 = ((rr(A, 2) ^ rr(A, 13) ^ rr(A, 22)) + ((A & B) ^ (A & C) ^ (B & C))) | 0;
+      Hh = G; G = F; F = E; E = (D + t1) | 0; D = C; C = B; B = A; A = (t1 + t2) | 0;
+    }
+    [A, B, C, D, E, F, G, Hh].forEach((x, i) => H[i] = (H[i] + x) | 0);
+  }
+  return H.map(x => (x >>> 0).toString(16).padStart(8, '0')).join('');
+}
+window.gerarHashSenha = s => { const h = sha256('portalEleve:' + s); console.log("const SENHA_HASH = '" + h + "';"); return h; };
+function liberado(){ try { return sessionStorage.getItem(CHAVE_LIB) === SENHA_HASH; } catch(e){ return !!window.__lib; } }
+function marcarLiberado(sim){
+  try { sim ? sessionStorage.setItem(CHAVE_LIB, SENHA_HASH) : sessionStorage.removeItem(CHAVE_LIB); } catch(e){}
+  window.__lib = sim; atualizarCadeado();
+}
+function atualizarCadeado(){
+  const lib = liberado();
+  document.getElementById('btnBloq').style.display = lib ? '' : 'none';
+  PROTEGIDAS.forEach(id => document.querySelector(`.item[data-id="${id}"]`)?.classList.toggle('locked', !lib));
+}
+function pedirSenha(depois){
+  let tent = 0;
+  abrirModal({
+    titulo:`Área restrita<small>Digite a senha para lançar ou alterar valores</small>`,
+    corpo:`<div class="fld"><label for="sSenha">Senha</label><input id="sSenha" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+      <p class="info">Sem a senha você pode consultar normalmente o <b>Painel de Indicadores</b>, mas não alterar metas nem realizados.</p>`,
+    rodape:`<button class="btn" data-close>Cancelar</button><button class="btn pri" data-m="entrar">${ic('lock')}<span class="t">Entrar</span></button>`,
+    acoes:{ entrar:() => {
+      const el = document.getElementById('sSenha');
+      if(sha256('portalEleve:' + el.value) === SENHA_HASH){ marcarLiberado(true); fecharModal(); toast('Acesso liberado'); depois && depois(); return; }
+      tent++; el.value = ''; el.classList.add('err'); el.focus();
+      toast(tent >= 3 ? 'Senha incorreta. Peça a senha ao responsável.' : 'Senha incorreta');
+    } },
+    aoAbrir:() => document.getElementById('sSenha').focus()
+  });
+}
+document.getElementById('btnBloq').onclick = () => {
+  marcarLiberado(false); toast('Lançamentos bloqueados');
+  if(PROTEGIDAS.includes(atual)) abrir('indicadores');
+};
 document.getElementById('btnMenu').onclick = () => side.classList.toggle('open');
 
 
@@ -1738,6 +1822,7 @@ document.addEventListener('keydown', e => {
 setInterval(() => { if(home.classList.contains('show')) relogio(); }, 20000);
 
 // Abre a tela indicada na URL (#indicadores, #lancamentos, #rh, #financeiro...) ou a tela inicial
+atualizarCadeado();
 const inicial = location.hash.slice(1);
 abrir(SISTEMAS.some(s => s.id === inicial) || INTERNOS.some(s => s.id === inicial) ? inicial : 'home');
 </script>
