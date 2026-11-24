@@ -2110,7 +2110,7 @@ function abrirModal({ titulo, corpo, rodape, acoes = {}, largo = false, aoAbrir 
 }
 function fecharModal(){ modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true'); mbox.innerHTML = ''; tip.classList.remove('show'); }
 modal.addEventListener('click', e => {
-  if(e.target === modal || e.target.closest('[data-close]')){ fecharModal(); return; }
+  if(e.target.closest('[data-close]')){ fecharModal(); return; }   // fecha só pelo X ou Cancelar/Fechar
   const b = e.target.closest('[data-m]'); if(b && acoesModal[b.dataset.m]) acoesModal[b.dataset.m]();
 });
 document.addEventListener('keydown', e => {
