@@ -529,6 +529,31 @@
             mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E") center/contain no-repeat}
   aside.mini .item.locked::after{display:none}
   .fld input.err{border-color:#d03b3b;background:rgba(208,59,59,.08)}
+  /* sincronização com o servidor */
+  .sync{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap;padding:0 4px}
+  .sync:empty{display:none}
+  .sync i{width:8px;height:8px;border-radius:50%;background:#9AA4B2;flex-shrink:0}
+  .sync.ok i{background:#22c55e}.sync.env i{background:#fab219}.sync.off i{background:#d03b3b}.sync.loc i{background:#fab219}
+  .aviso{margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid #fab219;background:rgba(250,178,25,.1)!important;color:var(--txt)!important}
+  /* indicador global */
+  .gcard{display:grid;grid-template-columns:minmax(240px,320px) 1fr;gap:22px;align-items:center;background:var(--surface);border:1px solid var(--eleve-azul);border-radius:14px;padding:18px 20px;margin-bottom:18px;cursor:pointer;box-shadow:0 1px 2px var(--shadow);transition:box-shadow .15s,transform .15s}
+  .gcard:hover,.gcard:focus-visible{box-shadow:0 10px 26px var(--shadow);transform:translateY(-1px);outline:none}
+  .g-h{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--eleve-azul)}
+  .g-h svg{width:16px;height:16px}
+  .g-num{font-size:42px;font-weight:800;letter-spacing:-1px;line-height:1.05;margin:8px 0 6px}
+  .g-sub{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:5px}
+  .g-sub b{color:var(--txt)}
+  .g-ch{min-width:0}
+  .g-ch svg{width:100%;height:auto;display:block}
+  .lt tbody.gl tr:first-child td{border-top:2px solid var(--border)}
+  .lt tbody.gl td.stk{background:var(--active-bg)}
+  .ah span.ef{margin-left:2px;background:var(--active-bg);color:var(--eleve-azul);border-color:transparent}
+  .hm-gl td{font-weight:600}
+  .hk-g{display:flex;align-items:center;gap:8px;font-size:13px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:9px 12px}
+  .hk-g svg{width:15px;height:15px;color:var(--eleve-azul)}
+  .hk-g b{font-size:17px;margin-left:auto;font-variant-numeric:tabular-nums}
+  .hk-g small{color:var(--muted)}
+  @media (max-width:760px){.gcard{grid-template-columns:1fr}.sync .t{display:none}}
 </style>
 <style id="pageStyle"></style>
 </head>
@@ -546,6 +571,7 @@
     <div class="bar">
       <button class="btn ico" id="btnMenu" style="display:none" title="Menu"></button>
       <div class="ttl"><small>Portal Eleve</small><h1 id="titulo">Início</h1></div>
+      <span class="sync" id="syncSt"></span>
       <button class="btn" id="btnReload" title="Recarregar sistema"></button>
       <button class="btn" id="btnNova" title="Abrir em nova aba"></button>
       <button class="btn" id="btnBloq" title="Bloquear lançamentos (pede a senha de novo)" style="display:none"></button>
@@ -778,7 +804,7 @@ function abrir(id){
 
 document.getElementById('btnReload').onclick = () => {
   const interno = INTERNOS.find(x => x.id === atual);
-  if(interno) interno.render();
+  if(interno){ interno.render(); if(SYNC.on) verificar(true); }
   else if(atual && iframes[atual]) iframes[atual].src = SISTEMAS.find(s => s.id === atual).url;
 };
 document.getElementById('btnNova').onclick = () => {
@@ -810,6 +836,15 @@ btnTema.onclick = () => {
 };
 
 document.getElementById('btnMini').onclick = () => side.classList.toggle('mini');
+
+/* =====================================================================
+   SERVIDOR COMPARTILHADO (Google Planilhas + Apps Script)
+   Cole abaixo, entre as aspas, a URL do "App da Web" (termina em /exec).
+   Com a URL preenchida, todos os usuários veem e gravam os MESMOS dados.
+   Vazio = cada navegador guarda os seus próprios dados (modo antigo).
+   ===================================================================== */
+const URL_SERVIDOR = 'https://script.google.com/macros/s/AKfycbxSkrk3OBm87DJGKu3cveHHWuh5lWxxkWPzXjj1o9W94EaXr3U6HJQtSemHXB7I-WJ9/exec';
+const SYNC = { on:!!URL_SERVIDOR, base:null, rev:0, enviando:false, denovo:false, timer:null, seq:0, vazio:false, estado:'', sujo:false, carregado:false };
 
 /* =====================================================================
    SENHA PARA LANÇAR / ALTERAR VALORES
@@ -856,12 +891,23 @@ function sha256(str){
   return H.map(x => (x >>> 0).toString(16).padStart(8, '0')).join('');
 }
 window.gerarHashSenha = s => { const h = sha256('portalEleve:' + s); console.log("const SENHA_HASH = '" + h + "';"); return h; };
-function admin(){ try { return sessionStorage.getItem(CHAVE_ADM) === ADMIN_HASH; } catch(e){ return !!window.__adm; } }
+// Código enviado ao servidor para provar a senha (diferente do hash acima, que fica visível no código)
+const CHAVE_TOK = 'portalEleveToken';
+function tokenAtual(){ try { return sessionStorage.getItem(CHAVE_TOK) || window.__tok || null; } catch(e){ return window.__tok || null; } }
+function guardarToken(senha){
+  const t = senha == null ? null : sha256('portalEleveServidor:' + senha);
+  try { t ? sessionStorage.setItem(CHAVE_TOK, t) : sessionStorage.removeItem(CHAVE_TOK); } catch(e){}
+  window.__tok = t;
+  if(t && SYNC.on) chamar({ acao:'papel', token:t }).then(j => { if(!j.papel) toast('Atenção: a senha no servidor está diferente. Avise o administrador.'); }).catch(() => {});
+}
+const comToken = ok => ok && (!SYNC.on || !!tokenAtual());
+function admin(){ let ok; try { ok = sessionStorage.getItem(CHAVE_ADM) === ADMIN_HASH; } catch(e){ ok = !!window.__adm; } return comToken(ok); }
+const papel = () => admin() ? 'admin' : 'comum';
 function marcarAdmin(sim){
   try { sim ? sessionStorage.setItem(CHAVE_ADM, ADMIN_HASH) : sessionStorage.removeItem(CHAVE_ADM); } catch(e){}
   window.__adm = sim; atualizarCadeado();
 }
-function liberado(){ if(admin()) return true; try { return sessionStorage.getItem(CHAVE_LIB) === SENHA_HASH; } catch(e){ return !!window.__lib; } }
+function liberado(){ if(admin()) return true; try { return comToken(sessionStorage.getItem(CHAVE_LIB) === SENHA_HASH); } catch(e){ return comToken(!!window.__lib); } }
 // Executa a ação só se for administrador; senão pede a senha do administrador
 function comoAdmin(acao){ if(admin()) acao(); else pedirSenha(acao, true); }
 function marcarLiberado(sim){
@@ -885,8 +931,8 @@ function pedirSenha(depois, soAdmin){
     rodape:`<button class="btn" data-close>Cancelar</button><button class="btn pri" data-m="entrar">${ic('lock')}<span class="t">Entrar</span></button>`,
     acoes:{ entrar:() => {
       const el = document.getElementById('sSenha'), h = sha256('portalEleve:' + el.value);
-      if(h === ADMIN_HASH){ marcarAdmin(true); fecharModal(); toast('Acesso de administrador liberado'); depois && depois(); return; }
-      if(h === SENHA_HASH && !soAdmin){ marcarLiberado(true); fecharModal(); toast('Acesso liberado'); depois && depois(); return; }
+      if(h === ADMIN_HASH){ guardarToken(el.value); marcarAdmin(true); fecharModal(); toast('Acesso de administrador liberado'); depois && depois(); return; }
+      if(h === SENHA_HASH && !soAdmin){ guardarToken(el.value); marcarLiberado(true); fecharModal(); toast('Acesso liberado'); depois && depois(); return; }
       tent++; el.value = ''; el.classList.add('err'); el.focus();
       if(h === SENHA_HASH && soAdmin){ toast('Essa senha não permite incluir indicadores. Use a senha do administrador.'); return; }
       toast(tent >= 3 ? 'Senha incorreta. Peça a senha ao responsável.' : 'Senha incorreta');
@@ -895,7 +941,7 @@ function pedirSenha(depois, soAdmin){
   });
 }
 document.getElementById('btnBloq').onclick = () => {
-  marcarAdmin(false); marcarLiberado(false); toast('Lançamentos bloqueados');
+  guardarToken(null); marcarAdmin(false); marcarLiberado(false); toast('Lançamentos bloqueados');
   if(PROTEGIDAS.includes(atual)) abrir('indicadores');
 };
 document.getElementById('btnMenu').onclick = () => side.classList.toggle('open');
@@ -926,6 +972,9 @@ function campoUnidade(u){
 const AREAS_PADRAO = ['Comercial','Financeiro','Produção','PPCP','RH','Geral'];
 const LIMIAR_ATENCAO = 0.9;                // ≥ 90% e < 100% = Atenção
 const CHAVE_DB = 'portalEleveIndicadores'; // onde os dados ficam salvos no navegador
+// Limite do atingimento de cada indicador no cálculo da Eficiência Global
+const TETOS = [{ v:1, n:'100% — passar da meta não compensa outro indicador' }, { v:1.2, n:'120%' }, { v:1.5, n:'150%' }, { v:0, n:'Sem limite' }];
+const GID = '__global';
 const ST = {
   ok:      { n:'Atingido',       i:'✓', c:'#0ca30c' },
   atencao: { n:'Atenção',        i:'!', c:'#fab219' },
@@ -985,6 +1034,8 @@ function normalizarDB(d){
   d.areas = d.areas.filter(a => a && a.nome).map(a => ({ nome:String(a.nome), icone:ICON_PATHS[a.icone] ? a.icone : iconePorNome(a.nome) }));
   d.indicadores.forEach(i => { if(!i.area) i.area = 'Geral'; if(!d.areas.some(a => a.nome === i.area)) d.areas.push({ nome:i.area, icone:iconePorNome(i.area) }); });
   if(!d.areas.length) d.areas.push({ nome:'Geral', icone:'grid' });
+  const g = d.global && typeof d.global === 'object' ? d.global : {}, t = g.teto == null ? 1 : +g.teto;
+  d.global = { nome:String(g.nome || 'Eficiência Global da Empresa').slice(0, 80), teto:TETOS.some(x => x.v === t) ? t : 1 };
   d.versao = 2;
   return d;
 }
@@ -992,11 +1043,172 @@ function carregarDB(){
   try { const t = localStorage.getItem(CHAVE_DB); if(t){ const d = JSON.parse(t); if(validoDB(d)) return normalizarDB(d); } } catch(e){}
   return dadosPlanilha();
 }
+function guardarLocal(){
+  try {
+    localStorage.setItem(CHAVE_DB, JSON.stringify(DB));
+    if(SYNC.base) localStorage.setItem(CHAVE_BASE, JSON.stringify({ rev:SYNC.rev, db:SYNC.base }));
+    return true;
+  } catch(e){ return false; }
+}
 function salvarDB(){
-  try { localStorage.setItem(CHAVE_DB, JSON.stringify(DB)); marcarSalvo(); return true; }
-  catch(e){ toast('Não foi possível salvar neste navegador'); return false; }
+  const ok = guardarLocal();
+  if(SYNC.on && !SYNC.vazio){ agendarEnvio(); return true; }
+  if(ok) marcarSalvo(); else toast('Não foi possível salvar neste navegador');
+  return ok;
 }
 let DB = carregarDB();
+
+/* ---- Sincronização com o servidor ----
+   Cada alteração é enviada como "diferença" (só as células mudadas + a estrutura, se mudou),
+   assim duas pessoas lançando ao mesmo tempo não apagam o trabalho uma da outra. */
+const CHAVE_BASE = 'portalEleveBase';
+const clone = o => JSON.parse(JSON.stringify(o));
+const estruturaDe = d => ({ indicadores:d.indicadores, areas:d.areas, global:d.global });
+function calcDiff(base, atual){
+  const valores = [], BV = base.valores || {};
+  Object.keys(atual.valores).forEach(ano => {
+    const A = atual.valores[ano], B = BV[ano] || {};
+    Object.keys(A).forEach(id => ['meta', 'real'].forEach(c => {
+      for(let m = 0; m < 12; m++){
+        const v = ((A[id] || {})[c] || [])[m] ?? null, b = ((B[id] || {})[c] || [])[m] ?? null;
+        if(v !== b) valores.push([ano, id, c, m, v]);
+      }
+    }));
+  });
+  const ea = JSON.stringify(estruturaDe(atual)), eb = JSON.stringify(estruturaDe(base));
+  const idsB = new Set(base.indicadores.map(i => i.id)), idsA = new Set(atual.indicadores.map(i => i.id));
+  return { valores, anos:Object.keys(atual.valores).filter(a => !BV[a]),
+    estrutura:ea !== eb ? JSON.parse(ea) : null,
+    adicionados:[...idsA].filter(x => !idsB.has(x)), removidos:[...idsB].filter(x => !idsA.has(x)) };
+}
+const diffVazio = d => !d.valores.length && !d.estrutura && !d.anos.length;
+// (mesma função existe no servidor — Code.gs)
+function aplicarDiff(db, diff, papel){
+  if(diff.estrutura){
+    const e = diff.estrutura, add = new Set(diff.adicionados || []), rem = new Set(diff.removidos || []);
+    if(!Array.isArray(e.indicadores) || !Array.isArray(e.areas)) throw new Error('Estrutura inválida');
+    if(papel !== 'admin' && (add.size || rem.size)) throw new Error('Somente o administrador pode incluir ou excluir indicadores');
+    const srv = {}; db.indicadores.forEach(i => srv[i.id] = 1);
+    const lista = e.indicadores.filter(i => i && (srv[i.id] || add.has(i.id)));
+    const cli = {}; lista.forEach(i => cli[i.id] = 1);
+    db.indicadores.forEach(i => { if(!cli[i.id] && !rem.has(i.id)) lista.push(i); });   // criados por outra pessoa enquanto isso
+    db.indicadores = lista; db.areas = e.areas; if(e.global) db.global = e.global;
+    db.indicadores.forEach(i => { if(!db.areas.some(a => a.nome === i.area)) db.areas.push({ nome:i.area, icone:'tag' }); });
+    const ok = { __global:1 }; db.indicadores.forEach(i => ok[i.id] = 1);
+    Object.keys(db.valores).forEach(a => Object.keys(db.valores[a]).forEach(id => { if(!ok[id]) delete db.valores[a][id]; }));
+  }
+  (diff.anos || []).forEach(a => { if(/^\d{4}$/.test(a) && !db.valores[a]) db.valores[a] = {}; });
+  const ok = { __global:1 }; db.indicadores.forEach(i => ok[i.id] = 1);
+  (diff.valores || []).forEach(([a, id, c, m, v]) => {
+    if(!ok[id] || (c !== 'meta' && c !== 'real') || !(m >= 0 && m < 12) || !/^\d{4}$/.test(a)) return;
+    if(v !== null && (typeof v !== 'number' || !isFinite(v))) return;
+    const A = db.valores[a] || (db.valores[a] = {});
+    const x = A[id] || (A[id] = { meta:Array(12).fill(null), real:Array(12).fill(null) });
+    x[c][m] = v;
+  });
+  return db;
+}
+async function chamar(dados){
+  const r = await fetch(URL_SERVIDOR, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body:JSON.stringify(dados) });
+  const j = await r.json();
+  if(!j.ok){ const e = new Error(j.erro || 'Erro no servidor'); e.servidor = true; throw e; }
+  return j;
+}
+async function lerServidor(rev){
+  const r = await fetch(URL_SERVIDOR + '?acao=ler&rev=' + rev + '&t=' + Date.now(), { cache:'no-store' });
+  const j = await r.json(); if(!j.ok) throw new Error(j.erro || 'Erro no servidor'); return j;
+}
+const ESTADOS = { ok:['ok', 'Sincronizado', 'Dados compartilhados com todos os usuários'], env:['env', 'Salvando…', 'Enviando alterações ao servidor'],
+  pend:['env', 'Alterações a enviar', 'Alterações ainda não enviadas'], carr:['env', 'Carregando…', 'Buscando os dados no servidor'],
+  off:['off', 'Sem conexão', 'Sem conexão com o servidor — as alterações ficam guardadas aqui e são enviadas quando a conexão voltar'],
+  vazio:['loc', 'Servidor sem dados', 'O administrador precisa publicar os dados no servidor'],
+  loc:['loc', 'Só neste navegador', 'Servidor compartilhado não configurado: os dados ficam apenas neste navegador'] };
+function setEstado(e){
+  SYNC.estado = e; const el = document.getElementById('syncSt'); if(!el) return;
+  const [c, t, d] = ESTADOS[e]; el.className = 'sync ' + c; el.title = d; el.innerHTML = `<i></i><span class="t">${t}</span>`;
+}
+// Redesenha a tela atual sem atrapalhar quem está digitando
+function redesenhar(){
+  if(modal.classList.contains('show') || (atual === 'lancamentos' && document.activeElement && document.activeElement.classList.contains('num'))){ SYNC.sujo = true; return; }
+  SYNC.sujo = false;
+  if(atual === 'home') renderHome(); else INTERNOS.find(x => x.id === atual)?.render();
+}
+setInterval(() => { if(SYNC.sujo) redesenhar(); }, 1500);
+function receberServidor(dbS, rev){
+  const pend = SYNC.base && !SYNC.vazio ? calcDiff(SYNC.base, DB) : null;
+  SYNC.base = normalizarDB(clone(dbS)); SYNC.rev = rev; SYNC.vazio = false; SYNC.carregado = true;
+  const novo = clone(SYNC.base), tem = pend && !diffVazio(pend);
+  if(tem){ try { aplicarDiff(novo, pend, papel()); } catch(e){} }
+  const antes = JSON.stringify(DB);
+  DB = normalizarDB(novo); guardarLocal();
+  if(tem) agendarEnvio(); else setEstado('ok');
+  if(JSON.stringify(DB) !== antes) redesenhar();
+}
+function agendarEnvio(){
+  if(!SYNC.on || SYNC.vazio) return;
+  clearTimeout(SYNC.timer); SYNC.timer = setTimeout(enviar, 700); setEstado('pend');
+}
+async function enviar(){
+  if(SYNC.enviando){ SYNC.denovo = true; return; }
+  if(!SYNC.base){ SYNC.timer = setTimeout(enviar, 3000); return; }
+  const diff = calcDiff(SYNC.base, DB);
+  if(diffVazio(diff)){ setEstado('ok'); return; }
+  const tok = tokenAtual();
+  if(!tok){ toast('Entre com a senha para salvar no servidor'); DB = normalizarDB(clone(SYNC.base)); guardarLocal(); redesenhar(); return; }
+  SYNC.enviando = true; SYNC.seq++; setEstado('env');
+  const enviado = clone(DB);
+  try {
+    const j = await chamar({ acao:'salvar', token:tok, diff });
+    const depois = calcDiff(enviado, DB);                 // digitado enquanto enviava
+    SYNC.base = normalizarDB(clone(j.db)); SYNC.rev = j.rev;
+    const novo = clone(SYNC.base); if(!diffVazio(depois)) aplicarDiff(novo, depois, papel());
+    const antes = JSON.stringify(DB); DB = normalizarDB(novo); guardarLocal();
+    setEstado('ok'); marcarSalvo(true);
+    if(JSON.stringify(DB) !== antes) redesenhar();
+    if(!diffVazio(depois)) agendarEnvio();
+  } catch(e){
+    if(e.servidor){ toast(e.message); DB = normalizarDB(clone(SYNC.base)); guardarLocal(); redesenhar(); setEstado('ok'); }
+    else { setEstado('off'); SYNC.timer = setTimeout(enviar, 15000); }
+  } finally {
+    SYNC.enviando = false;
+    if(SYNC.denovo){ SYNC.denovo = false; agendarEnvio(); }
+  }
+}
+async function verificar(inicial){
+  if(!SYNC.on || SYNC.enviando || (!inicial && document.hidden)) return;
+  const seq = ++SYNC.seq;
+  try {
+    const j = await lerServidor(inicial || !SYNC.carregado ? -1 : SYNC.rev);
+    if(seq !== SYNC.seq) return;                            // chegou uma resposta mais nova
+    if(j.vazio){ SYNC.vazio = true; SYNC.carregado = true; setEstado('vazio'); redesenhar(); return; }
+    if(j.db) receberServidor(j.db, j.rev);
+    else if(SYNC.estado === 'off' || SYNC.estado === 'carr') setEstado(diffVazio(calcDiff(SYNC.base, DB)) ? 'ok' : 'pend');
+    if(!j.db && SYNC.base && !SYNC.enviando && !diffVazio(calcDiff(SYNC.base, DB))) agendarEnvio();
+  } catch(e){ if(seq === SYNC.seq) setEstado('off'); }
+}
+// Substitui TODOS os dados (importar backup, restaurar planilha, primeira publicação) — só administrador
+async function substituirTudo(novo, msg){
+  novo = normalizarDB(novo);
+  if(!SYNC.on){ DB = novo; EST.ano = null; salvarDB(); redesenhar(); toast(msg); return; }
+  try {
+    setEstado('env');
+    const j = await chamar({ acao:'substituir', token:tokenAtual(), db:novo });
+    SYNC.vazio = true; receberServidor(j.db, j.rev); EST.ano = null; redesenhar(); toast(msg); marcarSalvo(true);
+  } catch(e){ setEstado(SYNC.vazio ? 'vazio' : 'off'); toast(e.servidor ? e.message : 'Sem conexão com o servidor — tente de novo'); }
+}
+function avisoSync(){
+  if(!SYNC.on) return `<p class="info aviso">⚠ O servidor compartilhado ainda não foi configurado: os lançamentos ficam salvos <b>só neste navegador</b> e outros usuários não os veem.</p>`;
+  if(SYNC.vazio) return admin()
+    ? `<div class="info aviso"><span>O servidor ainda não tem dados. Publique os dados deste navegador para que todos passem a vê-los.</span><button class="btn pri" data-act="publicar">${ic('upload')}<span class="t">Publicar dados deste navegador</span></button></div>`
+    : `<p class="info aviso">O servidor ainda não tem dados. Peça ao administrador para publicar os dados.</p>`;
+  return '';
+}
+if(SYNC.on){
+  try { const b = JSON.parse(localStorage.getItem(CHAVE_BASE) || 'null'); if(b && validoDB(b.db)){ SYNC.base = normalizarDB(b.db); SYNC.rev = b.rev; } } catch(e){}
+  setInterval(() => verificar(), 25000);
+  document.addEventListener('visibilitychange', () => { if(!document.hidden) verificar(); });
+  window.addEventListener('focus', () => verificar());
+}
 
 function vals(ano, id){
   const A = DB.valores[ano] || (DB.valores[ano] = {});
@@ -1071,6 +1283,27 @@ function periodo(ind, ano, mes){
   if(ind.agregacao === 'media'){ meta /= idx.length; real /= idx.length; }
   return { meta, real, a:atingimento(ind, meta, real), n:idx.length };
 }
+// ---- Indicador global: Eficiência da empresa
+// = média do % de atingimento de todos os indicadores com meta e realizado no período
+//   (cada atingimento limitado entre 0% e o teto configurado). Tem meta própria (em %).
+const capA = a => { if(a == null) return null; const t = DB.global.teto; a = Math.max(0, a); return t ? Math.min(a, t) : a; };
+function eficiencia(lista, ano, mes){
+  const as = lista.map(i => capA(periodo(i, ano, mes).a)).filter(a => a != null);
+  return as.length ? { v:as.reduce((t, a) => t + a, 0) / as.length * 100, n:as.length } : { v:null, n:0 };
+}
+const indGlobal = () => ({ id:GID, nome:DB.global.nome, area:'Empresa', unidade:'%', direcao:'maior', agregacao:'media' });
+const valsGlobal = ano => ({ meta:vals(ano, GID).meta, real:MESES.map((_, k) => eficiencia(DB.indicadores, ano, k).v) });
+function periodoGlobal(ano, mes){
+  const g = indGlobal(), v = vals(ano, GID);
+  if(mes !== 'acum'){ const e = eficiencia(DB.indicadores, ano, mes), meta = v.meta[mes]; return { meta, real:e.v, a:atingimento(g, meta, e.v), n:e.n }; }
+  const e = eficiencia(DB.indicadores, ano, 'acum');
+  const ms = [...Array(12).keys()].filter(k => v.meta[k] != null && eficiencia(DB.indicadores, ano, k).v != null);
+  const usa = ms.length ? ms : [...Array(12).keys()].filter(k => v.meta[k] != null);
+  const meta = usa.length ? usa.reduce((t, k) => t + v.meta[k], 0) / usa.length : null;
+  return { meta, real:e.v, a:atingimento(g, meta, e.v), n:e.n };
+}
+const fmtG = v => v == null || isNaN(v) ? '–' : num(v, 1) + '%';
+const tetoTxt = () => DB.global.teto ? `limite de ${num(DB.global.teto * 100, 0)}% por indicador` : 'sem limite por indicador';
 const nomeMes = (m, ano) => m === 'acum' ? `Acumulado ${ano}` : `${MESES_LONGO[m]}/${ano}`;
 
 // ---- Estado das telas
@@ -1106,7 +1339,7 @@ function barra(x, w, yb, yt, r){
     : `M${x} ${yb}V${yt - r}Q${x} ${yt} ${x + r} ${yt}H${x + w - r}Q${x + w} ${yt} ${x + w} ${yt - r}V${yb}Z`;
 }
 function grafico(ind, ano, o){
-  const v = vals(ano, ind.id), W = o.w, H = o.h, mini = !!o.mini;
+  const v = o.v || vals(ano, ind.id), W = o.w, H = o.h, mini = !!o.mini, lr = o.lblReal || 'Realizado';
   const P = mini ? {l:2, r:2, t:4, b:4} : {l:70, r:12, t:14, b:30};
   const iw = W - P.l - P.r, ih = H - P.t - P.b;
   const todos = [...v.meta, ...v.real].filter(x => x != null);
@@ -1127,7 +1360,7 @@ function grafico(ind, ano, o){
     if(r != null) s += `<path d="${barra(cx - bw / 2, bw, y0, y(r), mini ? 2 : 4)}" fill="${st === 'sem' ? '#127DCB' : ST[st].c}"/>`;
     if(m != null) s += `<line x1="${cx - slot * .38}" x2="${cx + slot * .38}" y1="${y(m)}" y2="${y(m)}" style="stroke:var(--txt)" stroke-width="2" stroke-linecap="round"/>`;
     if(!mini) s += `<text x="${cx}" y="${H - 9}" text-anchor="middle" style="fill:${o.sel === k ? 'var(--eleve-azul)' : 'var(--muted)'};font-size:11px;font-weight:${o.sel === k ? 700 : 400}">${MESES[k]}</text>`;
-    const tip = `${MESES_LONGO[k]}/${ano}\nMeta: ${fmt(m, u)}\nRealizado: ${fmt(r, u)}\nAtingimento: ${pct(a)} · ${ST[st].n}`;
+    const tip = `${MESES_LONGO[k]}/${ano}\nMeta: ${fmt(m, u)}\n${lr}: ${fmt(r, u)}\nAtingimento: ${pct(a)} · ${ST[st].n}`;
     s += `<rect x="${P.l + slot * k}" y="0" width="${slot}" height="${H}" fill="transparent" data-tip="${esc(tip)}"/>`;
   }
   s += `<line x1="${P.l}" x2="${W - P.r}" y1="${y0}" y2="${y0}" style="stroke:var(--muted)" stroke-opacity=".5" stroke-width="1"/>`;
@@ -1161,6 +1394,7 @@ function renderPainel(){
         <option value="acum" ${EST.mes === 'acum' ? 'selected' : ''}>Acumulado no ano</option></select>
       <div class="chips">${['todas', ...areas()].map(a => `<button class="chip ${a === EST.area ? 'on' : ''}" data-area="${esc(a)}">${a === 'todas' ? ic('layers') + 'Todas' : ic(areaIcone(a)) + esc(a)}</button>`).join('')}</div>
     </div>
+    ${cardGlobal()}
     <div class="stats">
       ${stat('Metas atingidas', com ? Math.round(cnt.ok / com * 100) + '%' : '–', `${cnt.ok} de ${com} com lançamento`, null, true)}
       ${stat('Atingidos', cnt.ok, '≥ 100% da meta', 'ok')}
@@ -1169,7 +1403,7 @@ function renderPainel(){
       ${stat('Sem lançamento', cnt.sem, 'falta meta ou realizado', 'sem')}
     </div>
     ${lista.length ? grupos(lista).map(g => `<section class="agrp">
-        ${EST.area === 'todas' ? `<h3 class="ah">${ic(areaIcone(g.area))}${esc(g.area)}<span>${g.itens.length}</span></h3>` : ''}
+        ${EST.area === 'todas' ? `<h3 class="ah">${ic(areaIcone(g.area))}${esc(g.area)}<span>${g.itens.length}</span>${(e => e.v == null ? '' : `<span class="ef" title="Eficiência da área: média do atingimento dos indicadores (${tetoTxt()})">Eficiência ${fmtG(e.v)}</span>`)(eficiencia(g.itens, EST.ano, EST.mes))}</h3>` : ''}
         <div class="kgrid">${res.filter(r => r.i.area === g.area).map(cardInd).join('')}</div></section>`).join('')
       : `<div class="vazio">Nenhum indicador cadastrado nesta área. <br><br><button class="btn pri" data-act="ir-lanc">${ic('plus')}<span class="t">Cadastrar indicador</span></button></div>`}
     <div class="panel"><h3>Visão anual ${EST.ano} — % de atingimento por mês</h3>
@@ -1177,6 +1411,17 @@ function renderPainel(){
       <div class="hmleg"><span>${sIcon('ok')} Atingido (≥ 100%)</span><span>${sIcon('atencao')} Atenção (90–99%)</span><span>${sIcon('abaixo')} Abaixo da meta (&lt; 90%)</span>
         <span>Indicadores “↓ menor é melhor”: atingimento = meta ÷ realizado</span></div>
     </div>
+  </div>`;
+}
+function cardGlobal(){
+  const p = periodoGlobal(EST.ano, EST.mes), s = status(p.a), g = indGlobal();
+  return `<div class="gcard" data-id="${GID}" tabindex="0" title="Ver detalhes da eficiência global">
+    <div><div class="g-h">${ic('gauge')}${esc(g.nome)}</div>
+      <div class="g-num" style="color:${p.a == null ? 'var(--txt)' : ST[s].c}">${fmtG(p.real)}</div>
+      <div class="g-sub">Meta <b>${p.meta == null ? 'não definida' : fmtG(p.meta)}</b>${p.a == null ? '' : ` · Atingimento <b>${pct(p.a)}</b>`}</div>
+      <div class="g-sub">${p.meta == null && p.real != null ? sPill('sem').replace(ST.sem.n, 'Sem meta') : sPill(s)}</div>
+      <div class="g-sub">Média de ${p.n} ${p.n === 1 ? 'indicador' : 'indicadores'} da empresa · ${nomeMes(EST.mes, EST.ano)} · ${tetoTxt()}</div></div>
+    <div class="g-ch">${grafico(g, EST.ano, { w:640, h:150, v:valsGlobal(EST.ano), lblReal:'Eficiência', sel:EST.mes === 'acum' ? -1 : EST.mes })}</div>
   </div>`;
 }
 function cardInd({ i, p, s }){
@@ -1197,13 +1442,39 @@ function tabelaAnual(lista){
     const tip = `${i.nome} · ${nomeMes(mes, EST.ano)}\nMeta: ${fmt(p.meta, i.unidade)}\nRealizado: ${fmt(p.real, i.unidade)}\n${ST[s].n}`;
     return `<td class="${p.a == null ? '' : 'h-' + s}" data-tip="${esc(tip)}">${p.a == null ? '<span style="color:var(--muted)">·</span>' : `<span class="hc">${ST[s].i}</span>${pct(p.a)}`}</td>`;
   };
+  const celG = mes => {
+    const p = periodoGlobal(EST.ano, mes), s = status(p.a);
+    const tip = `${DB.global.nome} · ${nomeMes(mes, EST.ano)}\nEficiência: ${fmtG(p.real)} (${p.n} indicadores)\nMeta: ${fmtG(p.meta)}\nAtingimento: ${pct(p.a)} · ${ST[s].n}`;
+    return `<td class="${p.a == null ? '' : 'h-' + s}" data-tip="${esc(tip)}">${p.real == null ? '<span style="color:var(--muted)">·</span>' : (p.a == null ? '' : `<span class="hc">${ST[s].i}</span>`) + fmtG(p.real)}</td>`;
+  };
   return `<table class="tb hm"><thead><tr><th class="l stk">Indicador</th>${MESES.map(m => `<th>${m}</th>`).join('')}<th>Acum.</th></tr></thead><tbody>
+    <tr class="hm-g"><td colspan="14"><span>${ic('gauge')}Empresa</span></td></tr>
+    <tr class="hm-gl" data-id="${GID}"><td class="l stk">${esc(DB.global.nome)} <small style="color:var(--muted);font-weight:400">(eficiência)</small></td>${MESES.map((_, k) => celG(k)).join('')}${celG('acum')}</tr>
     ${grupos(lista).map(g => `<tr class="hm-g"><td colspan="14"><span>${ic(areaIcone(g.area))}${esc(g.area)}</span></td></tr>` +
       g.itens.map(i => `<tr data-id="${esc(i.id)}"><td class="l stk">${esc(i.nome)}</td>
       ${MESES.map((_, k) => cel(i, periodo(i, EST.ano, k), k)).join('')}${cel(i, periodo(i, EST.ano, 'acum'), 'acum')}</tr>`).join('')).join('')}
   </tbody></table>`;
 }
+function abrirDetalheGlobal(){
+  const g = indGlobal(), vg = valsGlobal(EST.ano), ac = periodoGlobal(EST.ano, 'acum');
+  const linhas = MESES.map((_, k) => { const p = periodoGlobal(EST.ano, k);
+    return `<tr><td class="l">${MESES_LONGO[k]}</td><td>${fmtG(p.meta)}</td><td>${fmtG(p.real)}</td><td>${p.n || '–'}</td><td>${pct(p.a)}</td><td class="l">${sPill(status(p.a))}</td></tr>`; }).join('');
+  abrirModal({
+    largo:true,
+    titulo:`${esc(g.nome)}<small>${ic('gauge')} Empresa · média do atingimento de todos os indicadores · ${tetoTxt()} · ${EST.ano}</small>`,
+    corpo:`<div class="dchart">${grafico(g, EST.ano, { w:900, h:290, v:vg, lblReal:'Eficiência', sel:EST.mes === 'acum' ? -1 : EST.mes })}</div>
+      <div class="leg"><span><i class="sw" style="background:#0ca30c"></i><i class="sw" style="background:#fab219"></i><i class="sw" style="background:#d03b3b"></i>Eficiência (cor = status em relação à meta)</span><span><i class="ln"></i>Meta</span></div>
+      <div class="tscroll"><table class="tb"><thead><tr><th class="l">Mês</th><th>Meta</th><th>Eficiência</th><th>Indicadores</th><th>% Ating.</th><th class="l">Status</th></tr></thead>
+      <tbody>${linhas}</tbody>
+      <tfoot><tr><td class="l"><b>Acumulado</b></td><td><b>${fmtG(ac.meta)}</b></td><td><b>${fmtG(ac.real)}</b></td><td>${ac.n || '–'}</td><td><b>${pct(ac.a)}</b></td><td class="l">${sPill(status(ac.a))}</td></tr></tfoot></table></div>
+      <p class="info" style="margin-top:14px">A eficiência de cada mês é a média do % de atingimento de todos os indicadores que têm meta e realizado naquele mês. Cada atingimento conta entre 0% e ${DB.global.teto ? num(DB.global.teto * 100, 0) + '%' : 'sem limite'} (ajuste em <b>Lançar valores → indicador global</b>). O acumulado usa o atingimento acumulado de cada indicador.</p>`,
+    rodape:`<button class="btn" data-close>Fechar</button><button class="btn pri" data-m="editar">${ic('edit')}<span class="t">Editar meta</span></button>`,
+    acoes:{ editar:() => { fecharModal(); abrir('lancamentos');
+      setTimeout(() => { const el = vLanc.querySelector(`.num[data-id="${GID}"][data-m="${EST.mes === 'acum' ? 0 : EST.mes}"]`); if(el){ el.scrollIntoView({block:'center'}); el.focus(); } }, 30); } }
+  });
+}
 function abrirDetalhe(id){
+  if(id === GID) return abrirDetalheGlobal();
   const i = DB.indicadores.find(x => x.id === id); if(!i) return;
   const v = vals(EST.ano, id), u = i.unidade, ac = periodo(i, EST.ano, 'acum');
   const linhas = MESES.map((_, k) => {
@@ -1235,12 +1506,12 @@ vInd.addEventListener('click', e => {
   if(act){ if(act.dataset.act === 'pdf') modalRelatorio(); if(act.dataset.act === 'ir-lanc'){ EST.lancArea = EST.area; abrir('lancamentos'); } return; }
   const card = e.target.closest('[data-id]'); if(card) abrirDetalhe(card.dataset.id);
 });
-vInd.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.classList.contains('kcard')) abrirDetalhe(e.target.dataset.id); });
+vInd.addEventListener('keydown', e => { if(e.key === 'Enter' && (e.target.classList.contains('kcard') || e.target.classList.contains('gcard'))) abrirDetalhe(e.target.dataset.id); });
 
 // ---- Tela: LANÇAR VALORES
 function renderLanc(){
   const sc = vLanc.querySelector('.lscroll'), pos = sc ? [sc.scrollTop, sc.scrollLeft, vLanc.scrollTop] : null;
-  desenharLanc();
+  desenharLanc(); atualizarGlobal();
   const sc2 = vLanc.querySelector('.lscroll');
   if(pos && sc2){ sc2.scrollTop = pos[0]; sc2.scrollLeft = pos[1]; vLanc.scrollTop = pos[2]; }
 }
@@ -1256,7 +1527,7 @@ function desenharLanc(){
   const adm = admin(), icNovo = adm ? ic('plus') : ic('lock'), ttNovo = adm ? 'Nova meta / indicador' : 'Nova meta / indicador (somente administrador)';
   vLanc.innerHTML = `<div class="vwrap">
     <div class="vhead">
-      <div><h2 class="vtitle">Lançar Valores</h2><p class="vsub">Digite as metas e os valores realizados de cada mês. Tudo é salvo automaticamente neste navegador.</p></div>
+      <div><h2 class="vtitle">Lançar Valores</h2><p class="vsub">Digite as metas e os valores realizados de cada mês. Tudo é salvo automaticamente ${SYNC.on ? 'no servidor e aparece para todos os usuários' : 'neste navegador'}.</p></div>
       <div class="vacts">
         <button class="btn" data-act="ir-painel" title="Ver painel">${ic('gauge')}<span class="t">Ver painel</span></button>
         <button class="btn pri" data-act="novo" title="${ttNovo}">${icNovo}<span class="t">Nova meta / indicador</span></button>
@@ -1273,9 +1544,11 @@ function desenharLanc(){
       <button class="btn" data-act="importar" title="Carregar um backup (.json)${adm ? '' : ' — somente administrador'}">${adm ? ic('upload') : ic('lock')}<span class="t">Importar backup</span></button>
       <button class="btn dng" data-act="restaurar" title="Voltar aos dados originais da planilha${adm ? '' : ' — somente administrador'}">${adm ? ic('undo') : ic('lock')}<span class="t">Restaurar planilha</span></button>
     </div>
+    ${avisoSync()}
     ${lista.length ? `<div class="panel" style="margin-top:0"><div class="tscroll lscroll"><table class="tb lt">
       <thead><tr><th class="l stk">Indicador</th><th class="l stk2">Linha</th>${MESES.map(m => `<th>${m}/${String(EST.ano).slice(2)}</th>`).join('')}
         <th title="Considera apenas os meses com meta e realizado preenchidos">Acum.</th></tr></thead>
+      ${linhasGlobal()}
       ${grupos(lista).map(g => `<tbody class="ahd" data-area="${esc(g.area)}"><tr><td colspan="15"><div class="ahl">${ic(areaIcone(g.area))}${esc(g.area)}<span>${g.itens.length} ${g.itens.length === 1 ? 'indicador' : 'indicadores'}</span></div></td></tr></tbody>`
         + g.itens.map(linhasLanc).join('')).join('')}</table></div></div>`
       : `<div class="vazio">Nenhum indicador nesta área.<br><br><button class="btn pri" data-act="novo" title="${ttNovo}">${icNovo}<span class="t">Nova meta / indicador</span></button></div>`}
@@ -1315,9 +1588,61 @@ function atualizarLinha(i, k){
   if(m) m.innerHTML = ac.meta; if(r) r.innerHTML = ac.real;
   if(p){ p.innerHTML = ac.pct; p.className = 'ac' + (ac.a == null ? '' : ' h-' + ac.s); }
 }
-function marcarSalvo(){
-  const el = document.getElementById('salvoInfo');
-  if(el) el.textContent = '✓ Salvo às ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+// Linhas do indicador global (meta digitada; eficiência calculada automaticamente)
+function linhasGlobal(){
+  const g = indGlobal(), v = vals(EST.ano, GID), cu = campoUnidade('%');
+  const inp = k => `<td><span class="nw ${cu.cls}" data-u="%"><input class="num" style="${cu.pad}" inputmode="decimal" autocomplete="off" data-id="${GID}" data-c="meta" data-m="${k}" value="${num(v.meta[k], 4)}" aria-label="Meta de ${esc(g.nome)} – ${MESES_LONGO[k]} (%)"></span></td>`;
+  return `<tbody class="ahd gl"><tr><td colspan="15"><div class="ahl">${ic('gauge')}Empresa<span>indicador global · calculado a partir de todos os indicadores</span></div></td></tr></tbody>
+    <tbody class="gl"><tr><td class="l stk" rowspan="3">
+      <div class="li-top"><span class="li-a">${ic('gauge')}Global</span></div><div class="li-n">${esc(g.nome)}</div><div class="li-u">% · média do atingimento · ${tetoTxt()}</div>
+      <div class="li-acts">
+        <button class="mini" data-act="cfg-global" title="Configurar o indicador global (nome, meta, limite)">${ic('edit')}</button>
+        <button class="mini" data-act="repetir-global" title="Repetir a meta de janeiro em todos os meses">${ic('fill')}</button>
+      </div></td>
+      <td class="l stk2 lb"><div class="lbw">Meta<span class="ub">%</span></div></td>${MESES.map((_, k) => inp(k)).join('')}<td class="ac" data-gac="meta"></td></tr>
+    <tr><td class="l stk2 lb" title="Calculada automaticamente">Eficiência <small style="font-weight:400">(automática)</small></td>${MESES.map((_, k) => `<td class="pc ac" data-gr="${k}"></td>`).join('')}<td class="ac" data-gac="real"></td></tr>
+    <tr><td class="l stk2 lb">% Atingimento</td>${MESES.map((_, k) => `<td class="pc" data-gp="${k}"></td>`).join('')}<td class="ac" data-gac="pct"></td></tr></tbody>`;
+}
+function atualizarGlobal(){
+  const q = sel => vLanc.querySelector(sel);
+  const pinta = (el, p) => { if(!el) return; const s = status(p.a); el.className = el.className.replace(/\s*h-\w+/g, '') + (p.a == null ? '' : ' h-' + s);
+    el.innerHTML = p.a == null ? (el.dataset.gac === 'pct' ? '–' : '') : `<span class="hc">${ST[s].i}</span>${pct(p.a)}`; };
+  for(let k = 0; k < 12; k++){
+    const p = periodoGlobal(EST.ano, k), r = q(`[data-gr="${k}"]`);
+    if(r) r.textContent = p.real == null ? '' : fmtG(p.real);
+    pinta(q(`[data-gp="${k}"]`), p);
+  }
+  const p = periodoGlobal(EST.ano, 'acum'), m = q('[data-gac="meta"]'), r = q('[data-gac="real"]');
+  if(m) m.textContent = fmtG(p.meta); if(r) r.textContent = fmtG(p.real);
+  pinta(q('[data-gac="pct"]'), p);
+}
+function modalGlobal(){
+  const g = DB.global;
+  abrirModal({
+    titulo:`Indicador global<small>Eficiência da empresa = média do atingimento de todos os indicadores</small>`,
+    corpo:`<div class="fld"><label for="gNome">Nome</label><input id="gNome" maxlength="80" value="${esc(g.nome)}"></div>
+      <div class="row2">
+        <div class="fld"><label for="gMeta">Meta ${EST.ano} (%) <small>(opcional — vale para todos os meses)</small></label><input id="gMeta" inputmode="decimal" placeholder="Ex.: 95"></div>
+        <div class="fld"><label for="gTeto">Limite de cada indicador no cálculo</label><select id="gTeto">${TETOS.map(t => `<option value="${t.v}" ${t.v === g.teto ? 'selected' : ''}>${t.n}</option>`).join('')}</select></div>
+      </div>
+      <p class="info">Exemplo: se 3 indicadores atingiram 100%, 90% e 80% da meta, a eficiência é <b>90%</b>. Indicadores sem meta ou sem realizado no mês não entram na conta.
+        Com limite de 100%, um indicador que passou muito da meta (ex.: 160%) conta como 100% e não esconde os que ficaram abaixo. Atingimentos negativos contam como 0%.</p>`,
+    rodape:`<button class="btn" data-close>Cancelar</button><button class="btn pri" data-m="salvar">Salvar</button>`,
+    acoes:{ salvar:() => {
+      const nome = document.getElementById('gNome').value.trim(), meta = parseNum(document.getElementById('gMeta').value);
+      if(!nome){ toast('Informe o nome'); return; }
+      if(Number.isNaN(meta)){ toast('Meta inválida'); return; }
+      DB.global = { nome, teto:+document.getElementById('gTeto').value };
+      if(meta != null) vals(EST.ano, GID).meta = x12(meta);
+      salvarDB(); fecharModal(); renderLanc(); toast('Indicador global atualizado');
+    } },
+    aoAbrir:() => document.getElementById('gMeta').focus()
+  });
+}
+function marcarSalvo(servidor){
+  if(SYNC.on && !SYNC.vazio && !servidor) return;     // com servidor, só marca depois que ele confirmar
+  const el = document.getElementById('salvoInfo'), h = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+  if(el) el.textContent = (servidor ? '✓ Salvo no servidor às ' : '✓ Salvo neste navegador às ') + h;
 }
 
 vLanc.addEventListener('change', e => {
@@ -1332,13 +1657,13 @@ vLanc.addEventListener('change', e => {
     return;
   }
   if(t.classList.contains('num')){
-    const i = DB.indicadores.find(x => x.id === t.dataset.id); if(!i) return;
+    const i = t.dataset.id === GID ? indGlobal() : DB.indicadores.find(x => x.id === t.dataset.id); if(!i) return;
     const n = parseNum(t.value);
     if(Number.isNaN(n)){ t.classList.add('err'); toast('Valor inválido — use apenas números'); return; }
     t.classList.remove('err');
     vals(EST.ano, i.id)[t.dataset.c][+t.dataset.m] = n;
     t.value = num(n, 4);
-    salvarDB(); atualizarLinha(i, +t.dataset.m);
+    salvarDB(); if(i.id !== GID) atualizarLinha(i, +t.dataset.m); atualizarGlobal();
   }
 });
 vLanc.addEventListener('keydown', e => {
@@ -1376,6 +1701,14 @@ vLanc.addEventListener('click', e => {
         salvarDB(); renderLanc(); toast('Indicador excluído');
       }
       break;
+    case 'cfg-global': modalGlobal(); break;
+    case 'repetir-global': {
+      const v = vals(EST.ano, GID);
+      if(v.meta[0] == null){ toast('Preencha primeiro a meta de janeiro do indicador global'); break; }
+      if(confirm(`Repetir a meta de janeiro (${fmtG(v.meta[0])}) em todos os meses de ${EST.ano} para "${DB.global.nome}"?`)){ v.meta = x12(v.meta[0]); salvarDB(); renderLanc(); }
+      break;
+    }
+    case 'publicar': comoAdmin(() => substituirTudo(clone(DB), 'Dados publicados — agora todos os usuários veem os mesmos dados')); break;
     case 'novo-ano': modalAno(); break;
     case 'areas': modalAreas(); break;
     case 'exportar': exportarBackup(); break;
@@ -1386,7 +1719,7 @@ vLanc.addEventListener('click', e => {
     case 'restaurar':
       if(!admin()){ pedirSenha(() => { renderLanc(); toast('Administrador liberado — clique em Restaurar planilha novamente'); }, true); break; }
       if(confirm('Restaurar os dados originais da planilha? Todos os lançamentos e indicadores criados aqui serão substituídos.\n\nDica: exporte um backup antes.')){
-        DB = dadosPlanilha(); EST.ano = null; salvarDB(); renderLanc(); toast('Dados da planilha restaurados');
+        substituirTudo(dadosPlanilha(), 'Dados da planilha restaurados');
       }
       break;
   }
@@ -1425,7 +1758,7 @@ vLanc.addEventListener('dragstart', e => {
 });
 vLanc.addEventListener('dragover', e => {
   if(!arrastando) return;
-  const alvo = e.target.closest('tbody.grp, tbody.ahd'); limparDrop(); if(!alvo) return;
+  const alvo = e.target.closest('tbody.grp, tbody.ahd'); limparDrop(); if(!alvo || alvo.classList.contains('gl')) return;
   e.preventDefault(); e.dataTransfer.dropEffect = 'move';
   if(alvo.classList.contains('ahd')){ alvo.classList.add('dropa'); return; }
   if(alvo.dataset.id === arrastando) return;
@@ -1626,7 +1959,7 @@ function modalAno(){
       if(DB.valores[a]){ toast('Esse ano já existe'); return; }
       const copiar = document.getElementById('nCopiar').checked, base = EST.ano;
       DB.valores[a] = {};
-      DB.indicadores.forEach(i => { DB.valores[a][i.id] = { meta:copiar ? [...vals(base, i.id).meta] : x12(null), real:x12(null) }; });
+      [...DB.indicadores.map(i => i.id), GID].forEach(id => { DB.valores[a][id] = { meta:copiar ? [...vals(base, id).meta] : x12(null), real:x12(null) }; });
       EST.ano = a; EST.mes = null; salvarDB(); fecharModal(); renderLanc(); toast(`Ano ${a} criado`);
     } }
   });
@@ -1648,8 +1981,7 @@ document.getElementById('fileImport').addEventListener('change', e => {
       const d = JSON.parse(r.result);
       if(!validoDB(d)) throw 0;
       if(!confirm(`Importar o backup "${f.name}"? Os dados atuais deste navegador serão substituídos.`)) return;
-      DB = normalizarDB(d); EST.ano = null; salvarDB();
-      INTERNOS.find(x => x.id === atual)?.render(); toast('Backup importado');
+      substituirTudo(d, 'Backup importado');
     } catch(err){ toast('Arquivo de backup inválido'); }
   };
   r.readAsText(f);
@@ -1694,8 +2026,12 @@ function gerarRelatorio(o){
     const cnt = { ok:0, atencao:0, abaixo:0, sem:0 }; res.forEach(r => cnt[r.s]++);
     const com = res.length - cnt.sem;
     const box = (l, v, s, hl) => `<div class="rp-box ${hl ? 'hl' : ''}"><small>${s ? sIcon(s) : ''}${l}</small><b>${v}</b></div>`;
-    corpo += `<div class="rp-sum">${box('Metas atingidas', com ? Math.round(cnt.ok / com * 100) + '%' : '–', null, true)}${box('Atingidos', cnt.ok, 'ok')}${box('Atenção', cnt.atencao, 'atencao')}${box('Abaixo da meta', cnt.abaixo, 'abaixo')}${box('Sem lançamento', cnt.sem, 'sem')}</div>`;
+    const pg = periodoGlobal(ano, mes);
+    corpo += `<div class="rp-sum">${box(esc(DB.global.nome), fmtG(pg.real) + (pg.meta != null ? ` <small style="font-size:9px;font-weight:400;color:#5F6B7A">meta ${fmtG(pg.meta)}</small>` : ''), pg.a == null ? null : status(pg.a), true)}${box('Metas atingidas', com ? Math.round(cnt.ok / com * 100) + '%' : '–', null, true)}${box('Atingidos', cnt.ok, 'ok')}${box('Atenção', cnt.atencao, 'atencao')}${box('Abaixo da meta', cnt.abaixo, 'abaixo')}${box('Sem lançamento', cnt.sem, 'sem')}</div>`;
     corpo += `<table class="rp-tb"><thead><tr><th class="l">Indicador</th><th class="l">Unid.</th><th class="l">Sentido</th><th>Meta</th><th>Realizado</th><th>% Atingimento</th><th class="l">Status</th></tr></thead><tbody>`;
+    { const sg = status(pg.a), w = pg.a == null ? 0 : Math.max(0, Math.min(1, pg.a)) * 100;
+      corpo += `<tr class="rp-grp"><td class="l" colspan="7">${ic('gauge')}Empresa</td></tr><tr><td class="l"><b>${esc(DB.global.nome)}</b> <span style="color:#5F6B7A">(média de ${pg.n} indicadores)</span></td><td class="l">%</td><td class="l">↑ maior</td>
+        <td>${fmtG(pg.meta)}</td><td><b>${fmtG(pg.real)}</b></td><td><span class="rp-bar"><i style="width:${w}%;background:${ST[sg].c}"></i></span><b>${pct(pg.a)}</b></td><td class="l">${sPill(sg)}</td></tr>`; }
     [...new Set(res.map(r => r.i.area))].forEach(a => {
       corpo += `<tr class="rp-grp"><td class="l" colspan="7">${ic(areaIcone(a))}${esc(a)}</td></tr>`;
       res.filter(r => r.i.area === a).forEach(({ i, p, s }) => {
@@ -1708,6 +2044,13 @@ function gerarRelatorio(o){
     corpo += `</tbody></table>`;
   } else {
     corpo += `<table class="rp-tb rp-ano"><thead><tr><th class="l">Indicador</th><th class="l">Linha</th>${MESES.map(m => `<th>${m}</th>`).join('')}<th>Acum.</th></tr></thead>`;
+    { const vg = valsGlobal(ano), ag = periodoGlobal(ano, 'acum');
+      const pcg = p => { const s = status(p.a); return `<td class="${p.a == null ? '' : 'h-' + s}">${p.a == null ? '–' : `<span class="hc">${ST[s].i}</span>${pct(p.a)}`}</td>`; };
+      corpo += `<tbody class="rp-gh"><tr class="rp-grp"><td class="l" colspan="15">${ic('gauge')}Empresa</td></tr></tbody>
+        <tbody><tr><td class="l rp-n" rowspan="3">${esc(DB.global.nome)}<br><span style="font-weight:400;color:#5F6B7A">% · média do atingimento · ${tetoTxt()}</span></td>
+          <td class="l rp-lb">Meta <span class="rp-u">(%)</span></td>${vg.meta.map(x => `<td>${x == null ? '–' : num(x, 1)}</td>`).join('')}<td><b>${ag.meta == null ? '–' : num(ag.meta, 1)}</b></td></tr>
+        <tr><td class="l rp-lb">Eficiência <span class="rp-u">(%)</span></td>${vg.real.map(x => `<td>${x == null ? '–' : num(x, 1)}</td>`).join('')}<td><b>${ag.real == null ? '–' : num(ag.real, 1)}</b></td></tr>
+        <tr><td class="l rp-lb">% Ating.</td>${MESES.map((_, k) => pcg(periodoGlobal(ano, k))).join('')}${pcg(ag)}</tr></tbody>`; }
     let areaAnt = null;
     lista.forEach(i => {
       if(i.area !== areaAnt){ areaAnt = i.area; corpo += `<tbody class="rp-gh"><tr class="rp-grp"><td class="l" colspan="15">${ic(areaIcone(i.area))}${esc(i.area)}</td></tr></tbody>`; }
@@ -1723,7 +2066,8 @@ function gerarRelatorio(o){
   }
   if(!lista.length) corpo = '<p>Nenhum indicador cadastrado para esta área.</p>';
   corpo += `<div class="rp-legend"><b>Critério:</b><span>${sIcon('ok')} Atingido ≥ 100%</span><span>${sIcon('atencao')} Atenção 90–99%</span><span>${sIcon('abaixo')} Abaixo &lt; 90%</span>
-    <span>${sIcon('sem')} Sem lançamento</span><span>↓ menor é melhor: atingimento = meta ÷ realizado · Acumulado considera só os meses lançados</span></div>`;
+    <span>${sIcon('sem')} Sem lançamento</span><span>↓ menor é melhor: atingimento = meta ÷ realizado · Acumulado considera só os meses lançados</span>
+    <span>${esc(DB.global.nome)} = média do atingimento de todos os indicadores da empresa (${tetoTxt()})</span></div>`;
   if(o.obs) corpo += `<div class="rp-obs"><b>Observações</b>${esc(o.obs)}</div>`;
 
   const rod = `<div class="rp-foot"><span>Eleve · Portal de sistemas corporativos</span><span>Painel de Indicadores de Desempenho · ${esc(per)}</span></div>`;
@@ -1818,12 +2162,14 @@ function renderHome(){
         <div><b>${com ? Math.round(cnt.ok / com * 100) + '%' : '–'}</b><small>metas<br>atingidas</small></div></div>
       <div class="hk-l">${['ok', 'atencao', 'abaixo', 'sem'].map(s => `<div>${sIcon(s)}${ST[s].n}<b>${cnt[s]}</b></div>`).join('')}</div>
     </div>
+    ${(g => `<div class="hk-g">${ic('gauge')}<span>${esc(DB.global.nome)}${g.meta != null ? `<br><small>meta ${fmtG(g.meta)}</small>` : ''}</span><b style="color:${g.a == null ? 'var(--txt)' : ST[status(g.a)].c}">${fmtG(g.real)}</b></div>`)(periodoGlobal(ano, mes))}
     <div class="hk-f">${tot} ${tot === 1 ? 'indicador monitorado' : 'indicadores monitorados'}<span>Ver painel ${ic('arrow')}</span></div>
   </button>`;
   // resumo nos cards de indicadores
   let ult = -1; DB.indicadores.forEach(i => vals(ano, i.id).real.forEach((x, k) => { if(x != null && k > ult) ult = k; }));
   const fp = home.querySelector('[data-fs="indicadores"]'), fl = home.querySelector('[data-fs="lancamentos"]');
-  if(fp) fp.innerHTML = tot ? `<span>${sIcon('ok')}${cnt.ok} atingidos</span><span>${sIcon('atencao')}${cnt.atencao} atenção</span><span>${sIcon('abaixo')}${cnt.abaixo} abaixo</span>` : '';
+  const eg = periodoGlobal(ano, mes);
+  if(fp) fp.innerHTML = tot ? `${eg.real == null ? '' : `<span>Eficiência ${fmtG(eg.real)}</span>`}<span>${sIcon('ok')}${cnt.ok} atingidos</span><span>${sIcon('atencao')}${cnt.atencao} atenção</span><span>${sIcon('abaixo')}${cnt.abaixo} abaixo</span>` : '';
   if(fl) fl.innerHTML = `<span>${tot} indicadores</span><span>${areas().length} áreas</span>${ult >= 0 ? `<span>Último realizado: ${MESES[ult]}/${ano}</span>` : ''}`;
   // sistemas já abertos (em memória)
   home.querySelectorAll('.card').forEach(c => c.classList.toggle('on', !!iframes[c.dataset.id]));
@@ -1855,6 +2201,7 @@ setInterval(() => { if(home.classList.contains('show')) relogio(); }, 20000);
 
 // Abre a tela indicada na URL (#indicadores, #lancamentos, #rh, #financeiro...) ou a tela inicial
 atualizarCadeado();
+if(SYNC.on){ setEstado('carr'); verificar(true); } else setEstado('loc');
 const inicial = location.hash.slice(1);
 abrir(SISTEMAS.some(s => s.id === inicial) || INTERNOS.some(s => s.id === inicial) ? inicial : 'home');
 </script>
