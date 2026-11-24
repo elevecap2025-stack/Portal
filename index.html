@@ -529,6 +529,11 @@
             mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E") center/contain no-repeat}
   aside.mini .item.locked::after{display:none}
   .fld input.err{border-color:#d03b3b;background:rgba(208,59,59,.08)}
+  .pwd{position:relative;display:flex}
+  .pwd input{flex:1;padding-right:44px}
+  .olho{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:34px;height:30px;border:none;background:transparent;color:var(--muted);border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+  .olho svg{width:18px;height:18px}
+  .olho:hover{color:var(--eleve-azul);background:var(--active-bg)}
   /* sincronização com o servidor */
   .sync{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap;padding:0 4px}
   .sync:empty{display:none}
@@ -686,6 +691,8 @@ const ICON_PATHS = {
   layers:'<path d="M12 3 3 8l9 5 9-5z"/><path d="m3 13 9 5 9-5"/>',
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  eyeOff:'<path d="M3 3l18 18"/><path d="M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
   // ícones de áreas
   cart:'<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.2a1 1 0 0 0 1 .8h9.3a1 1 0 0 0 1-.8L21 7H6"/>',
   coin:'<circle cx="12" cy="12" r="9"/><path d="M15 9.2c-.6-.9-1.7-1.4-3-1.4-1.7 0-3 .9-3 2.1 0 2.9 6 1.4 6 4.3 0 1.2-1.3 2.1-3 2.1-1.4 0-2.6-.6-3.1-1.5"/><path d="M12 6v1.8M12 16.3V18"/>',
@@ -924,7 +931,8 @@ function pedirSenha(depois, soAdmin){
   abrirModal({
     titulo:soAdmin ? `Senha do administrador<small>Somente o administrador pode incluir ou excluir indicadores</small>`
                    : `Área restrita<small>Digite a senha para lançar ou alterar valores</small>`,
-    corpo:`<div class="fld"><label for="sSenha">${soAdmin ? 'Senha do administrador' : 'Senha'}</label><input id="sSenha" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+    corpo:`<div class="fld"><label for="sSenha">${soAdmin ? 'Senha do administrador' : 'Senha'}</label>
+        <div class="pwd"><input id="sSenha" type="password" autocomplete="current-password" placeholder="••••••••"><button type="button" class="olho" id="sOlho" title="Mostrar senha" aria-label="Mostrar senha">${ic('eye')}</button></div></div>
       <p class="info">${soAdmin
         ? 'A senha de lançamento permite alterar metas e realizados, mas <b>não</b> permite incluir ou excluir indicadores, importar backup ou restaurar a planilha.'
         : 'Sem a senha você pode consultar normalmente o <b>Painel de Indicadores</b>, mas não alterar metas nem realizados.'}</p>`,
@@ -937,7 +945,14 @@ function pedirSenha(depois, soAdmin){
       if(h === SENHA_HASH && soAdmin){ toast('Essa senha não permite incluir indicadores. Use a senha do administrador.'); return; }
       toast(tent >= 3 ? 'Senha incorreta. Peça a senha ao responsável.' : 'Senha incorreta');
     } },
-    aoAbrir:() => document.getElementById('sSenha').focus()
+    aoAbrir:() => {
+      const el = document.getElementById('sSenha'), olho = document.getElementById('sOlho');
+      olho.onclick = () => {
+        const ver = el.type === 'password'; el.type = ver ? 'text' : 'password';
+        olho.innerHTML = ic(ver ? 'eyeOff' : 'eye'); olho.title = olho.ariaLabel = ver ? 'Ocultar senha' : 'Mostrar senha'; el.focus();
+      };
+      el.focus();
+    }
   });
 }
 document.getElementById('btnBloq').onclick = () => {
@@ -1200,7 +1215,7 @@ function avisoSync(){
   if(!SYNC.on) return `<p class="info aviso">⚠ O servidor compartilhado ainda não foi configurado: os lançamentos ficam salvos <b>só neste navegador</b> e outros usuários não os veem.</p>`;
   if(SYNC.vazio) return admin()
     ? `<div class="info aviso"><span>O servidor ainda não tem dados. Publique os dados deste navegador para que todos passem a vê-los.</span><button class="btn pri" data-act="publicar">${ic('upload')}<span class="t">Publicar dados deste navegador</span></button></div>`
-    : `<p class="info aviso">O servidor ainda não tem dados. Peça ao administrador para publicar os dados.</p>`;
+    : `<div class="info aviso"><span>O servidor ainda não tem dados. O administrador precisa publicar os dados deste navegador.</span><button class="btn pri" data-act="publicar">${ic('lock')}<span class="t">Publicar (senha do administrador)</span></button></div>`;
   return '';
 }
 if(SYNC.on){
