@@ -818,8 +818,16 @@ document.getElementById('btnMini').onclick = () => side.classList.toggle('mini')
    Para trocar a senha: abra o portal, aperte F12 → aba "Console", digite
      gerarHashSenha('SuaNovaSenha')
    e cole o código que aparecer no lugar do valor de SENHA_HASH abaixo.
+
+   SENHA DO ADMINISTRADOR (única que pode INCLUIR e EXCLUIR indicadores,
+   importar backup e restaurar a planilha). Também libera os lançamentos.
+   Senha padrão do administrador: elevecap2025@gmail.com
+   Para trocar: use gerarHashSenha('NovaSenhaAdmin') e cole o código
+   no lugar do valor de ADMIN_HASH abaixo (troque o nome SENHA_HASH por ADMIN_HASH).
    ===================================================================== */
 const SENHA_HASH = '13a8e37ca1560c44278bfd7252e317942fe145b5029d69eb4894ab8a63b021b6';
+const ADMIN_HASH = '955affa283a98f3ff76c3cb9c01bd9474d1c70c9b2983128cc23e8012ae499b2';
+const CHAVE_ADM = 'portalEleveAdmin';        // liberação de administrador dura até fechar a aba
 const PROTEGIDAS = ['lancamentos'];          // telas que exigem senha
 const CHAVE_LIB = 'portalEleveLiberado';     // liberação dura até fechar a aba
 function sha256(str){
@@ -848,7 +856,14 @@ function sha256(str){
   return H.map(x => (x >>> 0).toString(16).padStart(8, '0')).join('');
 }
 window.gerarHashSenha = s => { const h = sha256('portalEleve:' + s); console.log("const SENHA_HASH = '" + h + "';"); return h; };
-function liberado(){ try { return sessionStorage.getItem(CHAVE_LIB) === SENHA_HASH; } catch(e){ return !!window.__lib; } }
+function admin(){ try { return sessionStorage.getItem(CHAVE_ADM) === ADMIN_HASH; } catch(e){ return !!window.__adm; } }
+function marcarAdmin(sim){
+  try { sim ? sessionStorage.setItem(CHAVE_ADM, ADMIN_HASH) : sessionStorage.removeItem(CHAVE_ADM); } catch(e){}
+  window.__adm = sim; atualizarCadeado();
+}
+function liberado(){ if(admin()) return true; try { return sessionStorage.getItem(CHAVE_LIB) === SENHA_HASH; } catch(e){ return !!window.__lib; } }
+// Executa a ação só se for administrador; senão pede a senha do administrador
+function comoAdmin(acao){ if(admin()) acao(); else pedirSenha(acao, true); }
 function marcarLiberado(sim){
   try { sim ? sessionStorage.setItem(CHAVE_LIB, SENHA_HASH) : sessionStorage.removeItem(CHAVE_LIB); } catch(e){}
   window.__lib = sim; atualizarCadeado();
@@ -858,24 +873,29 @@ function atualizarCadeado(){
   document.getElementById('btnBloq').style.display = lib ? '' : 'none';
   PROTEGIDAS.forEach(id => document.querySelector(`.item[data-id="${id}"]`)?.classList.toggle('locked', !lib));
 }
-function pedirSenha(depois){
+function pedirSenha(depois, soAdmin){
   let tent = 0;
   abrirModal({
-    titulo:`Área restrita<small>Digite a senha para lançar ou alterar valores</small>`,
-    corpo:`<div class="fld"><label for="sSenha">Senha</label><input id="sSenha" type="password" autocomplete="current-password" placeholder="••••••••"></div>
-      <p class="info">Sem a senha você pode consultar normalmente o <b>Painel de Indicadores</b>, mas não alterar metas nem realizados.</p>`,
+    titulo:soAdmin ? `Senha do administrador<small>Somente o administrador pode incluir ou excluir indicadores</small>`
+                   : `Área restrita<small>Digite a senha para lançar ou alterar valores</small>`,
+    corpo:`<div class="fld"><label for="sSenha">${soAdmin ? 'Senha do administrador' : 'Senha'}</label><input id="sSenha" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+      <p class="info">${soAdmin
+        ? 'A senha de lançamento permite alterar metas e realizados, mas <b>não</b> permite incluir ou excluir indicadores, importar backup ou restaurar a planilha.'
+        : 'Sem a senha você pode consultar normalmente o <b>Painel de Indicadores</b>, mas não alterar metas nem realizados.'}</p>`,
     rodape:`<button class="btn" data-close>Cancelar</button><button class="btn pri" data-m="entrar">${ic('lock')}<span class="t">Entrar</span></button>`,
     acoes:{ entrar:() => {
-      const el = document.getElementById('sSenha');
-      if(sha256('portalEleve:' + el.value) === SENHA_HASH){ marcarLiberado(true); fecharModal(); toast('Acesso liberado'); depois && depois(); return; }
+      const el = document.getElementById('sSenha'), h = sha256('portalEleve:' + el.value);
+      if(h === ADMIN_HASH){ marcarAdmin(true); fecharModal(); toast('Acesso de administrador liberado'); depois && depois(); return; }
+      if(h === SENHA_HASH && !soAdmin){ marcarLiberado(true); fecharModal(); toast('Acesso liberado'); depois && depois(); return; }
       tent++; el.value = ''; el.classList.add('err'); el.focus();
+      if(h === SENHA_HASH && soAdmin){ toast('Essa senha não permite incluir indicadores. Use a senha do administrador.'); return; }
       toast(tent >= 3 ? 'Senha incorreta. Peça a senha ao responsável.' : 'Senha incorreta');
     } },
     aoAbrir:() => document.getElementById('sSenha').focus()
   });
 }
 document.getElementById('btnBloq').onclick = () => {
-  marcarLiberado(false); toast('Lançamentos bloqueados');
+  marcarAdmin(false); marcarLiberado(false); toast('Lançamentos bloqueados');
   if(PROTEGIDAS.includes(atual)) abrir('indicadores');
 };
 document.getElementById('btnMenu').onclick = () => side.classList.toggle('open');
@@ -1233,12 +1253,13 @@ function desenharLanc(){
   garantirAno();
   if(EST.lancArea !== 'todas' && !areasTodas().includes(EST.lancArea)) EST.lancArea = 'todas';
   const lista = filtrados(EST.lancArea);
+  const adm = admin(), icNovo = adm ? ic('plus') : ic('lock'), ttNovo = adm ? 'Nova meta / indicador' : 'Nova meta / indicador (somente administrador)';
   vLanc.innerHTML = `<div class="vwrap">
     <div class="vhead">
       <div><h2 class="vtitle">Lançar Valores</h2><p class="vsub">Digite as metas e os valores realizados de cada mês. Tudo é salvo automaticamente neste navegador.</p></div>
       <div class="vacts">
         <button class="btn" data-act="ir-painel" title="Ver painel">${ic('gauge')}<span class="t">Ver painel</span></button>
-        <button class="btn pri" data-act="novo" title="Nova meta / indicador">${ic('plus')}<span class="t">Nova meta / indicador</span></button>
+        <button class="btn pri" data-act="novo" title="${ttNovo}">${icNovo}<span class="t">Nova meta / indicador</span></button>
       </div>
     </div>
     <div class="tools">
@@ -1249,15 +1270,15 @@ function desenharLanc(){
       <span class="salvo" id="salvoInfo"></span>
       <span class="sp"></span>
       <button class="btn" data-act="exportar" title="Baixar uma cópia de todos os dados (.json)">${ic('download')}<span class="t">Exportar backup</span></button>
-      <button class="btn" data-act="importar" title="Carregar um backup (.json)">${ic('upload')}<span class="t">Importar backup</span></button>
-      <button class="btn dng" data-act="restaurar" title="Voltar aos dados originais da planilha">${ic('undo')}<span class="t">Restaurar planilha</span></button>
+      <button class="btn" data-act="importar" title="Carregar um backup (.json)${adm ? '' : ' — somente administrador'}">${adm ? ic('upload') : ic('lock')}<span class="t">Importar backup</span></button>
+      <button class="btn dng" data-act="restaurar" title="Voltar aos dados originais da planilha${adm ? '' : ' — somente administrador'}">${adm ? ic('undo') : ic('lock')}<span class="t">Restaurar planilha</span></button>
     </div>
     ${lista.length ? `<div class="panel" style="margin-top:0"><div class="tscroll lscroll"><table class="tb lt">
       <thead><tr><th class="l stk">Indicador</th><th class="l stk2">Linha</th>${MESES.map(m => `<th>${m}/${String(EST.ano).slice(2)}</th>`).join('')}
         <th title="Considera apenas os meses com meta e realizado preenchidos">Acum.</th></tr></thead>
       ${grupos(lista).map(g => `<tbody class="ahd" data-area="${esc(g.area)}"><tr><td colspan="15"><div class="ahl">${ic(areaIcone(g.area))}${esc(g.area)}<span>${g.itens.length} ${g.itens.length === 1 ? 'indicador' : 'indicadores'}</span></div></td></tr></tbody>`
         + g.itens.map(linhasLanc).join('')).join('')}</table></div></div>`
-      : `<div class="vazio">Nenhum indicador nesta área.<br><br><button class="btn pri" data-act="novo">${ic('plus')}<span class="t">Nova meta / indicador</span></button></div>`}
+      : `<div class="vazio">Nenhum indicador nesta área.<br><br><button class="btn pri" data-act="novo" title="${ttNovo}">${icNovo}<span class="t">Nova meta / indicador</span></button></div>`}
     <p class="info" style="margin-top:14px">Dica: aceita números como <b>3.200.000</b>, <b>3200000</b> ou <b>65,5</b>. Para percentuais, digite o número (ex.: 65 para 65%).
       <b>Enter</b> desce para o próximo campo do mesmo mês.
       Para mudar a ordem, arraste pelo ícone ${'<span class="gripi">' + ic('grip') + '</span>'} (ou selecione-o e use as setas ↑ ↓). Use <b>Exportar backup</b> para guardar uma cópia ou levar os dados para outro computador.</p>
@@ -1280,7 +1301,7 @@ function linhasLanc(i){
       <div class="li-acts">
         <button class="mini" data-act="editar" data-id="${id}" title="Editar indicador">${ic('edit')}</button>
         <button class="mini" data-act="repetir" data-id="${id}" title="Repetir a meta de janeiro em todos os meses">${ic('fill')}</button>
-        <button class="mini dng" data-act="excluir" data-id="${id}" title="Excluir indicador">${ic('trash')}</button>
+        <button class="mini dng" data-act="excluir" data-id="${id}" title="Excluir indicador${admin() ? '' : ' (somente administrador)'}">${ic('trash')}</button>
       </div></td>
     <td class="l stk2 lb"><div class="lbw">Meta<select class="usel" data-un="${id}" title="Unidade do indicador — clique para alterar" aria-label="Unidade de ${esc(i.nome)}">${opcoesUnidade(i.unidade, true)}</select></div></td>${MESES.map((_, k) => inp(k, 'meta')).join('')}<td class="ac" data-ac="meta-${id}">${ac.meta}</td></tr>
     <tr><td class="l stk2 lb"><div class="lbw">Realizado<span class="ub">${esc(i.unidade)}</span></div></td>${MESES.map((_, k) => inp(k, 'real')).join('')}<td class="ac" data-ac="real-${id}">${ac.real}</td></tr>
@@ -1333,7 +1354,10 @@ vLanc.addEventListener('click', e => {
   const i = DB.indicadores.find(x => x.id === b.dataset.id);
   switch(b.dataset.act){
     case 'ir-painel': EST.area = EST.lancArea; abrir('indicadores'); break;
-    case 'novo': modalIndicador(null); break;
+    case 'novo':
+      if(admin()) modalIndicador(null);
+      else pedirSenha(() => { renderLanc(); modalIndicador(null); }, true);
+      break;
     case 'editar': if(i) modalIndicador(i); break;
     case 'repetir': {
       if(!i) break; const v = vals(EST.ano, i.id);
@@ -1344,7 +1368,9 @@ vLanc.addEventListener('click', e => {
       break;
     }
     case 'excluir':
-      if(i && confirm(`Excluir o indicador "${i.nome}" e todos os seus valores (todos os anos)?`)){
+      if(!i) break;
+      if(!admin()){ pedirSenha(() => { renderLanc(); toast('Administrador liberado — clique em Excluir novamente'); }, true); break; }
+      if(confirm(`Excluir o indicador "${i.nome}" e todos os seus valores (todos os anos)?`)){
         DB.indicadores = DB.indicadores.filter(x => x !== i);
         Object.values(DB.valores).forEach(A => delete A[i.id]);
         salvarDB(); renderLanc(); toast('Indicador excluído');
@@ -1353,8 +1379,12 @@ vLanc.addEventListener('click', e => {
     case 'novo-ano': modalAno(); break;
     case 'areas': modalAreas(); break;
     case 'exportar': exportarBackup(); break;
-    case 'importar': document.getElementById('fileImport').click(); break;
+    case 'importar':
+      if(admin()) document.getElementById('fileImport').click();
+      else pedirSenha(() => { renderLanc(); toast('Administrador liberado — clique em Importar backup novamente'); }, true);
+      break;
     case 'restaurar':
+      if(!admin()){ pedirSenha(() => { renderLanc(); toast('Administrador liberado — clique em Restaurar planilha novamente'); }, true); break; }
       if(confirm('Restaurar os dados originais da planilha? Todos os lançamentos e indicadores criados aqui serão substituídos.\n\nDica: exporte um backup antes.')){
         DB = dadosPlanilha(); EST.ano = null; salvarDB(); renderLanc(); toast('Dados da planilha restaurados');
       }
@@ -1449,6 +1479,7 @@ function modalIndicador(i){
       <p class="info">Para renomear áreas, trocar ícones ou mudar a ordem delas, use o botão <b>Áreas</b> na tela de lançamento.<br>“Menor é melhor” serve para custos, perdas, prazos e cancelamentos: o atingimento é calculado como meta ÷ realizado.</p>`,
     rodape:`<button class="btn" data-close>Cancelar</button><button class="btn pri" data-m="salvar">Salvar</button>`,
     acoes:{ salvar:() => {
+      if(novo && !admin()){ fecharModal(); toast('Somente o administrador pode incluir novos indicadores'); return; }
       const g = id => document.getElementById(id);
       const nome = g('iNome').value.trim(), meta = parseNum(g('iMeta').value), nova = g('iArea').value === '__nova';
       let area = nova ? g('iAreaNova').value.trim() : g('iArea').value;
@@ -1610,6 +1641,7 @@ function exportarBackup(){
 }
 document.getElementById('fileImport').addEventListener('change', e => {
   const f = e.target.files[0]; e.target.value = ''; if(!f) return;
+  if(!admin()){ toast('Somente o administrador pode importar backup'); return; }
   const r = new FileReader();
   r.onload = () => {
     try {
