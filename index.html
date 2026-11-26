@@ -559,6 +559,42 @@
   .hk-g b{font-size:17px;margin-left:auto;font-variant-numeric:tabular-nums}
   .hk-g small{color:var(--muted)}
   @media (max-width:760px){.gcard{grid-template-columns:1fr}.sync .t{display:none}}
+  /* edição na janela do gráfico */
+  .dtab td{padding:5px 10px}
+  .dtab .num{width:136px}
+  .dtab tr.dsel td{background:var(--active-bg)}
+  .dsalvo{margin-right:auto;align-self:center;font-size:12px;color:var(--muted)}
+  .dedit{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;font-size:12.5px;color:var(--muted)}
+  .dedit b{color:var(--txt)}
+  .dedit svg{width:15px;height:15px;color:var(--eleve-azul);vertical-align:-3px}
+  /* auditoria */
+  .busca{height:34px;min-width:220px;flex:1;max-width:340px;border:1px solid var(--btn-border);background:var(--surface);color:var(--txt);border-radius:7px;padding:0 10px;font:inherit;font-size:13px}
+  .busca:focus{outline:2px solid var(--eleve-azul);outline-offset:-1px}
+  .au td{vertical-align:middle}
+  .au td small{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+  .au .ck2{width:16px;height:16px;accent-color:var(--eleve-azul);cursor:pointer}
+  .au tr.des td{color:var(--muted)}
+  .au tr.des td.vv{text-decoration:line-through}
+  .au tr.marc td{background:var(--active-bg)}
+  .au td.vv{font-variant-numeric:tabular-nums}
+  .au td.vn{font-weight:600}
+  .bdg{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+  .bdg svg{width:12px;height:12px}
+  .btn:disabled{opacity:.45;cursor:default;pointer-events:none}
+  .bdg.meta{background:var(--active-bg);color:var(--eleve-azul)}
+  .bdg.real{background:rgba(12,163,12,.12);color:#0a7d0a}
+  .bdg.evt{background:var(--btn-bg);color:var(--muted);border:1px solid var(--border)}
+  .bdg.undo{background:rgba(250,178,25,.18);color:#8a5a00}
+  [data-theme="dark"] .bdg.real{color:#5fd35f}[data-theme="dark"] .bdg.undo{color:#fab219}
+  .sit{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+  .sit i{width:7px;height:7px;border-radius:50%;background:#22c55e}
+  .sit.d i{background:#9AA4B2}.sit.d{color:var(--muted)}
+  .aumais{display:flex;justify-content:center;padding:12px}
+  .aunota{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .usr{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--txt);padding:0 10px;height:30px;border-radius:15px;background:var(--active-bg);white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+  .usr svg{width:14px;height:14px;color:var(--eleve-azul);flex-shrink:0}
+  .usr:empty{display:none}
+  @media (max-width:760px){.usr{display:none}}
 </style>
 <style id="pageStyle"></style>
 </head>
@@ -576,6 +612,7 @@
     <div class="bar">
       <button class="btn ico" id="btnMenu" style="display:none" title="Menu"></button>
       <div class="ttl"><small>Portal Eleve</small><h1 id="titulo">Início</h1></div>
+      <span class="usr" id="usrSt" title="Usuário identificado nas alterações"></span>
       <span class="sync" id="syncSt"></span>
       <button class="btn" id="btnReload" title="Recarregar sistema"></button>
       <button class="btn" id="btnNova" title="Abrir em nova aba"></button>
@@ -605,6 +642,7 @@
       </div>
       <div class="view" id="vInd" tabindex="-1"></div>
       <div class="view" id="vLanc" tabindex="-1"></div>
+      <div class="view" id="vAud" tabindex="-1"></div>
     </div>
   </main>
 </div>
@@ -659,6 +697,7 @@ const CAPAS = {
 const INTERNOS = [
   { id:'indicadores', nome:'Painel de Indicadores', icone:'gauge', desc:'Painel de Indicadores de Desempenho Eleve', render:()=>renderPainel() },
   { id:'lancamentos', nome:'Lançar Valores',        icone:'edit',  desc:'Lançamento manual de metas e realizados',   render:()=>renderLanc() },
+  { id:'auditoria',   nome:'Auditoria',             icone:'history', desc:'Quem alterou metas e realizados, e quando', render:()=>renderAuditoria() },
 ];
 
 // Ícones em linha (SVG)
@@ -690,6 +729,8 @@ const ICON_PATHS = {
   grip:'<circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/>',
   layers:'<path d="M12 3 3 8l9 5 9-5z"/><path d="m3 13 9 5 9-5"/>',
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  history:'<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4.5v4.5h4.5"/><path d="M12 7.5V12l3 2"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/>',
   lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
   eyeOff:'<path d="M3 3l18 18"/><path d="M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
@@ -729,8 +770,8 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const nav = document.getElementById('nav'), grid = document.getElementById('grid'), gridInd = document.getElementById('gridInd'),
       frames = document.getElementById('frames'), home = document.getElementById('home'),
       titulo = document.getElementById('titulo'), side = document.getElementById('side'),
-      vInd = document.getElementById('vInd'), vLanc = document.getElementById('vLanc');
-const VIEWS = { indicadores: vInd, lancamentos: vLanc };
+      vInd = document.getElementById('vInd'), vLanc = document.getElementById('vLanc'), vAud = document.getElementById('vAud');
+const VIEWS = { indicadores: vInd, lancamentos: vLanc, auditoria: vAud };
 const iframes = {};
 let atual = null;
 
@@ -870,7 +911,7 @@ const SYNC = { on:!!URL_SERVIDOR, base:null, rev:0, enviando:false, denovo:false
 const SENHA_HASH = '13a8e37ca1560c44278bfd7252e317942fe145b5029d69eb4894ab8a63b021b6';
 const ADMIN_HASH = '955affa283a98f3ff76c3cb9c01bd9474d1c70c9b2983128cc23e8012ae499b2';
 const CHAVE_ADM = 'portalEleveAdmin';        // liberação de administrador dura até fechar a aba
-const PROTEGIDAS = ['lancamentos'];          // telas que exigem senha
+const PROTEGIDAS = ['lancamentos', 'auditoria'];   // telas que exigem senha
 const CHAVE_LIB = 'portalEleveLiberado';     // liberação dura até fechar a aba
 function sha256(str){
   const b = [...new TextEncoder().encode(str)], l = b.length * 8;
@@ -907,7 +948,15 @@ function guardarToken(senha){
   window.__tok = t;
   if(t && SYNC.on) chamar({ acao:'papel', token:t }).then(j => { if(!j.papel) toast('Atenção: a senha no servidor está diferente. Avise o administrador.'); }).catch(() => {});
 }
-const comToken = ok => ok && (!SYNC.on || !!tokenAtual());
+// Nome de quem está lançando (vai para a auditoria). Fica salvo até fechar a aba; o navegador lembra o último nome.
+const CHAVE_USR = 'portalEleveUsuario', CHAVE_NOME = 'portalEleveNome';
+function usuarioAtual(){ try { return sessionStorage.getItem(CHAVE_USR) || window.__usr || ''; } catch(e){ return window.__usr || ''; } }
+function guardarUsuario(n){
+  try { n ? sessionStorage.setItem(CHAVE_USR, n) : sessionStorage.removeItem(CHAVE_USR); if(n) localStorage.setItem(CHAVE_NOME, n); } catch(e){}
+  window.__usr = n || '';
+}
+function ultimoNome(){ try { return usuarioAtual() || localStorage.getItem(CHAVE_NOME) || ''; } catch(e){ return usuarioAtual(); } }
+const comToken = ok => ok && (!SYNC.on || !!tokenAtual()) && !!usuarioAtual();
 function admin(){ let ok; try { ok = sessionStorage.getItem(CHAVE_ADM) === ADMIN_HASH; } catch(e){ ok = !!window.__adm; } return comToken(ok); }
 const papel = () => admin() ? 'admin' : 'comum';
 function marcarAdmin(sim){
@@ -924,6 +973,8 @@ function marcarLiberado(sim){
 function atualizarCadeado(){
   const lib = liberado();
   document.getElementById('btnBloq').style.display = lib ? '' : 'none';
+  const u = document.getElementById('usrSt');
+  u.innerHTML = lib ? `${ic('user')}${esc(usuarioAtual())}${admin() ? ' · admin' : ''}` : '';
   PROTEGIDAS.forEach(id => document.querySelector(`.item[data-id="${id}"]`)?.classList.toggle('locked', !lib));
 }
 function pedirSenha(depois, soAdmin){
@@ -931,7 +982,9 @@ function pedirSenha(depois, soAdmin){
   abrirModal({
     titulo:soAdmin ? `Senha do administrador<small>Somente o administrador pode incluir ou excluir indicadores</small>`
                    : `Área restrita<small>Digite a senha para lançar ou alterar valores</small>`,
-    corpo:`<div class="fld"><label for="sSenha">${soAdmin ? 'Senha do administrador' : 'Senha'}</label>
+    corpo:`<div class="fld"><label for="sNome">Seu nome <small>(fica registrado na auditoria de alterações)</small></label>
+        <input id="sNome" maxlength="60" autocomplete="name" placeholder="Ex.: Maria Souza" value="${esc(ultimoNome())}"></div>
+      <div class="fld"><label for="sSenha">${soAdmin ? 'Senha do administrador' : 'Senha'}</label>
         <div class="pwd"><input id="sSenha" type="password" autocomplete="current-password" placeholder="••••••••"><button type="button" class="olho" id="sOlho" title="Mostrar senha" aria-label="Mostrar senha">${ic('eye')}</button></div></div>
       <p class="info">${soAdmin
         ? 'A senha de lançamento permite alterar metas e realizados, mas <b>não</b> permite incluir ou excluir indicadores, importar backup ou restaurar a planilha.'
@@ -939,6 +992,10 @@ function pedirSenha(depois, soAdmin){
     rodape:`<button class="btn" data-close>Cancelar</button><button class="btn pri" data-m="entrar">${ic('lock')}<span class="t">Entrar</span></button>`,
     acoes:{ entrar:() => {
       const el = document.getElementById('sSenha'), h = sha256('portalEleve:' + el.value);
+      const nm = document.getElementById('sNome'), nome = nm.value.replace(/\s+/g, ' ').trim();
+      if(nome.length < 2){ nm.classList.add('err'); nm.focus(); toast('Informe seu nome: ele fica registrado nas alterações'); return; }
+      nm.classList.remove('err');
+      if(h === ADMIN_HASH || (h === SENHA_HASH && !soAdmin)) guardarUsuario(nome);
       if(h === ADMIN_HASH){ guardarToken(el.value); marcarAdmin(true); fecharModal(); toast('Acesso de administrador liberado'); depois && depois(); return; }
       if(h === SENHA_HASH && !soAdmin){ guardarToken(el.value); marcarLiberado(true); fecharModal(); toast('Acesso liberado'); depois && depois(); return; }
       tent++; el.value = ''; el.classList.add('err'); el.focus();
@@ -946,17 +1003,17 @@ function pedirSenha(depois, soAdmin){
       toast(tent >= 3 ? 'Senha incorreta. Peça a senha ao responsável.' : 'Senha incorreta');
     } },
     aoAbrir:() => {
-      const el = document.getElementById('sSenha'), olho = document.getElementById('sOlho');
+      const el = document.getElementById('sSenha'), olho = document.getElementById('sOlho'), nm = document.getElementById('sNome');
       olho.onclick = () => {
         const ver = el.type === 'password'; el.type = ver ? 'text' : 'password';
         olho.innerHTML = ic(ver ? 'eyeOff' : 'eye'); olho.title = olho.ariaLabel = ver ? 'Ocultar senha' : 'Mostrar senha'; el.focus();
       };
-      el.focus();
+      (nm.value ? el : nm).focus();
     }
   });
 }
 document.getElementById('btnBloq').onclick = () => {
-  guardarToken(null); marcarAdmin(false); marcarLiberado(false); toast('Lançamentos bloqueados');
+  guardarToken(null); guardarUsuario(null); marcarAdmin(false); marcarLiberado(false); toast('Lançamentos bloqueados');
   if(PROTEGIDAS.includes(atual)) abrir('indicadores');
 };
 document.getElementById('btnMenu').onclick = () => side.classList.toggle('open');
@@ -1144,7 +1201,8 @@ function setEstado(e){
 }
 // Redesenha a tela atual sem atrapalhar quem está digitando
 function redesenhar(){
-  if(modal.classList.contains('show') || (atual === 'lancamentos' && document.activeElement && document.activeElement.classList.contains('num'))){ SYNC.sujo = true; return; }
+  const ae = document.activeElement;
+  if(modal.classList.contains('show') || (atual === 'lancamentos' && ae && ae.classList.contains('num')) || (atual === 'auditoria' && ae && ae.closest && ae.closest('#vAud input'))){ SYNC.sujo = true; return; }
   SYNC.sujo = false;
   if(atual === 'home') renderHome(); else INTERNOS.find(x => x.id === atual)?.render();
 }
@@ -1173,7 +1231,7 @@ async function enviar(){
   SYNC.enviando = true; SYNC.seq++; setEstado('env');
   const enviado = clone(DB);
   try {
-    const j = await chamar({ acao:'salvar', token:tok, diff });
+    const j = await chamar({ acao:'salvar', token:tok, usuario:usuarioAtual(), diff });
     const depois = calcDiff(enviado, DB);                 // digitado enquanto enviava
     SYNC.base = normalizarDB(clone(j.db)); SYNC.rev = j.rev;
     const novo = clone(SYNC.base); if(!diffVazio(depois)) aplicarDiff(novo, depois, papel());
@@ -1202,12 +1260,12 @@ async function verificar(inicial){
   } catch(e){ if(seq === SYNC.seq) setEstado('off'); }
 }
 // Substitui TODOS os dados (importar backup, restaurar planilha, primeira publicação) — só administrador
-async function substituirTudo(novo, msg){
+async function substituirTudo(novo, msg, motivo){
   novo = normalizarDB(novo);
   if(!SYNC.on){ DB = novo; EST.ano = null; salvarDB(); redesenhar(); toast(msg); return; }
   try {
     setEstado('env');
-    const j = await chamar({ acao:'substituir', token:tokenAtual(), db:novo });
+    const j = await chamar({ acao:'substituir', token:tokenAtual(), usuario:usuarioAtual(), motivo:motivo || msg, db:novo });
     SYNC.vazio = true; receberServidor(j.db, j.rev); EST.ano = null; redesenhar(); toast(msg); marcarSalvo(true);
   } catch(e){ setEstado(SYNC.vazio ? 'vazio' : 'off'); toast(e.servidor ? e.message : 'Sem conexão com o servidor — tente de novo'); }
 }
@@ -1470,47 +1528,6 @@ function tabelaAnual(lista){
       ${MESES.map((_, k) => cel(i, periodo(i, EST.ano, k), k)).join('')}${cel(i, periodo(i, EST.ano, 'acum'), 'acum')}</tr>`).join('')).join('')}
   </tbody></table>`;
 }
-function abrirDetalheGlobal(){
-  const g = indGlobal(), vg = valsGlobal(EST.ano), ac = periodoGlobal(EST.ano, 'acum');
-  const linhas = MESES.map((_, k) => { const p = periodoGlobal(EST.ano, k);
-    return `<tr><td class="l">${MESES_LONGO[k]}</td><td>${fmtG(p.meta)}</td><td>${fmtG(p.real)}</td><td>${p.n || '–'}</td><td>${pct(p.a)}</td><td class="l">${sPill(status(p.a))}</td></tr>`; }).join('');
-  abrirModal({
-    largo:true,
-    titulo:`${esc(g.nome)}<small>${ic('gauge')} Empresa · média do atingimento de todos os indicadores · ${tetoTxt()} · ${EST.ano}</small>`,
-    corpo:`<div class="dchart">${grafico(g, EST.ano, { w:900, h:290, v:vg, lblReal:'Eficiência', sel:EST.mes === 'acum' ? -1 : EST.mes })}</div>
-      <div class="leg"><span><i class="sw" style="background:#0ca30c"></i><i class="sw" style="background:#fab219"></i><i class="sw" style="background:#d03b3b"></i>Eficiência (cor = status em relação à meta)</span><span><i class="ln"></i>Meta</span></div>
-      <div class="tscroll"><table class="tb"><thead><tr><th class="l">Mês</th><th>Meta</th><th>Eficiência</th><th>Indicadores</th><th>% Ating.</th><th class="l">Status</th></tr></thead>
-      <tbody>${linhas}</tbody>
-      <tfoot><tr><td class="l"><b>Acumulado</b></td><td><b>${fmtG(ac.meta)}</b></td><td><b>${fmtG(ac.real)}</b></td><td>${ac.n || '–'}</td><td><b>${pct(ac.a)}</b></td><td class="l">${sPill(status(ac.a))}</td></tr></tfoot></table></div>
-      <p class="info" style="margin-top:14px">A eficiência de cada mês é a média do % de atingimento de todos os indicadores que têm meta e realizado naquele mês. Cada atingimento conta entre 0% e ${DB.global.teto ? num(DB.global.teto * 100, 0) + '%' : 'sem limite'} (ajuste em <b>Lançar valores → indicador global</b>). O acumulado usa o atingimento acumulado de cada indicador.</p>`,
-    rodape:`<button class="btn" data-close>Fechar</button><button class="btn pri" data-m="editar">${ic('edit')}<span class="t">Editar meta</span></button>`,
-    acoes:{ editar:() => { fecharModal(); abrir('lancamentos');
-      setTimeout(() => { const el = vLanc.querySelector(`.num[data-id="${GID}"][data-m="${EST.mes === 'acum' ? 0 : EST.mes}"]`); if(el){ el.scrollIntoView({block:'center'}); el.focus(); } }, 30); } }
-  });
-}
-function abrirDetalhe(id){
-  if(id === GID) return abrirDetalheGlobal();
-  const i = DB.indicadores.find(x => x.id === id); if(!i) return;
-  const v = vals(EST.ano, id), u = i.unidade, ac = periodo(i, EST.ano, 'acum');
-  const linhas = MESES.map((_, k) => {
-    const a = atingimento(i, v.meta[k], v.real[k]);
-    return `<tr><td class="l">${MESES_LONGO[k]}</td><td>${fmt(v.meta[k], u)}</td><td>${fmt(v.real[k], u)}</td><td>${pct(a)}</td><td class="l">${sPill(status(a))}</td></tr>`;
-  }).join('');
-  abrirModal({
-    largo:true,
-    titulo:`${esc(i.nome)}<small>${ic(areaIcone(i.area))} ${esc(i.area)} · ${esc(u)} · ${dirTxt(i)} · ${EST.ano}</small>`,
-    corpo:`<div class="dchart">${grafico(i, EST.ano, { w:900, h:290, sel:EST.mes === 'acum' ? -1 : EST.mes })}</div>
-      <div class="leg"><span><i class="sw" style="background:#0ca30c"></i><i class="sw" style="background:#fab219"></i><i class="sw" style="background:#d03b3b"></i>Realizado (cor = status)</span><span><i class="ln"></i>Meta</span></div>
-      <div class="tscroll"><table class="tb"><thead><tr><th class="l">Mês</th><th>Meta</th><th>Realizado</th><th>% Ating.</th><th class="l">Status</th></tr></thead>
-      <tbody>${linhas}</tbody>
-      <tfoot><tr><td class="l"><b>Acumulado</b>${ac.n ? ` <small style="color:var(--muted)">(${ac.n} ${ac.n === 1 ? 'mês' : 'meses'}, ${i.agregacao === 'media' ? 'média' : 'soma'})</small>` : ''}</td>
-        <td><b>${fmt(ac.meta, u)}</b></td><td><b>${fmt(ac.real, u)}</b></td><td><b>${pct(ac.a)}</b></td><td class="l">${sPill(status(ac.a))}</td></tr></tfoot></table></div>`,
-    rodape:`<button class="btn" data-close>Fechar</button><button class="btn pri" data-m="editar">${ic('edit')}<span class="t">Editar valores</span></button>`,
-    acoes:{ editar:() => { fecharModal(); EST.lancArea = i.area; abrir('lancamentos');
-      setTimeout(() => { const el = vLanc.querySelector(`.num[data-id="${CSS.escape(id)}"]`); if(el){ el.scrollIntoView({block:'center'}); el.focus(); } }, 30); } }
-  });
-}
-
 vInd.addEventListener('change', e => {
   if(e.target.id === 'fAno'){ EST.ano = e.target.value; EST.mes = null; renderPainel(); }
   if(e.target.id === 'fMes'){ EST.mes = e.target.value === 'acum' ? 'acum' : +e.target.value; renderPainel(); }
@@ -1542,7 +1559,7 @@ function desenharLanc(){
   const adm = admin(), icNovo = adm ? ic('plus') : ic('lock'), ttNovo = adm ? 'Nova meta / indicador' : 'Nova meta / indicador (somente administrador)';
   vLanc.innerHTML = `<div class="vwrap">
     <div class="vhead">
-      <div><h2 class="vtitle">Lançar Valores</h2><p class="vsub">Digite as metas e os valores realizados de cada mês. Tudo é salvo automaticamente ${SYNC.on ? 'no servidor e aparece para todos os usuários' : 'neste navegador'}.</p></div>
+      <div><h2 class="vtitle">Lançar Valores</h2><p class="vsub">Digite as metas e os valores realizados de cada mês. Tudo é salvo automaticamente ${SYNC.on ? 'no servidor e aparece para todos os usuários' : 'neste navegador'}.${usuarioAtual() ? ` Lançando como <b>${esc(usuarioAtual())}</b>.` : ''}</p></div>
       <div class="vacts">
         <button class="btn" data-act="ir-painel" title="Ver painel">${ic('gauge')}<span class="t">Ver painel</span></button>
         <button class="btn pri" data-act="novo" title="${ttNovo}">${icNovo}<span class="t">Nova meta / indicador</span></button>
@@ -1657,7 +1674,9 @@ function modalGlobal(){
 function marcarSalvo(servidor){
   if(SYNC.on && !SYNC.vazio && !servidor) return;     // com servidor, só marca depois que ele confirmar
   const el = document.getElementById('salvoInfo'), h = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-  if(el) el.textContent = (servidor ? '✓ Salvo no servidor às ' : '✓ Salvo neste navegador às ') + h;
+  const txt = (servidor ? '✓ Salvo no servidor às ' : '✓ Salvo neste navegador às ') + h;
+  if(el) el.textContent = txt;
+  const d = document.getElementById('dSalvo'); if(d) d.textContent = txt + (usuarioAtual() ? ' · ' + usuarioAtual() : '');
 }
 
 vLanc.addEventListener('change', e => {
@@ -1723,7 +1742,7 @@ vLanc.addEventListener('click', e => {
       if(confirm(`Repetir a meta de janeiro (${fmtG(v.meta[0])}) em todos os meses de ${EST.ano} para "${DB.global.nome}"?`)){ v.meta = x12(v.meta[0]); salvarDB(); renderLanc(); }
       break;
     }
-    case 'publicar': comoAdmin(() => substituirTudo(clone(DB), 'Dados publicados — agora todos os usuários veem os mesmos dados')); break;
+    case 'publicar': comoAdmin(() => substituirTudo(clone(DB), 'Dados publicados — agora todos os usuários veem os mesmos dados', 'Publicação dos dados de um navegador')); break;
     case 'novo-ano': modalAno(); break;
     case 'areas': modalAreas(); break;
     case 'exportar': exportarBackup(); break;
@@ -1734,7 +1753,7 @@ vLanc.addEventListener('click', e => {
     case 'restaurar':
       if(!admin()){ pedirSenha(() => { renderLanc(); toast('Administrador liberado — clique em Restaurar planilha novamente'); }, true); break; }
       if(confirm('Restaurar os dados originais da planilha? Todos os lançamentos e indicadores criados aqui serão substituídos.\n\nDica: exporte um backup antes.')){
-        substituirTudo(dadosPlanilha(), 'Dados da planilha restaurados');
+        substituirTudo(dadosPlanilha(), 'Dados da planilha restaurados', 'Restauração dos dados originais da planilha');
       }
       break;
   }
@@ -1996,7 +2015,7 @@ document.getElementById('fileImport').addEventListener('change', e => {
       const d = JSON.parse(r.result);
       if(!validoDB(d)) throw 0;
       if(!confirm(`Importar o backup "${f.name}"? Os dados atuais deste navegador serão substituídos.`)) return;
-      substituirTudo(d, 'Backup importado');
+      substituirTudo(d, 'Backup importado', 'Importação do backup ' + f.name);
     } catch(err){ toast('Arquivo de backup inválido'); }
   };
   r.readAsText(f);
@@ -2108,7 +2127,10 @@ function abrirModal({ titulo, corpo, rodape, acoes = {}, largo = false, aoAbrir 
   modal.classList.add('show'); modal.setAttribute('aria-hidden', 'false');
   if(aoAbrir) aoAbrir(); else mbox.querySelector('.mfoot .pri')?.focus();
 }
-function fecharModal(){ modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true'); mbox.innerHTML = ''; tip.classList.remove('show'); }
+function fecharModal(){
+  const ae = document.activeElement; if(ae && ae.classList && ae.classList.contains('dnum') && modal.contains(ae)) salvarCampoDetalhe(ae);
+  setTimeout(() => { if(SYNC.sujo) redesenhar(); }, 0);
+  modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true'); mbox.innerHTML = ''; tip.classList.remove('show'); }
 modal.addEventListener('click', e => {
   if(e.target.closest('[data-close]')){ fecharModal(); return; }   // fecha só pelo X ou Cancelar/Fechar
   const b = e.target.closest('[data-m]'); if(b && acoesModal[b.dataset.m]) acoesModal[b.dataset.m]();
@@ -2116,10 +2138,125 @@ modal.addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if(!modal.classList.contains('show')) return;
   if(e.key === 'Escape') fecharModal();
+  if(e.key === 'Enter' && e.target.classList.contains('dnum')){
+    e.preventDefault(); const t = e.target;
+    if(salvarCampoDetalhe(t)){ const p = mbox.querySelector(`.dnum[data-c="${t.dataset.c}"][data-m="${+t.dataset.m + 1}"]`); if(p) p.focus(); }
+    return;
+  }
   if(e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.type !== 'checkbox' && e.target.type !== 'radio'){
     const p = mbox.querySelector('.mfoot [data-m]'); if(p){ e.preventDefault(); p.click(); }
   }
 });
+
+// ---- Janela de detalhe (gráfico + tabela). Quem tem a senha edita meta e realizado aqui mesmo.
+const DET = { id:null, ano:null };
+const detInd = () => DET.id === GID ? indGlobal() : DB.indicadores.find(x => x.id === DET.id);
+function inpDet(i, c, k, v){
+  const cu = campoUnidade(i.unidade);
+  return `<span class="nw ${cu.cls}" data-u="${esc(i.unidade)}"><input class="num dnum" style="${cu.pad}" inputmode="decimal" autocomplete="off" data-c="${c}" data-m="${k}" value="${num(v, 4)}" aria-label="${c === 'meta' ? 'Meta' : 'Realizado'} ${MESES_LONGO[k]} (${esc(i.unidade)})"></span>`;
+}
+// Partes que mudam quando um valor é alterado
+function detGrafico(){
+  const i = detInd(), sel = EST.mes === 'acum' ? -1 : EST.mes;
+  return DET.id === GID ? grafico(i, DET.ano, { w:900, h:290, v:valsGlobal(DET.ano), lblReal:'Eficiência', sel })
+                        : grafico(i, DET.ano, { w:900, h:290, sel });
+}
+function detPct(k){
+  if(DET.id === GID){ const p = periodoGlobal(DET.ano, k); return { a:p.a, n:p.n }; }
+  const i = detInd(), v = vals(DET.ano, i.id); return { a:atingimento(i, v.meta[k], v.real[k]) };
+}
+function detRodape(){
+  if(DET.id === GID){ const ac = periodoGlobal(DET.ano, 'acum');
+    return `<tr><td class="l"><b>Acumulado</b></td><td><b>${fmtG(ac.meta)}</b></td><td><b>${fmtG(ac.real)}</b></td><td>${ac.n || '–'}</td><td><b>${pct(ac.a)}</b></td><td class="l">${sPill(status(ac.a))}</td></tr>`; }
+  const i = detInd(), u = i.unidade, ac = periodo(i, DET.ano, 'acum');
+  return `<tr><td class="l"><b>Acumulado</b>${ac.n ? ` <small style="color:var(--muted)">(${ac.n} ${ac.n === 1 ? 'mês' : 'meses'}, ${i.agregacao === 'media' ? 'média' : 'soma'})</small>` : ''}</td>
+    <td><b>${fmt(ac.meta, u)}</b></td><td><b>${fmt(ac.real, u)}</b></td><td><b>${pct(ac.a)}</b></td><td class="l">${sPill(status(ac.a))}</td></tr>`;
+}
+function atualizarDetalhe(){
+  if(!modal.classList.contains('show') || !detInd()) return;
+  const g = mbox.querySelector('.dchart'); if(g) g.innerHTML = detGrafico();
+  for(let k = 0; k < 12; k++){
+    const tr = mbox.querySelector(`tr[data-dk="${k}"]`); if(!tr) continue;
+    const p = detPct(k);
+    tr.querySelector('.dpc').textContent = pct(p.a); tr.querySelector('.dst').innerHTML = sPill(status(p.a));
+    if(DET.id === GID){ const e = tr.querySelector('.dre'); if(e) e.textContent = fmtG(periodoGlobal(DET.ano, k).real); }
+  }
+  const f = mbox.querySelector('.dtab tfoot'); if(f) f.innerHTML = detRodape();
+}
+function detTopo(editar){
+  if(editar) return `<div class="dedit">${ic('edit')}<span>Edite direto na tabela — salva sozinho ao sair do campo. <b>Enter</b> desce para o próximo mês. Lançando como <b>${esc(usuarioAtual())}</b>.</span></div>`;
+  return '';
+}
+function detBotoes(editar, id){
+  const hist = `<button class="btn" data-m="hist" title="Ver quem alterou este indicador">${ic('history')}<span class="t">Histórico</span></button>`;
+  return editar
+    ? `<span class="dsalvo" id="dSalvo">Alterações salvas automaticamente</span>${hist}<button class="btn" data-m="lanc">${ic('edit')}<span class="t">Tela de lançamentos</span></button><button class="btn pri" data-close>Concluir</button>`
+    : `${hist}<button class="btn" data-close>Fechar</button><button class="btn pri" data-m="editar">${ic('lock')}<span class="t">Editar valores</span></button>`;
+}
+function detAcoes(id){
+  return {
+    editar:() => pedirSenha(() => abrirDetalhe(id)),
+    lanc:() => { const k = EST.mes === 'acum' ? 0 : EST.mes; fecharModal(); if(id !== GID) EST.lancArea = DB.indicadores.find(x => x.id === id)?.area || EST.lancArea; abrir('lancamentos');
+      setTimeout(() => { const el = vLanc.querySelector(`.num[data-id="${CSS.escape(id)}"][data-m="${k}"]`); if(el){ el.scrollIntoView({block:'center'}); el.focus(); } }, 30); },
+    hist:() => { fecharModal(); AUD.f = { ...AUD.f, ind:id, usuario:'', campo:'', sit:'', per:'', q:'' }; abrir('auditoria'); }
+  };
+}
+function abrirDetalheGlobal(){
+  DET.id = GID; DET.ano = EST.ano;
+  const g = indGlobal(), v = vals(DET.ano, GID), ed = liberado(), sel = EST.mes === 'acum' ? -1 : EST.mes;
+  const linhas = MESES.map((_, k) => { const p = periodoGlobal(DET.ano, k);
+    return `<tr data-dk="${k}" class="${k === sel ? 'dsel' : ''}"><td class="l">${MESES_LONGO[k]}</td><td>${ed ? inpDet(g, 'meta', k, v.meta[k]) : fmtG(p.meta)}</td><td class="dre">${fmtG(p.real)}</td><td>${p.n || '–'}</td><td class="dpc">${pct(p.a)}</td><td class="l dst">${sPill(status(p.a))}</td></tr>`; }).join('');
+  abrirModal({
+    largo:true,
+    titulo:`${esc(g.nome)}<small>${ic('gauge')} Empresa · média do atingimento de todos os indicadores · ${tetoTxt()} · ${DET.ano}</small>`,
+    corpo:`${detTopo(ed)}<div class="dchart">${detGrafico()}</div>
+      <div class="leg"><span><i class="sw" style="background:#0ca30c"></i><i class="sw" style="background:#fab219"></i><i class="sw" style="background:#d03b3b"></i>Eficiência (cor = status em relação à meta)</span><span><i class="ln"></i>Meta</span></div>
+      <div class="tscroll"><table class="tb dtab"><thead><tr><th class="l">Mês</th><th>Meta (%)</th><th>Eficiência</th><th>Indicadores</th><th>% Ating.</th><th class="l">Status</th></tr></thead>
+      <tbody>${linhas}</tbody><tfoot>${detRodape()}</tfoot></table></div>
+      <p class="info" style="margin-top:14px">A eficiência de cada mês é a média do % de atingimento de todos os indicadores que têm meta e realizado naquele mês (calculada automaticamente — só a meta é digitada). Cada atingimento conta entre 0% e ${DB.global.teto ? num(DB.global.teto * 100, 0) + '%' : 'sem limite'} (ajuste em <b>Lançar valores → indicador global</b>).</p>`,
+    rodape:detBotoes(ed, GID),
+    acoes:detAcoes(GID),
+    aoAbrir:() => { if(ed) mbox.querySelector(`.dnum[data-m="${sel < 0 ? 0 : sel}"]`)?.focus(); else mbox.querySelector('.mfoot .pri')?.focus(); }
+  });
+}
+function abrirDetalhe(id){
+  if(id === GID) return abrirDetalheGlobal();
+  const i = DB.indicadores.find(x => x.id === id); if(!i) return;
+  DET.id = id; DET.ano = EST.ano;
+  const v = vals(DET.ano, id), u = i.unidade, ed = liberado(), sel = EST.mes === 'acum' ? -1 : EST.mes;
+  const linhas = MESES.map((_, k) => {
+    const a = atingimento(i, v.meta[k], v.real[k]);
+    return `<tr data-dk="${k}" class="${k === sel ? 'dsel' : ''}"><td class="l">${MESES_LONGO[k]}</td>
+      <td>${ed ? inpDet(i, 'meta', k, v.meta[k]) : fmt(v.meta[k], u)}</td><td>${ed ? inpDet(i, 'real', k, v.real[k]) : fmt(v.real[k], u)}</td>
+      <td class="dpc">${pct(a)}</td><td class="l dst">${sPill(status(a))}</td></tr>`;
+  }).join('');
+  abrirModal({
+    largo:true,
+    titulo:`${esc(i.nome)}<small>${ic(areaIcone(i.area))} ${esc(i.area)} · ${esc(u)} · ${dirTxt(i)} · ${DET.ano}</small>`,
+    corpo:`${detTopo(ed)}<div class="dchart">${detGrafico()}</div>
+      <div class="leg"><span><i class="sw" style="background:#0ca30c"></i><i class="sw" style="background:#fab219"></i><i class="sw" style="background:#d03b3b"></i>Realizado (cor = status)</span><span><i class="ln"></i>Meta</span></div>
+      <div class="tscroll"><table class="tb dtab"><thead><tr><th class="l">Mês</th><th>Meta</th><th>Realizado</th><th>% Ating.</th><th class="l">Status</th></tr></thead>
+      <tbody>${linhas}</tbody><tfoot>${detRodape()}</tfoot></table></div>`,
+    rodape:detBotoes(ed, id),
+    acoes:detAcoes(id),
+    aoAbrir:() => { if(ed) mbox.querySelector(`.dnum[data-c="real"][data-m="${sel < 0 ? 0 : sel}"]`)?.focus(); else mbox.querySelector('.mfoot .pri')?.focus(); }
+  });
+}
+// Salva o valor digitado na janela de detalhe
+function salvarCampoDetalhe(t){
+  const i = detInd(); if(!i) return false;
+  if(!liberado()){ toast('Entre com a senha para alterar valores'); return false; }
+  const n = parseNum(t.value);
+  if(Number.isNaN(n)){ t.classList.add('err'); toast('Valor inválido — use apenas números'); return false; }
+  t.classList.remove('err');
+  const arr = vals(DET.ano, i.id)[t.dataset.c], k = +t.dataset.m;
+  t.value = num(n, 4);
+  if(arr[k] === n) return true;
+  arr[k] = n; salvarDB(); SYNC.sujo = true; atualizarDetalhe();
+  return true;
+}
+modal.addEventListener('change', e => { if(e.target.classList.contains('dnum')) salvarCampoDetalhe(e.target); });
+modal.addEventListener('focusin', e => { if(e.target.classList.contains('dnum')) e.target.select(); });
 
 const tip = document.getElementById('tip');
 document.addEventListener('mouseover', e => {
@@ -2135,6 +2272,198 @@ document.addEventListener('mousemove', e => {
 });
 let toastT;
 function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400); }
+
+/* =====================================================================
+   AUDITORIA — quem alterou metas e realizados (lido da aba "Auditoria" da planilha)
+   ===================================================================== */
+const AUD = { itens:null, rev:-1, carregando:false, erro:'', f:{ q:'', usuario:'', ind:'', campo:'', ano:'', sit:'', per:'' }, sel:new Set(), lim:200 };
+const audPode = r => !!r.campo && r.situacao === 'Ativa';
+const audData = iso => { const d = new Date(iso); return isNaN(d) ? esc(iso) : d.toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }); };
+function audUn(r){ if(r.ind === GID) return '%'; const i = DB.indicadores.find(x => x.id === r.ind); return i ? i.unidade : ''; }
+function audVal(r, v){ if(v == null) return '(vazio)'; const u = audUn(r); return u ? fmt(v, u) : num(v); }
+function audNome(r){ if(r.ind === GID) return DB.global.nome; const i = DB.indicadores.find(x => x.id === r.ind); return i ? i.nome : r.nome; }
+function audBadge(r){
+  if(r.acao === 'Desfazer') return `<span class="bdg undo">${ic('undo')}Desfazer · ${esc(r.linha)}</span>`;
+  if(r.campo) return `<span class="bdg ${r.campo === 'meta' ? 'meta' : 'real'}">${esc(r.linha)}</span>`;
+  return `<span class="bdg evt">${esc(r.acao)}</span>`;
+}
+function audSit(r){
+  const d = r.detalhe ? `<small>${esc(r.detalhe)}</small>` : '';
+  if(r.situacao === 'Desfeita') return `<span class="sit d"><i></i>Desfeita</span>${d}`;
+  if(r.situacao === 'Ativa') return `<span class="sit"><i></i>Ativa</span>${d}`;
+  return d || '<small>–</small>';
+}
+function audFiltrados(){
+  const f = AUD.f, q = normTxt(f.q.trim()), agora = Date.now();
+  const lim = { hoje:new Date(new Date().setHours(0, 0, 0, 0)).getTime(), '7':agora - 7 * 864e5, '30':agora - 30 * 864e5 }[f.per];
+  return (AUD.itens || []).filter(r =>
+    (!f.usuario || r.usuario === f.usuario) && (!f.ind || r.ind === f.ind) && (!f.campo || r.campo === f.campo) && (!f.ano || r.ano === f.ano) &&
+    (!f.sit || (f.sit === 'ativa' ? audPode(r) : f.sit === 'desfeita' ? r.situacao === 'Desfeita' : !r.campo)) &&
+    (!lim || new Date(r.quando).getTime() >= lim) &&
+    (!q || normTxt([r.id, r.usuario, audNome(r), r.area, r.acao, r.linha, r.mes, r.ano, r.detalhe].join(' ')).includes(q)));
+}
+function renderAuditoria(){
+  if(SYNC.on && !AUD.carregando && (AUD.itens == null || AUD.rev !== SYNC.rev)) carregarAuditoria();
+  desenharAud();
+}
+async function carregarAuditoria(){
+  if(!SYNC.on) return;
+  AUD.carregando = true; const rev = SYNC.rev;
+  if(atual === 'auditoria') desenharTabAud();
+  try {
+    const j = await chamar({ acao:'auditoria', token:tokenAtual(), limite:5000 });
+    AUD.itens = j.itens || []; AUD.erro = '';
+  } catch(e){
+    AUD.erro = e.servidor ? (/desconhecida/i.test(e.message)
+      ? 'O script do servidor (Code.gs) ainda não tem a auditoria. Atualize o script na planilha Google: as instruções estão no topo do arquivo Code.gs.'
+      : e.message) : 'Sem conexão com o servidor. Tente de novo em instantes.';
+    if(!AUD.itens) AUD.itens = [];
+  } finally {
+    AUD.rev = rev; AUD.carregando = false;
+    const ids = new Set(AUD.itens.map(r => r.id)); [...AUD.sel].forEach(id => { if(!ids.has(id)) AUD.sel.delete(id); });
+    if(atual === 'auditoria') desenharAud();
+  }
+}
+function desenharAud(){
+  const foco = document.activeElement && document.activeElement.id === 'aBusca';
+  if(!SYNC.on){ vAud.innerHTML = `<div class="vwrap"><div class="vhead"><div><h2 class="vtitle">Auditoria de alterações</h2></div></div>
+    <div class="vazio">A auditoria precisa do servidor compartilhado (planilha Google), porque é lá que fica o histórico de todos os usuários.</div></div>`; return; }
+  const it = AUD.itens || [], f = AUD.f, adm = admin();
+  const opt = (v, n, cur) => `<option value="${esc(v)}" ${v === cur ? 'selected' : ''}>${esc(n)}</option>`;
+  const usuarios = [...new Set(it.map(r => r.usuario))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  const inds = new Map(); it.forEach(r => { if(r.ind) inds.set(r.ind, audNome(r)); }); if(f.ind && !inds.has(f.ind)) inds.set(f.ind, f.ind === GID ? DB.global.nome : (DB.indicadores.find(x => x.id === f.ind) || {}).nome || f.ind);
+  const anosL = [...new Set(it.map(r => r.ano).filter(Boolean))].sort();
+  const algum = Object.values(f).some(Boolean);
+  vAud.innerHTML = `<div class="vwrap">
+    <div class="vhead">
+      <div><h2 class="vtitle">Auditoria de alterações</h2>
+        <p class="vsub">Quem alterou metas e realizados, quando e de quanto para quanto. Somente o administrador pode desfazer uma alteração.</p></div>
+      <div class="vacts">
+        <button class="btn" data-a="csv" title="Baixar o que está filtrado (abre no Excel)">${ic('download')}<span class="t">Baixar CSV</span></button>
+        <button class="btn pri" data-a="atualizar" title="Buscar as alterações mais recentes">${ic('reload')}<span class="t">Atualizar</span></button>
+      </div>
+    </div>
+    <div class="tools">
+      <input class="busca" id="aBusca" type="search" placeholder="Buscar usuário, indicador, nº…" value="${esc(f.q)}" aria-label="Buscar na auditoria">
+      <select class="sel" data-f="usuario" title="Usuário">${opt('', 'Todos os usuários', f.usuario)}${usuarios.map(u => opt(u, u, f.usuario)).join('')}</select>
+      <select class="sel" data-f="ind" title="Indicador" style="max-width:240px">${opt('', 'Todos os indicadores', f.ind)}${[...inds].sort((a, b) => a[1].localeCompare(b[1], 'pt-BR')).map(([id, n]) => opt(id, n, f.ind)).join('')}</select>
+      <select class="sel" data-f="campo" title="Linha">${opt('', 'Meta e realizado', f.campo)}${opt('meta', 'Só metas', f.campo)}${opt('real', 'Só realizados', f.campo)}</select>
+      <select class="sel" data-f="ano" title="Ano">${opt('', 'Todos os anos', f.ano)}${anosL.map(a => opt(a, a, f.ano)).join('')}</select>
+      <select class="sel" data-f="per" title="Quando">${opt('', 'Qualquer data', f.per)}${opt('hoje', 'Hoje', f.per)}${opt('7', 'Últimos 7 dias', f.per)}${opt('30', 'Últimos 30 dias', f.per)}</select>
+      <select class="sel" data-f="sit" title="Situação">${opt('', 'Todas as situações', f.sit)}${opt('ativa', 'Ativas (podem ser desfeitas)', f.sit)}${opt('desfeita', 'Desfeitas', f.sit)}${opt('evento', 'Outros eventos', f.sit)}</select>
+      ${algum ? `<button class="btn" data-a="limpar">${ic('close')}<span class="t">Limpar filtros</span></button>` : ''}
+    </div>
+    ${AUD.erro ? `<p class="info aviso">${esc(AUD.erro)}</p>` : ''}
+    <div class="aunota">${adm
+      ? `<button class="btn dng" data-a="desfazer-sel" id="aDesfSel">${ic('undo')}<span class="t">Desfazer selecionadas</span></button><span class="salvo">Marque as alterações e clique em desfazer: o valor volta ao que era antes e isso também fica registrado.</span>`
+      : `<span class="salvo">${ic('lock')} Somente o administrador pode desfazer alterações.</span><button class="btn" data-a="admin">${ic('lock')}<span class="t">Entrar como administrador</span></button>`}</div>
+    <div id="audRes"></div>
+  </div>`;
+  desenharTabAud();
+  if(foco){ const b = document.getElementById('aBusca'); b.focus(); b.setSelectionRange(b.value.length, b.value.length); }
+}
+function desenharTabAud(){
+  const box = document.getElementById('audRes'); if(!box) return;
+  if(AUD.itens == null){ box.innerHTML = `<div class="vazio">Carregando o histórico de alterações…</div>`; return; }
+  const lista = audFiltrados(), adm = admin(), pag = lista.slice(0, AUD.lim);
+  const alt = lista.filter(r => r.campo), des = lista.filter(r => r.situacao === 'Desfeita').length;
+  const sem7 = lista.filter(r => r.campo && Date.now() - new Date(r.quando).getTime() < 7 * 864e5).length;
+  const visiveis = pag.filter(audPode), todos = visiveis.length && visiveis.every(r => AUD.sel.has(r.id));
+  const linha = r => `<tr data-aid="${r.id}" class="${r.situacao === 'Desfeita' ? 'des' : ''} ${AUD.sel.has(r.id) ? 'marc' : ''}">
+      ${adm ? `<td class="l">${audPode(r) ? `<input type="checkbox" class="ck2" data-ck="${r.id}" ${AUD.sel.has(r.id) ? 'checked' : ''} aria-label="Selecionar alteração nº ${r.id}">` : ''}</td>` : ''}
+      <td style="color:var(--muted)">${r.id}</td>
+      <td class="l">${audData(r.quando)}</td>
+      <td class="l">${esc(r.usuario)}<small>${esc(r.perfil)}</small></td>
+      <td class="l" style="white-space:normal;min-width:190px">${esc(audNome(r))}<small>${esc(r.area)}</small></td>
+      <td class="l">${audBadge(r)}</td>
+      <td class="l">${r.mes ? `${esc(r.mes)}/${esc(r.ano)}` : '–'}</td>
+      <td class="vv">${r.campo ? audVal(r, r.de) : '–'}</td>
+      <td class="vv vn">${r.campo ? audVal(r, r.para) : '–'}</td>
+      <td class="l" style="white-space:normal;min-width:150px">${audSit(r)}</td>
+      ${adm ? `<td>${audPode(r) ? `<button class="mini dng" data-desf="${r.id}" title="Desfazer esta alteração (volta para ${esc(audVal(r, r.de))})">${ic('undo')}</button>` : ''}</td>` : ''}
+    </tr>`;
+  box.innerHTML = `<div class="stats">
+      ${stat('Alterações', alt.length, AUD.carregando ? 'atualizando…' : (algumFiltro() ? 'no filtro atual' : 'registradas'), null, true)}
+      ${stat('Usuários', new Set(alt.map(r => r.usuario)).size, 'que alteraram valores')}
+      ${stat('Últimos 7 dias', sem7, 'alterações recentes')}
+      ${stat('Desfeitas', des, 'pelo administrador')}
+    </div>
+    ${lista.length ? `<div class="panel" style="margin-top:0"><div class="tscroll"><table class="tb au">
+      <thead><tr>${adm ? `<th class="l"><input type="checkbox" class="ck2" id="ckAll" ${todos ? 'checked' : ''} ${visiveis.length ? '' : 'disabled'} title="Selecionar todas as que aparecem" aria-label="Selecionar todas"></th>` : ''}
+        <th>Nº</th><th class="l">Data/hora</th><th class="l">Usuário</th><th class="l">Indicador</th><th class="l">Alteração</th><th class="l">Período</th><th>Antes</th><th>Depois</th><th class="l">Situação</th>${adm ? '<th></th>' : ''}</tr></thead>
+      <tbody>${pag.map(linha).join('')}</tbody></table></div>
+      ${lista.length > pag.length ? `<div class="aumais"><button class="btn" data-a="mais">Mostrar mais (${lista.length - pag.length} restantes)</button></div>` : ''}</div>`
+      : `<div class="vazio">${(AUD.itens || []).length ? 'Nenhuma alteração encontrada com esses filtros.' : (AUD.carregando ? 'Carregando…' : 'Ainda não há alterações registradas. A partir de agora, cada meta ou realizado alterado aparece aqui.')}</div>`}`;
+  atualizarSelAud();
+}
+const algumFiltro = () => Object.values(AUD.f).some(Boolean);
+function atualizarSelAud(){
+  const b = document.getElementById('aDesfSel'); if(!b) return;
+  const n = AUD.sel.size; b.disabled = !n;
+  b.querySelector('.t').textContent = n ? `Desfazer selecionadas (${n})` : 'Desfazer selecionadas';
+}
+async function desfazerAud(ids, forcar){
+  ids = ids.filter(id => (AUD.itens || []).some(r => r.id === id && audPode(r)));
+  if(!ids.length) return;
+  const um = ids.length === 1 && AUD.itens.find(r => r.id === ids[0]);
+  if(!forcar){
+    const txt = um ? `a alteração nº ${um.id} de ${um.usuario}?\n\n${audNome(um)} · ${um.linha} ${um.mes}/${um.ano}\n${audVal(um, um.para)} → volta para ${audVal(um, um.de)}`
+                   : `${ids.length} alterações selecionadas?\n\nCada valor volta ao que era antes da alteração.`;
+    if(!confirm('Desfazer ' + txt + '\n\nO desfazer também fica registrado na auditoria com o seu nome.')) return;
+  }
+  try {
+    setEstado('env');
+    const j = await chamar({ acao:'desfazer', token:tokenAtual(), usuario:usuarioAtual(), ids, forcar:!!forcar });
+    if(j.db) receberServidor(j.db, j.rev); else setEstado('ok');
+    j.feitos.forEach(id => AUD.sel.delete(id)); (j.ignorados || []).forEach(o => AUD.sel.delete(o.id));
+    let msg = j.feitos.length ? (j.feitos.length === 1 ? 'Alteração desfeita' : `${j.feitos.length} alterações desfeitas`) : 'Nada foi desfeito';
+    if(j.ignorados && j.ignorados.length) msg += ` · nº ${j.ignorados.map(o => o.id).join(', ')}: ${j.ignorados[0].motivo}`;
+    toast(msg);
+    await carregarAuditoria();
+    if(j.conflitos && j.conflitos.length){
+      const det = j.conflitos.slice(0, 6).map(c => { const r = AUD.itens.find(x => x.id === c.id) || {};
+        return `• nº ${c.id} – ${audNome(r)} · ${r.linha} ${r.mes}/${r.ano}: hoje está ${audVal(r, c.atual)}, voltaria para ${audVal(r, r.de)}`; }).join('\n');
+      if(confirm(`${j.conflitos.length === 1 ? 'Este valor foi alterado de novo' : 'Estes valores foram alterados de novo'} depois da alteração escolhida:\n\n${det}${j.conflitos.length > 6 ? '\n…' : ''}\n\nDesfazer mesmo assim? O valor atual será trocado pelo valor anterior à alteração escolhida.\n(Dica: desfazer também a alteração mais recente evita esse aviso.)`))
+        await desfazerAud(j.conflitos.map(c => c.id), true);
+      else j.conflitos.forEach(c => AUD.sel.delete(c.id));
+      if(atual === 'auditoria') desenharTabAud();
+    }
+  } catch(e){
+    setEstado(e.servidor ? 'ok' : 'off');
+    toast(e.servidor ? e.message : 'Sem conexão com o servidor — tente de novo');
+  }
+}
+function csvAud(){
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const linhas = [['Nº', 'Data/hora', 'Usuário', 'Perfil', 'Ação', 'Área', 'Indicador', 'Linha', 'Mês', 'Ano', 'Antes', 'Depois', 'Situação', 'Detalhe']]
+    .concat(audFiltrados().map(r => [r.id, new Date(r.quando).toLocaleString('pt-BR'), r.usuario, r.perfil, r.acao, r.area, audNome(r), r.linha, r.mes, r.ano,
+      r.campo ? num(r.de, 4) : '', r.campo ? num(r.para, 4) : '', r.situacao, r.detalhe]));
+  const blob = new Blob(['﻿' + linhas.map(l => l.map(q).join(';')).join('\r\n')], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `auditoria-indicadores-eleve-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+vAud.addEventListener('input', e => { if(e.target.id === 'aBusca'){ AUD.f.q = e.target.value; AUD.lim = 200; desenharTabAud(); } });
+vAud.addEventListener('change', e => {
+  const t = e.target;
+  if(t.dataset.f){ AUD.f[t.dataset.f] = t.value; AUD.lim = 200; desenharAud(); return; }
+  if(t.dataset.ck){ const id = +t.dataset.ck; t.checked ? AUD.sel.add(id) : AUD.sel.delete(id); t.closest('tr').classList.toggle('marc', t.checked);
+    const all = document.getElementById('ckAll'), vis = [...vAud.querySelectorAll('[data-ck]')]; if(all) all.checked = vis.length && vis.every(x => x.checked);
+    atualizarSelAud(); return; }
+  if(t.id === 'ckAll'){ vAud.querySelectorAll('[data-ck]').forEach(x => { x.checked = t.checked; const id = +x.dataset.ck; t.checked ? AUD.sel.add(id) : AUD.sel.delete(id); x.closest('tr').classList.toggle('marc', t.checked); }); atualizarSelAud(); }
+});
+vAud.addEventListener('click', e => {
+  const d = e.target.closest('[data-desf]'); if(d){ const id = +d.dataset.desf; comoAdmin(() => desfazerAud([id])); return; }
+  const b = e.target.closest('[data-a]'); if(!b) return;
+  switch(b.dataset.a){
+    case 'atualizar': AUD.rev = -1; carregarAuditoria(); if(SYNC.on) verificar(true); break;
+    case 'limpar': AUD.f = { q:'', usuario:'', ind:'', campo:'', ano:'', sit:'', per:'' }; AUD.lim = 200; desenharAud(); break;
+    case 'mais': AUD.lim += 300; desenharTabAud(); break;
+    case 'csv': csvAud(); break;
+    case 'admin': pedirSenha(() => renderAuditoria(), true); break;
+    case 'desfazer-sel': comoAdmin(() => desfazerAud([...AUD.sel])); break;
+  }
+});
 
 /* =====================================================================
    TELA INICIAL
